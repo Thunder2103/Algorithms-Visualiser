@@ -6,18 +6,21 @@ if(__name__ == "__main__"):
     print("This is file shouldn't be run on it's own. \nIt should be imported only.")
     exit()
 
-# Abstract class - every screen must implement the createScreen method
+# Abstract class - every screen must implement the layout method
 class Screen(ABC):
     @abstractmethod
-    def init(self, contentFrame):
+    def layout(self, contentFrame):
         pass
     
 # Ideally this should be first screen the user sees 
 class Introduction(Screen):
-    def init(self, view, contentFrame):
+    def __init__(self, view):
         # Stores reference to view object - so clearScreen() function can be called
         self.view = view
 
+
+    def layout(self, contentFrame):
+    
         # The introductory text is kept as a string 
         # as it makes it easier to change (and makes code easier to read)
         introText = "This program visualises algorithms in a user friendly way. \n\
@@ -41,7 +44,7 @@ class Introduction(Screen):
             .pack(pady = (25, 0)) 
 
         tk.Button(buttonsFrame, text = "Searching",  font = ("Arial", 12), height = 2, width = 15, relief = "solid", \
-                command = lambda : [self.view.removeScreen(), self.view.addScreen(Searching())]).pack(side = "left", pady = 15, padx = (100, 0))
+                command = lambda : [self.view.removeScreen(), self.view.addScreen(Searching(self.view))]).pack(side = "left", pady = 15, padx = (100, 0))
 
         tk.Button(buttonsFrame, text = "Sorting",  font = ("Arial", 12), height = 2, width = 15, relief = "solid",\
                 command = lambda : self.view.removeScreen()).pack(side = "left", padx = 100) 
@@ -49,8 +52,30 @@ class Introduction(Screen):
         tk.Label(contentFrame, text = "Created by Thomas Gibson", bg = "white", justify = "left")\
             .pack(side = "bottom", anchor = "w", pady = 10, padx = 10)  
 
-
 class Searching(Screen):
-    def init(self, view, contentFrame):
-        self.view = view
-        tk.Label(contentFrame, text = "Cool and epic test").pack()
+    def __init__(self, view):
+         # Stores reference to view object - so clearScreen() function can be called
+        self.view = view 
+
+        # Object stores the dictionary pairing numbers to speed
+        # This allows the slider to show "Small", "Medium" and "Fast" instead of 0, 1, 2
+        self.numbersToSpeed = {
+            0: "Slow",
+            1: "Medium",
+            2: "Fast"
+        }  
+       
+    def layout(self, contentFrame):
+       
+        self.speedSlider = tk.Scale(contentFrame, from_ = 0, to_ = 2, length = 200,\
+                                orient = "horizontal", showvalue = False, command = self.intToSpeed)
+        self.speedSlider.pack()  
+        self.speedSlider.config(label = "Slow")
+    
+    def intToSpeed(self, value): 
+        self.speedSlider.config(label = self.numbersToSpeed[int(value)])
+
+
+        
+
+

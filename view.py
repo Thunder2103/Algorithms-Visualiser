@@ -45,7 +45,7 @@ class View():
       
     # Takes in a new object (the new screen) and calls the relevant function
     def addScreen(self, newScreen):
-        newScreen.init(self, self.contentFrame)
+        newScreen.layout(self.contentFrame)
 
     # Removes every widget from the passed frame
     def removeScreen(self): 
