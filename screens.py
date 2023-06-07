@@ -57,7 +57,7 @@ class SharedLayout(Screen):
         # This frame will be where information on the algorithm will be displayed
         self.algorithmInfoFrame = tk.Frame(algorithmFrame, height = contentFrameHeight // 2, width = contentFrameWidth - 200, bg = "white")
         self.algorithmInfoFrame.grid(row = 2, column = 0, padx = 2, pady = 2) 
-    
+
     # getter methods, so Sorting and Searching Screens can place widgets
     def getOptionsFrame(self):
         return self.options 
@@ -109,7 +109,10 @@ class Introduction(Screen):
 class Searching(Screen):
     def __init__(self, view):
          # Stores reference to view object - so clearScreen() function can be called
-        self.view = view 
+        self.view = view  
+
+        #array to be searched
+        self.array = []
 
         # Object stores the dictionary pairing numbers to speed
         # This allows the slider to show "Small", "Medium" and "Fast" instead of 0, 1, 2
@@ -130,50 +133,111 @@ class Searching(Screen):
         algorithmInfoFrame = layout.getAlgorithmInfoFrame()
         
         #combo box, allows the user to choose what algorithm they want
-        algorithmOptions = ttk.Combobox(optionsFrame, textvariable = tk.StringVar(), state = "readonly", width = 20)
+        algorithmOptions = ttk.Combobox(optionsFrame, textvariable = tk.StringVar(), state = "readonly", width = 17, font = ("Arial", 13))
         algorithmOptions['value'] = ('1',
                                      '2', 
                                      '3', 
                                      '4')
-        algorithmOptions.set('Select an algorithm...')
-        algorithmOptions.pack(pady = (5,0))
+        algorithmOptions.set('Select an algorithm.')
+        algorithmOptions.pack(pady = (10,0))
+                
+        # Textbox allows user to enter a number to be added
+        addElement = tk.Entry(optionsFrame, font = ("Arial italic", 13),width = 19,\
+             highlightthickness = 2, highlightbackground = "black", highlightcolor= "black")
+        # Default text
+        addElement.insert(0, "Click to enter element.")
+        # Binds event to textbox, deleteDefaultText() is called when the textbox is clicked
+        addElement.bind("<Button-1>", lambda event: self.deleteDefaultText(event, addElement))
+        addElement.pack(pady = (15,0)) 
         
-        # Randomly generate new array
-        tk.Button(optionsFrame, text = "Generate.", relief = "solid", command = self.placeholder).pack(pady = (5,0))
+        # Button - confirm element to be added
+        tk.Button(optionsFrame, text = "Add.", width = 7, font = ("Arial", 11), relief = "solid", command = lambda: self.add(addElement, addElement.get()))\
+            .pack(pady = (2, 0), padx = 12, anchor = "e")
 
-        
-        # Textbox and button to allow user to add a number to the array
-        # A seperate frame is used to position the textbox and button on the same line as it doesn't mess everything up
-        addElementFrame = tk.Frame(optionsFrame, bg = "white")
-        addElementFrame.pack()
-        addElement = tk.Text(addElementFrame, width = 10, height = 1, font = ("Arial", 12), relief = "solid").grid(row = 0, column = 0, pady = (5,0)) 
-        tk.Button(addElementFrame, text = "Add.", command = self.placeholder, width = 5, relief = "solid").grid(row = 0, column = 1, pady = (5, 0), padx = (10, 0))
+        # Randomly generate new array
+        tk.Button(optionsFrame, text = "Generate.", relief = "solid", font = ("Arial", 12), width = 13, command = self.placeholder)\
+            .pack(pady = (15,0), padx = 12)
+
+        # Frame to store Clear and Delete buttons allows them to be arranged in a grid layout
+        clearDeleteFrame = tk.Frame(optionsFrame, bg = "White")
+        clearDeleteFrame.pack(pady = (15,0))
+
+        # Allows user to clear the array
+        tk.Button(clearDeleteFrame, text = "Clear.", relief = "solid", font = ("Arial", 11), width = 7, command = self.placeholder)\
+            .grid(row = 0, column = 0, padx = 11)
 
         # Allows user to delete a single element from the end of the array
-        tk.Button(optionsFrame, text = "Delete.", relief = "solid", command = self.placeholder).pack(pady = (5,0))
-    
-        # Allows user to clear the array
-        tk.Button(optionsFrame, text = "Clear.", relief = "solid", command = self.placeholder).pack(pady = (5,0))
-        
+        tk.Button(clearDeleteFrame, text = "Delete.", relief = "solid", font = ("Arial", 11), width = 7, command = self.placeholder)\
+            .grid(row = 0, column = 1, padx = 11)
+
+        # Textbox, let's user choose what the search algorithms look for
+        targetInput = tk.Entry(optionsFrame, width = 19, font = ("Arial italic", 13), relief = "solid")
+        # Default text
+        targetInput.insert(0, "Click to enter target.") 
+        # Binds event to textbox, deleteDefaultText() is called when the textbox is clicked
+        targetInput.bind("<Button-1>", lambda event: self.deleteDefaultText(event, targetInput))
+        targetInput.pack(pady = (15,0), padx = 5) 
+
+        # Button - confirms target
+        tk.Button(optionsFrame, text = "Target.", width = 7, font = ("Arial", 11), relief = "solid", command = self.placeholder)\
+            .pack(pady = (2, 0), padx = 12, anchor = "e")
+            
         # Creates a slider that goes 0 to 1 then 2
         # It has three options correlating to the three speeds; slow, medium, fast 
         # Every time the sliders value is changed the intToSpeed() method is called
-        self.speedSlider = tk.Scale(optionsFrame, from_ = 0, to_ = 2, length = 150,\
-                                orient = "horizontal", showvalue = False, command = self.intToSpeed)
-        self.speedSlider.pack(pady = (5,0))  
+        self.speedSlider = tk.Scale(optionsFrame, from_ = 0, to_ = 2, length = 175,\
+                                orient = "horizontal", showvalue = False, bg =  "white", highlightbackground = "white", command = self.intToSpeed)
+        self.speedSlider.pack()  
         # Initially the slider is set at 0, which is the Slow speed
         self.speedSlider.config(label = "Slow") 
 
+        # Makes sure there is enough space for extra options
+        tk.Label(optionsFrame, text = "Filler for extra options", font = ("Arial", 13)).pack(pady = 15)
+
+        # Frame to store stop and solve buttons in a grid layout
+        stopSolveFrame = tk.Frame(optionsFrame, bg = "white")
+        stopSolveFrame.pack(side = "bottom")
         # Allows user to see the algorithm in action
-        tk.Button(optionsFrame, text = "Solve.", relief = "solid", command = self.placeholder).pack(side = "bottom", pady = (0,5))
+        tk.Button(stopSolveFrame, text = "Solve.", width = 7, relief = "solid", font = ("Arial", 13), command = self.placeholder)\
+            .grid(row = 0, column = 0, pady = (0,15), padx = 11) 
+        # Allows user to stop algorithm whilst it's running - button is initially disabled
+        tk.Button(stopSolveFrame, text = "Stop.", width = 7, relief = "solid", font = ("Arial", 13), state = "disabled", command = self.placeholder)\
+            .grid(row = 0, column = 1, pady = (0,15), padx = 11) 
 
     # When the slider has changed value a label is added with the relevant speed
     def intToSpeed(self, value): 
         self.speedSlider.config(label = self.numbersToSpeed[int(value)])  
     
-    # Placeholder function, doesn't do anything
+    # Placeholder function, just prints the array
     def placeholder(self):
-        pass 
+        print(self.array) 
+
+    # Input texboxes have default text
+    # When a textbox is clicked for the first time the default text is deleted
+    def deleteDefaultText(self, event, textbox):
+        textbox.delete(0, tk.END)
+        # Removes the italic font 
+        textbox.config(font = ("Arial")) 
+        # Unbind event - so user input isn't deleted whenever they click the textbox
+        textbox.unbind("<Button-1>") 
+
+    # Adds user types element to array
+    def add(self, textbox, element):
+        # By default border colour is set to red - signifies user has not entered an integer
+        borderColour = "red"
+        # if string user inputted is a nuumber
+        if(element.isnumeric()): 
+            # set border colour to black
+            borderColour = "black"
+            # Cast string to int and add to array
+            self.array.append(int(element))
+            #clears textbox when number is successfully added
+            textbox.delete(0, tk.END)
+        
+        # Sets border colour of textbox - easy way to tell user if what they inputted was valid or not 
+        textbox.config(highlightbackground = borderColour, highlightcolor= borderColour)
+        
+
 
 
 

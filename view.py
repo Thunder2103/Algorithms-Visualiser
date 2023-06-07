@@ -50,13 +50,13 @@ class View():
         # Stops frame resizing to same size as widgets inside it 
         self.contentFrame.pack_propagate(False) 
 
+    # Draws window
     def show(self):
-        # Draws window
-        self.window.mainloop()
-      
+        self.window.mainloop() 
+ 
     # Takes in a new object (the new screen) and calls the relevant function
     def addScreen(self, newScreen):
-        newScreen.createLayout(self.contentFrame)
+        newScreen.createLayout(self.contentFrame) 
 
     # Removes every widget from the passed frame
     def removeScreen(self): 
