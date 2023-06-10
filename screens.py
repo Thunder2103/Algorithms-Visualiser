@@ -1,6 +1,7 @@
 import tkinter as tk 
 from tkinter import ttk
 from abc import ABC, abstractmethod
+import random
 
 # If the file is run as is message is returned and program exits
 if(__name__ == "__main__"): 
@@ -169,7 +170,7 @@ class Searching(Screen):
             .pack(pady = (2, 0), padx = 8, anchor = "e")
 
         # Randomly generate new array
-        tk.Button(optionsFrame, text = "Generate.", relief = "solid", font = ("Arial", 12), width = 12, command = self.placeholder)\
+        tk.Button(optionsFrame, text = "Generate.", relief = "solid", font = ("Arial", 12), width = 12, command = lambda: self.randomAdd(layout))\
             .pack(pady = (15,0), padx = 12)
 
         # Frame to store Clear and Delete buttons allows them to be arranged in a grid layout
@@ -225,7 +226,7 @@ class Searching(Screen):
         displayFrame = layout.getdisplayFrame()
         # Stored as attribute so it can be accessed by add(), randomAdd(), deleteElement() and clearArray() methods
         self.arrayFrame = tk.Frame(displayFrame, bg = "White")
-        self.arrayFrame.pack()
+        self.arrayFrame.pack(pady = 15)
         
     # When the slider has changed value a label is added with the relevant speed
     def intToSpeed(self, value): 
@@ -253,26 +254,44 @@ class Searching(Screen):
         # By default border colour is set to red - signifies user has not entered an integer
         borderColour = "red"
         # if string user inputted is a number
-        if(element.isnumeric()):  
+        if(element.isnumeric() and self.arrayFrame.winfo_width() < (displayFrame.winfo_width() - 50)):  
             # The length of the integer array is used to decide what column the element is stored in arrayFrame
             elementColumn = len(self.intArray)
             # label containing element, added to next column of array frame
             label = tk.Label(self.arrayFrame, text = element, font = ("Arial", 12), bg = "white")
-            if(self.arrayFrame.winfo_width() + label.winfo_width() > displayFrame.winfo_width() - 50):    
-                label.destroy() 
-            else:
-                # adds label with element to the window
-                label.grid(row = 0, column = elementColumn, pady = 15) 
-                 # set border colour to black
-                borderColour = "black"
-                # Cast string to int and add to array
-                self.intArray.append(int(element))
-                #clears textbox when number is successfully added
-                textbox.delete(0, tk.END) 
-            # updates width of array frame - important to prevent array from extending past display Frame
-            self.view.updateIdleTasks()
-        # Sets border colour of textbox - easy way to tell user if what they inputted was valid or not 
+            # adds label with element to the window
+            label.grid(row = 0, column = elementColumn) 
+            # set border colour to black
+            borderColour = "black"
+            # Cast string to int and add to array
+            self.intArray.append(int(element))
+            #clears textbox when number is successfully added
+            textbox.delete(0, tk.END) 
+        # updates width of array frame - important to prevent array from extending past display Frame
+        self.view.updateIdleTasks()
+        # Sets border colour of textbox - easy way to tell user if what they inputted was valid or not  
         textbox.config(highlightbackground = borderColour, highlightcolor= borderColour) 
+    
+    def randomAdd(self, layout):
+        # call function to clear array otherwise stuff will get messef up
+        
+        # Needed to check if array is within bounds of the display frame
+        displayFrame = layout.getdisplayFrame()
+        i = 0
+        arraySize = random.randint(5, 75) 
+
+        while(i < arraySize and self.arrayFrame.winfo_width() < displayFrame.winfo_width() - 50):
+            element = random.randint(0, 100)
+            self.intArray.append(element)
+            tk.Label(self.arrayFrame, text = element, bg = "white", font = ("Arial", 12)).grid(row = 0, column = i)
+            self.view.updateIdleTasks()
+            i += 1  
+        
+        print(self.arrayFrame.winfo_width())
+
+
+
+
     
         
 
