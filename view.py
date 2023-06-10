@@ -67,8 +67,8 @@ class View():
         for widget in self.contentFrame.winfo_children():
             widget.destroy()
         
-    def updateIdleTasks(self):
-        self.window.update_idletasks()
+    def update(self):
+        self.window.update()
     
     def getFrameHeight(self):
         return self.frameHeight 

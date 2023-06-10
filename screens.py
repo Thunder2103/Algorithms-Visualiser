@@ -42,7 +42,7 @@ class SharedLayout(Screen):
         homeFrame.pack_propagate(False)
 
         # Updates widths - used to calculate other widgets widths
-        self.view.updateIdleTasks()
+        self.view.update()
       
         # Creates and places button in the centre of the frame
         tk.Button(homeFrame, text = "Home", font = ("Arial", 12), width = 7, height = 1, borderwidth = 2, relief = "solid",\
@@ -55,7 +55,7 @@ class SharedLayout(Screen):
         algorithmBorder.pack(side = "right", anchor = "n")
 
         # Updates widths - used to calculate other widgets widths
-        self.view.updateIdleTasks()
+        self.view.update()
 
         # This frame will be where the array is displayed.
         # And and displays the algorithms steps
@@ -68,7 +68,7 @@ class SharedLayout(Screen):
         self.algorithmInfoFrame.grid(row = 2, column = 0, padx = 2, pady = 2) 
     
         # Updates widths
-        self.view.updateIdleTasks()
+        self.view.update()
 
     # getter methods, so Sorting and Searching Screens can place widgets
     def getOptionsFrame(self):
@@ -178,11 +178,11 @@ class Searching(Screen):
         clearDeleteFrame.pack(pady = (15,0))
 
         # Allows user to clear the array
-        tk.Button(clearDeleteFrame, text = "Clear.", relief = "solid", font = ("Arial", 12), width = 7, command = self.placeholder)\
+        tk.Button(clearDeleteFrame, text = "Clear.", relief = "solid", font = ("Arial", 12), width = 7, command = self.clearArray)\
             .grid(row = 0, column = 0, padx = 11)
 
         # Allows user to delete a single element from the end of the array
-        tk.Button(clearDeleteFrame, text = "Delete.", relief = "solid", font = ("Arial", 12), width = 7, command = self.placeholder)\
+        tk.Button(clearDeleteFrame, text = "Delete.", relief = "solid", font = ("Arial", 12), width = 7, command = self.deleteElement)\
             .grid(row = 0, column = 1, padx = 11)
 
         # Textbox, let's user choose what the search algorithms look for
@@ -246,21 +246,27 @@ class Searching(Screen):
         textbox.unbind("<Button-1>") 
 
     # Adds user typed element to the array
-    def add(self, layout, textbox):
+    def add(self, layout, textbox): 
+        # Offset leaves blank space between array and frame 
+        offset = 60
         # Needed to check if array is within bounds of the display frame
         displayFrame = layout.getdisplayFrame()
         # Value user entered 
         element = textbox.get()
         # By default border colour is set to red - signifies user has not entered an integer
         borderColour = "red"
-        # if string user inputted is a number
-        if(element.isnumeric() and self.arrayFrame.winfo_width() < (displayFrame.winfo_width() - 50)):  
+        # if string user inputted is a number and array is still within bounds 
+        if(element.isnumeric() and self.arrayFrame.winfo_width() < displayFrame.winfo_width() - offset):  
             # The length of the integer array is used to decide what column the element is stored in arrayFrame
             elementColumn = len(self.intArray)
+            # If the array has more than one element, add comma to the previous element
+            if(elementColumn > 0): 
+                # Gets the last element stored in the array frame
+                previousElement = self.arrayFrame.winfo_children()[-1]
+                # adds comma to the element
+                previousElement.config(text = previousElement.cget("text") + ",")
             # label containing element, added to next column of array frame
-            label = tk.Label(self.arrayFrame, text = element, font = ("Arial", 12), bg = "white")
-            # adds label with element to the window
-            label.grid(row = 0, column = elementColumn) 
+            tk.Label(self.arrayFrame, text = element, font = ("Arial", 11), bg = "white").grid(row = 0, column = elementColumn) 
             # set border colour to black
             borderColour = "black"
             # Cast string to int and add to array
@@ -268,26 +274,75 @@ class Searching(Screen):
             #clears textbox when number is successfully added
             textbox.delete(0, tk.END) 
         # updates width of array frame - important to prevent array from extending past display Frame
-        self.view.updateIdleTasks()
+        self.view.update()
         # Sets border colour of textbox - easy way to tell user if what they inputted was valid or not  
         textbox.config(highlightbackground = borderColour, highlightcolor= borderColour) 
     
     def randomAdd(self, layout):
-        # call function to clear array otherwise stuff will get messef up
-        
+         # Offset leaves blank space between array and frame 
+        offset = 60
+        if(len(self.intArray) > 0):
+            self.clearArray()
         # Needed to check if array is within bounds of the display frame
         displayFrame = layout.getdisplayFrame()
-        i = 0
+        # keeps track of columns 
+        i = 0 
+        # Randomly give array a size
         arraySize = random.randint(5, 75) 
-
-        while(i < arraySize and self.arrayFrame.winfo_width() < displayFrame.winfo_width() - 50):
-            element = random.randint(0, 100)
-            self.intArray.append(element)
-            tk.Label(self.arrayFrame, text = element, bg = "white", font = ("Arial", 12)).grid(row = 0, column = i)
-            self.view.updateIdleTasks()
-            i += 1  
         
-        print(self.arrayFrame.winfo_width())
+        while(i < arraySize and self.arrayFrame.winfo_width() < displayFrame.winfo_width() - offset):
+            # Randomly create element between 1 and 100
+            element = random.randint(0, 100)
+            # Add element to ineteger array
+            self.intArray.append(element)
+            # Adds label on screen containing new element
+            label = tk.Label(self.arrayFrame, text = f'{element},', bg = "white", font = ("Arial", 11))
+            label.grid(row = 0, column = i)
+            # Update widths of widgets
+            self.view.update()
+            i += 1  
+        # Remove comma from last element 
+        self.removeComma(label)
+        self.view.update() 
+    
+    # Removes all elements from the array and the array frame
+    def clearArray(self): 
+        # loop through frame and removes all widgets
+        for widget in self.arrayFrame.winfo_children():
+            widget.destroy()
+        # Clear array
+        self.intArray.clear() 
+        # Reset width of array frame
+        self.arrayFrame.config(width = 1) 
+        # updates new width of frame
+        self.view.update() 
+    
+    def deleteElement(self): 
+        arraySize = len(self.intArray)
+        # Does nothing if array is empty
+        if(arraySize == 0): return 
+        # Remove last element from the array
+        self.intArray.pop() 
+        # get last element from array frame
+        lastElement = self.arrayFrame.winfo_children()[-1] 
+        # If the array is now empty set width of array frame to 1
+        if(arraySize == 0): self.arrayFrame.config(width = 1) 
+        # Adjust array frames width by subtracting width of the element label 
+        # from the current width of the array frame
+        else: self.arrayFrame.config(width = self.arrayFrame.winfo_width() - lastElement.winfo_width())   
+        # Remove element
+        lastElement.destroy()
+        # removes comma from the new last element
+        if(arraySize > 1): self.removeComma(self.arrayFrame.winfo_children()[-1])
+        # Updates width
+        self.view.update() 
+    
+    def removeComma(self, elementLabel):
+        # Remove comma from last element 
+        elementLabel.config(text = elementLabel.cget("text")[:-1]) 
+
+
+
 
 
 
