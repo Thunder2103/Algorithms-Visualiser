@@ -22,8 +22,8 @@ class View():
     def create(self):
         # Dimensions for the frame all widgets stored in
         # Stored as attributes so they can be accessed by other objects later
-        self.frameWidth = self.width - 15
-        self.frameHeight = self.height - 15
+        self.frameWidth = self.width - 20
+        self.frameHeight = self.height - 20
         
         # Declaring window
         self.window = tk.Tk()
@@ -39,10 +39,14 @@ class View():
         #changed window colour to grey 
         # gives window solid black border
         self.window.config(bg = "#CCCCCC", borderwidth = 2, relief = "solid")
+        
+        # This gives the appearance that the content frame has a border
+        # There are built in hyperparamters for adding a border but this caused issues with widgets being centred
+        tk.Frame(self.window, bg = "black", width = self.frameWidth + 4, height = self.frameHeight + 4).place(relx = 0.5, rely = 0.5, anchor = "center")
 
         # Declaring and customising the frame
         # This is where all the displayed content 
-        self.contentFrame = tk.Frame(self.window, height = self.frameHeight, width = self.frameWidth, borderwidth = 2, relief = "solid", bg = "white")
+        self.contentFrame = tk.Frame(self.window, height = self.frameHeight, width = self.frameWidth, bg = "white")
         
         # Makes the frame centred in the GUI window
         self.contentFrame.place(relx = 0.5, rely = 0.5, anchor = "center")
@@ -63,8 +67,12 @@ class View():
         for widget in self.contentFrame.winfo_children():
             widget.destroy()
         
+    def updateIdleTasks(self):
+        self.window.update_idletasks()
+    
     def getFrameHeight(self):
         return self.frameHeight 
 
     def getFrameWidth(self):
-        return self.frameWidth
+        return self.frameWidth 
+    

@@ -25,50 +25,61 @@ class SharedLayout(Screen):
         contentFrameWidth = self.view.getFrameWidth()
         
         # This frame holds all the widgets, it uses grid so that all the other frames can easily be positioned
-        # It is given a background of black to give the appearence that the different frames have borders preventing overlap issues
-        OptionsHomeFrame = tk.Frame(contentFrame, bg = "black")
-        OptionsHomeFrame.pack(side = "left", anchor = "n")
+        # It is given a background of black to give the appearence that the different frames have borders, this prevents overlap issues
+        OptionsHomeBorder = tk.Frame(contentFrame, bg = "black")
+        OptionsHomeBorder.pack(side = "left", anchor = "n")
 
         # Frame to store options users can interact with
-        self.options = tk.Frame(OptionsHomeFrame, height = contentFrameHeight - 75, width = contentFrameWidth - 535, bg = "white")
-        self.options.grid(row = 0, column = 0) 
-        self.options.pack_propagate(False)
-    
+        self.optionsFrame = tk.Frame(OptionsHomeBorder, height = contentFrame.winfo_height() - 50, width = 195, bg = "white")
+        self.optionsFrame.grid(row = 0, column = 0) 
+        self.optionsFrame.pack_propagate(False)
+
         # Frame to store button to redirect user back to the Introduction Screen
-        home = tk.Frame(OptionsHomeFrame, height = 75, width = contentFrameWidth - 535, bg = "white")
-        home.grid(row = 1, column = 0, pady = 2)
-        home.pack_propagate(False)
-        
+        homeFrame = tk.Frame(OptionsHomeBorder, height = 50, \
+            width = 195, bg = "white")
+        homeFrame.grid(row = 1, column = 0, pady = 2)
+        homeFrame.pack_propagate(False)
+
+        # Updates widths - used to calculate other widgets widths
+        self.view.updateIdleTasks()
+      
         # Creates and places button in the centre of the frame
-        tk.Button(home, text = "Home", font = ("Arial", 12), width = 10, height = 2, borderwidth = 2, relief = "solid",\
+        tk.Button(homeFrame, text = "Home", font = ("Arial", 12), width = 7, height = 1, borderwidth = 2, relief = "solid",\
              command = lambda: [self.view.removeScreen(), self.view.addScreen(Introduction(self.view))])\
                 .place(relx = 0.5, rely = 0.5, anchor = "center") 
 
         # This frame holds all the widgets, it used grid so that all the other frames can easily be positioned
-        # It is given a background of black to give the appearence that the different frames have borders preventing overlap issues
-        algorithmFrame = tk.Frame(contentFrame, bg = "black")
-        algorithmFrame.pack(side = "right", anchor = "n")
+        # It is given a background of black to give the appearence that the different frames have borders, this prevents overlap issues
+        algorithmBorder = tk.Frame(contentFrame, bg = "black")
+        algorithmBorder.pack(side = "right", anchor = "n")
+
+        # Updates widths - used to calculate other widgets widths
+        self.view.updateIdleTasks()
 
         # This frame will be where the array is displayed.
         # And and displays the algorithms steps
-        self.arrayDisplay = tk.Frame(algorithmFrame, height = contentFrameHeight // 2, width = contentFrameWidth - 200, bg = "white")
-        self.arrayDisplay.grid(row = 0, column = 0, padx = 2) 
+        self.displayFrame = tk.Frame(algorithmBorder, height = contentFrameHeight // 2, width = contentFrameWidth - self.optionsFrame.winfo_width() + 4, bg = "white")
+        self.displayFrame.grid(row = 0, column = 0, padx = 2) 
+        self.displayFrame.pack_propagate(False)
         
         # This frame will be where information on the algorithm will be displayed
-        self.algorithmInfoFrame = tk.Frame(algorithmFrame, height = contentFrameHeight // 2, width = contentFrameWidth - 200, bg = "white")
+        self.algorithmInfoFrame = tk.Frame(algorithmBorder, height = contentFrameHeight // 2, width = contentFrameWidth - 190, bg = "white")
         self.algorithmInfoFrame.grid(row = 2, column = 0, padx = 2, pady = 2) 
+    
+        # Updates widths
+        self.view.updateIdleTasks()
 
     # getter methods, so Sorting and Searching Screens can place widgets
     def getOptionsFrame(self):
-        return self.options 
+        return self.optionsFrame 
     
-    def getArrayFrame(self):
-        return self.arrayDisplay
+    def getdisplayFrame(self):
+        return self.displayFrame
     
     def getAlgorithmInfoFrame(self):
         return self.algorithmInfoFrame 
     
-# Ideally this should be first screen the user sees 
+# Ideally this should be the first screen the user sees 
 class Introduction(Screen):
     def __init__(self, view):
         # Stores reference to view object - so clearScreen() function can be called
@@ -112,7 +123,7 @@ class Searching(Screen):
         self.view = view  
 
         #array to be searched
-        self.array = []
+        self.intArray = []
 
         # Object stores the dictionary pairing numbers to speed
         # This allows the slider to show "Small", "Medium" and "Fast" instead of 0, 1, 2
@@ -126,14 +137,17 @@ class Searching(Screen):
         # Creating the basic layout of the Sorting Screen
         layout = SharedLayout(self.view)
         layout.createLayout(contentFrame) 
-
-        # Getting relevant frames
-        optionsFrame = layout.getOptionsFrame() 
-        arrayFrame = layout.getArrayFrame()
-        algorithmInfoFrame = layout.getAlgorithmInfoFrame()
+        # Creating and displaying options
+        self.createOptions(layout)
+        # intitalises the frame that shows all the elements the array includes
+        self.createArrayFrame(layout)
         
+    # This functions handles creating and displaying the options the user is presented with
+    def createOptions(self, layout):
+        # getting relevant frame 
+        optionsFrame = layout.getOptionsFrame()
         #combo box, allows the user to choose what algorithm they want
-        algorithmOptions = ttk.Combobox(optionsFrame, textvariable = tk.StringVar(), state = "readonly", width = 17, font = ("Arial", 13))
+        algorithmOptions = ttk.Combobox(optionsFrame, textvariable = tk.StringVar(), state = "readonly", width = 17, font = ("Arial", 12))
         algorithmOptions['value'] = ('1',
                                      '2', 
                                      '3', 
@@ -142,7 +156,7 @@ class Searching(Screen):
         algorithmOptions.pack(pady = (10,0))
                 
         # Textbox allows user to enter a number to be added
-        addElement = tk.Entry(optionsFrame, font = ("Arial italic", 13),width = 19,\
+        addElement = tk.Entry(optionsFrame, font = ("Arial italic", 12),width = 19,\
              highlightthickness = 2, highlightbackground = "black", highlightcolor= "black")
         # Default text
         addElement.insert(0, "Click to enter element.")
@@ -151,11 +165,11 @@ class Searching(Screen):
         addElement.pack(pady = (15,0)) 
         
         # Button - confirm element to be added
-        tk.Button(optionsFrame, text = "Add.", width = 7, font = ("Arial", 11), relief = "solid", command = lambda: self.add(addElement, addElement.get()))\
-            .pack(pady = (2, 0), padx = 12, anchor = "e")
+        tk.Button(optionsFrame, text = "Add.", width = 7, font = ("Arial", 11), relief = "solid", command = lambda: self.add(layout, addElement))\
+            .pack(pady = (2, 0), padx = 8, anchor = "e")
 
         # Randomly generate new array
-        tk.Button(optionsFrame, text = "Generate.", relief = "solid", font = ("Arial", 12), width = 13, command = self.placeholder)\
+        tk.Button(optionsFrame, text = "Generate.", relief = "solid", font = ("Arial", 12), width = 12, command = self.placeholder)\
             .pack(pady = (15,0), padx = 12)
 
         # Frame to store Clear and Delete buttons allows them to be arranged in a grid layout
@@ -163,15 +177,16 @@ class Searching(Screen):
         clearDeleteFrame.pack(pady = (15,0))
 
         # Allows user to clear the array
-        tk.Button(clearDeleteFrame, text = "Clear.", relief = "solid", font = ("Arial", 11), width = 7, command = self.placeholder)\
+        tk.Button(clearDeleteFrame, text = "Clear.", relief = "solid", font = ("Arial", 12), width = 7, command = self.placeholder)\
             .grid(row = 0, column = 0, padx = 11)
 
         # Allows user to delete a single element from the end of the array
-        tk.Button(clearDeleteFrame, text = "Delete.", relief = "solid", font = ("Arial", 11), width = 7, command = self.placeholder)\
+        tk.Button(clearDeleteFrame, text = "Delete.", relief = "solid", font = ("Arial", 12), width = 7, command = self.placeholder)\
             .grid(row = 0, column = 1, padx = 11)
 
         # Textbox, let's user choose what the search algorithms look for
-        targetInput = tk.Entry(optionsFrame, width = 19, font = ("Arial italic", 13), relief = "solid")
+        targetInput = tk.Entry(optionsFrame, width = 19, font = ("Arial italic", 12), \
+            highlightthickness = 2, highlightbackground = "black", highlightcolor= "black")
         # Default text
         targetInput.insert(0, "Click to enter target.") 
         # Binds event to textbox, deleteDefaultText() is called when the textbox is clicked
@@ -179,8 +194,8 @@ class Searching(Screen):
         targetInput.pack(pady = (15,0), padx = 5) 
 
         # Button - confirms target
-        tk.Button(optionsFrame, text = "Target.", width = 7, font = ("Arial", 11), relief = "solid", command = self.placeholder)\
-            .pack(pady = (2, 0), padx = 12, anchor = "e")
+        tk.Button(optionsFrame, text = "Set target.", width = 9, font = ("Arial", 11), relief = "solid", command = self.placeholder)\
+            .pack(pady = (2, 0), padx = 8, anchor = "e")
             
         # Creates a slider that goes 0 to 1 then 2
         # It has three options correlating to the three speeds; slow, medium, fast 
@@ -192,25 +207,33 @@ class Searching(Screen):
         self.speedSlider.config(label = "Slow") 
 
         # Makes sure there is enough space for extra options
-        tk.Label(optionsFrame, text = "Filler for extra options", font = ("Arial", 13)).pack(pady = 15)
+        tk.Label(optionsFrame, text = "Filler for extra options", font = ("Arial", 12)).pack(pady = 15)
 
         # Frame to store stop and solve buttons in a grid layout
         stopSolveFrame = tk.Frame(optionsFrame, bg = "white")
         stopSolveFrame.pack(side = "bottom")
         # Allows user to see the algorithm in action
-        tk.Button(stopSolveFrame, text = "Solve.", width = 7, relief = "solid", font = ("Arial", 13), command = self.placeholder)\
+        tk.Button(stopSolveFrame, text = "Solve.", width = 7, relief = "solid", font = ("Arial", 12), command = self.placeholder)\
             .grid(row = 0, column = 0, pady = (0,15), padx = 11) 
         # Allows user to stop algorithm whilst it's running - button is initially disabled
-        tk.Button(stopSolveFrame, text = "Stop.", width = 7, relief = "solid", font = ("Arial", 13), state = "disabled", command = self.placeholder)\
-            .grid(row = 0, column = 1, pady = (0,15), padx = 11) 
-
+        tk.Button(stopSolveFrame, text = "Stop.", width = 7, relief = "solid", font = ("Arial", 12), state = "disabled", command = self.placeholder)\
+            .grid(row = 0, column = 1, pady = (0,10), padx = 11) 
+    
+    # Creates the frame that stores the numbers in the array
+    # A seperate frame is used as it will be easier to prevent the array from extending past displayFrame
+    def createArrayFrame(self, layout):
+        displayFrame = layout.getdisplayFrame()
+        # Stored as attribute so it can be accessed by add(), randomAdd(), deleteElement() and clearArray() methods
+        self.arrayFrame = tk.Frame(displayFrame, bg = "White")
+        self.arrayFrame.pack()
+        
     # When the slider has changed value a label is added with the relevant speed
     def intToSpeed(self, value): 
         self.speedSlider.config(label = self.numbersToSpeed[int(value)])  
     
     # Placeholder function, just prints the array
     def placeholder(self):
-        print(self.array) 
+        print(self.intArray) 
 
     # Input texboxes have default text
     # When a textbox is clicked for the first time the default text is deleted
@@ -221,21 +244,36 @@ class Searching(Screen):
         # Unbind event - so user input isn't deleted whenever they click the textbox
         textbox.unbind("<Button-1>") 
 
-    # Adds user types element to array
-    def add(self, textbox, element):
+    # Adds user typed element to the array
+    def add(self, layout, textbox):
+        # Needed to check if array is within bounds of the display frame
+        displayFrame = layout.getdisplayFrame()
+        # Value user entered 
+        element = textbox.get()
         # By default border colour is set to red - signifies user has not entered an integer
         borderColour = "red"
-        # if string user inputted is a nuumber
-        if(element.isnumeric()): 
-            # set border colour to black
-            borderColour = "black"
-            # Cast string to int and add to array
-            self.array.append(int(element))
-            #clears textbox when number is successfully added
-            textbox.delete(0, tk.END)
-        
+        # if string user inputted is a number
+        if(element.isnumeric()):  
+            # The length of the integer array is used to decide what column the element is stored in arrayFrame
+            elementColumn = len(self.intArray)
+            # label containing element, added to next column of array frame
+            label = tk.Label(self.arrayFrame, text = element, font = ("Arial", 12), bg = "white")
+            if(self.arrayFrame.winfo_width() + label.winfo_width() > displayFrame.winfo_width() - 50):    
+                label.destroy() 
+            else:
+                # adds label with element to the window
+                label.grid(row = 0, column = elementColumn, pady = 15) 
+                 # set border colour to black
+                borderColour = "black"
+                # Cast string to int and add to array
+                self.intArray.append(int(element))
+                #clears textbox when number is successfully added
+                textbox.delete(0, tk.END) 
+            # updates width of array frame - important to prevent array from extending past display Frame
+            self.view.updateIdleTasks()
         # Sets border colour of textbox - easy way to tell user if what they inputted was valid or not 
-        textbox.config(highlightbackground = borderColour, highlightcolor= borderColour)
+        textbox.config(highlightbackground = borderColour, highlightcolor= borderColour) 
+    
         
 
 
