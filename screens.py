@@ -11,31 +11,37 @@ if(__name__ == "__main__"):
 # Abstract class - every screen must implement the layout method
 class Screen(ABC):
     @abstractmethod
-    def createLayout(self, contentFrame):
+    def createLayout(self):
         pass 
 
 # Searching and Sorting Screens both use the same basic layout
 # This class delegates the reponsiblity of creating the basic layout
 class SharedLayout(Screen):
     def __init__(self, view):
+        # Stores reference to view object
         self.view = view 
+        # Preferred font 
+        self.FONT = "Arial"
     
-    def createLayout(self, contentFrame):
-        # Python OOP doesn't have private attributes but using getter functions make it easier to read
-        contentFrameHeight = self.view.getFrameHeight()
-        contentFrameWidth = self.view.getFrameWidth()
+    def createLayout(self):
+        # Get content Frame to store all widgets
+        contentFrame = self.view.getContentFrame()
+        # Get content frames width and height
+        contentFrameHeight = self.view.getContentFrameHeight()
+        contentFrameWidth = self.view.getContentFrameWidth()
         
-        # This frame holds all the widgets, it uses grid so that all the other frames can easily be positioned
-        # It is given a background of black to give the appearence that the different frames have borders, this prevents overlap issues
+        # This black frame will give the appearence that every frame inside it has a border - prevents overlapping issues
         OptionsHomeBorder = tk.Frame(contentFrame, bg = "black")
         OptionsHomeBorder.pack(side = "left", anchor = "n")
 
-        # Frame to store options users can interact with
+        # Frame to store options users can interact with 
+        # The size of the frame is calculated using the fixed size of the home frame
         self.optionsFrame = tk.Frame(OptionsHomeBorder, height = contentFrame.winfo_height() - 50, width = 195, bg = "white")
         self.optionsFrame.grid(row = 0, column = 0) 
         self.optionsFrame.pack_propagate(False)
 
-        # Frame to store button to redirect user back to the Introduction Screen
+        # Frame to store button to redirect user back to the Introduction Screen 
+        # This frame is always a fixed size, this is used to calculate the size of the options frame
         homeFrame = tk.Frame(OptionsHomeBorder, height = 50, \
             width = 195, bg = "white")
         homeFrame.grid(row = 1, column = 0, pady = 2)
@@ -45,28 +51,34 @@ class SharedLayout(Screen):
         self.view.update()
       
         # Creates and places button in the centre of the frame
-        tk.Button(homeFrame, text = "Home", font = ("Arial", 12), width = 7, height = 1, borderwidth = 2, relief = "solid",\
+        tk.Button(homeFrame, text = "Home", font = (self.FONT, 12), width = 7, height = 1, borderwidth = 2, relief = "solid",\
              command = lambda: [self.view.removeScreen(), self.view.addScreen(Introduction(self.view))])\
                 .place(relx = 0.5, rely = 0.5, anchor = "center") 
 
-        # This frame holds all the widgets, it used grid so that all the other frames can easily be positioned
-        # It is given a background of black to give the appearence that the different frames have borders, this prevents overlap issues
+        # This black frame will give the appearence that every frame inside it has a border - prevents overlapping issues
         algorithmBorder = tk.Frame(contentFrame, bg = "black")
         algorithmBorder.pack(side = "right", anchor = "n")
 
         # Updates widths - used to calculate other widgets widths
         self.view.update()
 
-        # This frame will be where the array is displayed.
-        # And and displays the algorithms steps
-        self.displayFrame = tk.Frame(algorithmBorder, height = contentFrameHeight // 2, width = contentFrameWidth - self.optionsFrame.winfo_width() + 4, bg = "white")
-        self.displayFrame.grid(row = 0, column = 0, padx = 2) 
-        self.displayFrame.pack_propagate(False)
-        
-        # This frame will be where information on the algorithm will be displayed
-        self.algorithmInfoFrame = tk.Frame(algorithmBorder, height = contentFrameHeight // 2, width = contentFrameWidth - 190, bg = "white")
-        self.algorithmInfoFrame.grid(row = 2, column = 0, padx = 2, pady = 2) 
-    
+        # Height of the canvas and algorithm info frame 
+        # Minus two takes into account the two pixels used by the border frame
+        canvasFrameHeight = (contentFrameHeight // 2) - 2
+        # Width of the canvas and the border
+        # Minus six takes into account the 6 pixels used taken up by the border frames
+        canvasFrameWidth = (contentFrameWidth - self.optionsFrame.winfo_width()) - 6
+
+        # This canvas will be where the array is displayed.    
+        self.arrayCanvas = tk.Canvas(algorithmBorder, height = canvasFrameHeight, width = canvasFrameWidth, bg = "white") 
+        self.arrayCanvas.grid(row = 0, column = 0, padx = 2)
+        self.arrayCanvas.pack_propagate(False)
+
+        # This frame will be where information on the algorithm will be displayed 
+        self.algorithmInfoFrame = tk.Frame(algorithmBorder, height = canvasFrameHeight, width = canvasFrameWidth + 4, bg = "white")
+        self.algorithmInfoFrame.grid(row = 1, column = 0, pady = 2, padx = 2) 
+        self.algorithmInfoFrame.pack_propagate(False)
+       
         # Updates widths
         self.view.update()
 
@@ -74,8 +86,8 @@ class SharedLayout(Screen):
     def getOptionsFrame(self):
         return self.optionsFrame 
     
-    def getdisplayFrame(self):
-        return self.displayFrame
+    def getArrayCanvas(self):
+        return self.arrayCanvas
     
     def getAlgorithmInfoFrame(self):
         return self.algorithmInfoFrame 
@@ -83,10 +95,13 @@ class SharedLayout(Screen):
 # Ideally this should be the first screen the user sees 
 class Introduction(Screen):
     def __init__(self, view):
-        # Stores reference to view object - so clearScreen() function can be called
+        # Stores reference to view object
         self.view = view
+        self.FONT = "Arial"
 
-    def createLayout(self, contentFrame):
+    def createLayout(self):
+        # Get content Frame to store all widgets
+        contentFrame = self.view.getContentFrame()
         # The introductory text is kept as a string 
         # as it makes it easier to change (and makes code easier to read)
         introText = "This program visualises different algorithms in a user friendly way. \n\
@@ -94,11 +109,11 @@ class Introduction(Screen):
         Press one of the buttons to start."
 
         # Header label
-        tk.Label(contentFrame, text = "Welcome to Algorithms Anonymous.", font = ("Arial", 18, "underline"), bg = "white")\
+        tk.Label(contentFrame, text = "Welcome to Algorithms Anonymous.", font = (self.FONT, 18, "underline"), bg = "white")\
             .pack(pady = 10)
 
         # Label that contains the introduction text
-        tk.Label(contentFrame, text = introText, font = ("Arial", 14), justify = "center", bg = "white")\
+        tk.Label(contentFrame, text = introText, font = (self.FONT, 14), justify = "center", bg = "white")\
             .pack(pady = 5)
 
         # Adds a frame for the buttons widgets 
@@ -106,13 +121,13 @@ class Introduction(Screen):
         buttonsFrame = tk.Frame(contentFrame, bg = "white")
         buttonsFrame.pack()
 
-        tk.Button(buttonsFrame, text = "Tree Traversal", font = ("Arial", 12), height = 2, width = 15, relief = "solid")\
+        tk.Button(buttonsFrame, text = "Tree Traversal", font = (self.FONT, 12), height = 2, width = 15, relief = "solid")\
             .pack(pady = (25, 0)) 
 
-        tk.Button(buttonsFrame, text = "Searching",  font = ("Arial", 12), height = 2, width = 15, relief = "solid", \
+        tk.Button(buttonsFrame, text = "Searching",  font = (self.FONT, 12), height = 2, width = 15, relief = "solid", \
                 command = lambda : [self.view.removeScreen(), self.view.addScreen(Searching(self.view))]).pack(side = "left", pady = 15, padx = (100, 0))
 
-        tk.Button(buttonsFrame, text = "Sorting",  font = ("Arial", 12), height = 2, width = 15, relief = "solid",\
+        tk.Button(buttonsFrame, text = "Sorting",  font = (self.FONT, 12), height = 2, width = 15, relief = "solid",\
                 command = lambda : self.view.removeScreen()).pack(side = "left", padx = 100) 
 
         tk.Label(contentFrame, text = "Created by Thomas Gibson", bg = "white", justify = "left")\
@@ -120,11 +135,14 @@ class Introduction(Screen):
 
 class Searching(Screen):
     def __init__(self, view):
-         # Stores reference to view object - so clearScreen() function can be called
+         # Stores reference to view object
         self.view = view  
-
+        
+        # Font every widget uses 
+        self.FONT = "Arial"
+        
         #array to be searched
-        self.intArray = []
+        self.array = []
 
         # Object stores the dictionary pairing numbers to speed
         # This allows the slider to show "Small", "Medium" and "Fast" instead of 0, 1, 2
@@ -132,23 +150,38 @@ class Searching(Screen):
             0: "Slow",
             1: "Medium",
             2: "Fast"
-        }  
-       
-    def createLayout(self, contentFrame):
-        # Creating the basic layout of the Sorting Screen
-        layout = SharedLayout(self.view)
-        layout.createLayout(contentFrame) 
+        }   
+
+        # How big each bar is
+        self.barWidth = 5
+        # Distance between each bar 
+        self.barDist = 2 
+
+    def createLayout(self):
+        # Creating instance of shared layout object
+        self.layout = SharedLayout(self.view) 
+        
+        # Get content Frame to store all widgets
+        contentFrame = self.view.getContentFrame()
+        
+        # Creates basic layout
+        self.layout.createLayout() 
+        
         # Creating and displaying options
-        self.createOptions(layout)
-        # intitalises the frame that shows all the elements the array includes
-        self.createArrayFrame(layout)
+        self.createOptions() 
+
+        # Calculates largest number that can be displayed on screen
+        self.largestNumber = self.calculateLargestNumber()
+        
+        # Calculates spacing between canvas border and displayed array 
+        self.padding = self.calculatePadding()
         
     # This functions handles creating and displaying the options the user is presented with
-    def createOptions(self, layout):
-        # getting relevant frame 
-        optionsFrame = layout.getOptionsFrame()
+    def createOptions(self):
+        # get options frame
+        optionsFrame = self.layout.getOptionsFrame()
         #combo box, allows the user to choose what algorithm they want
-        algorithmOptions = ttk.Combobox(optionsFrame, textvariable = tk.StringVar(), state = "readonly", width = 17, font = ("Arial", 12))
+        algorithmOptions = ttk.Combobox(optionsFrame, textvariable = tk.StringVar(), state = "readonly", width = 17, font = (self.FONT, 12))
         algorithmOptions['value'] = ('1',
                                      '2', 
                                      '3', 
@@ -157,7 +190,7 @@ class Searching(Screen):
         algorithmOptions.pack(pady = (10,0))
                 
         # Textbox allows user to enter a number to be added
-        addElement = tk.Entry(optionsFrame, font = ("Arial italic", 12),width = 19,\
+        addElement = tk.Entry(optionsFrame, font = (f'{self.FONT} italic', 12),width = 19,\
              highlightthickness = 2, highlightbackground = "black", highlightcolor= "black")
         # Default text
         addElement.insert(0, "Click to enter element.")
@@ -166,11 +199,11 @@ class Searching(Screen):
         addElement.pack(pady = (15,0)) 
         
         # Button - confirm element to be added
-        tk.Button(optionsFrame, text = "Add.", width = 7, font = ("Arial", 11), relief = "solid", command = lambda: self.add(layout, addElement))\
+        tk.Button(optionsFrame, text = "Add.", width = 7, font = (self.FONT, 11), relief = "solid", command = self.add)\
             .pack(pady = (2, 0), padx = 8, anchor = "e")
 
         # Randomly generate new array
-        tk.Button(optionsFrame, text = "Generate.", relief = "solid", font = ("Arial", 12), width = 12, command = lambda: self.randomAdd(layout))\
+        tk.Button(optionsFrame, text = "Generate.", relief = "solid", font = (self.FONT, 12), width = 12, command = self.randomAdd)\
             .pack(pady = (15,0), padx = 12)
 
         # Frame to store Clear and Delete buttons allows them to be arranged in a grid layout
@@ -178,15 +211,15 @@ class Searching(Screen):
         clearDeleteFrame.pack(pady = (15,0))
 
         # Allows user to clear the array
-        tk.Button(clearDeleteFrame, text = "Clear.", relief = "solid", font = ("Arial", 12), width = 7, command = self.clearArray)\
+        tk.Button(clearDeleteFrame, text = "Clear.", relief = "solid", font = (self.FONT, 12), width = 7, command = self.clear)\
             .grid(row = 0, column = 0, padx = 11)
 
         # Allows user to delete a single element from the end of the array
-        tk.Button(clearDeleteFrame, text = "Delete.", relief = "solid", font = ("Arial", 12), width = 7, command = self.deleteElement)\
+        tk.Button(clearDeleteFrame, text = "Delete.", relief = "solid", font = (self.FONT, 12), width = 7, command = self.delete)\
             .grid(row = 0, column = 1, padx = 11)
 
         # Textbox, let's user choose what the search algorithms look for
-        targetInput = tk.Entry(optionsFrame, width = 19, font = ("Arial italic", 12), \
+        targetInput = tk.Entry(optionsFrame, width = 19, font = (f'{self.FONT} italic', 12), \
             highlightthickness = 2, highlightbackground = "black", highlightcolor= "black")
         # Default text
         targetInput.insert(0, "Click to enter target.") 
@@ -195,7 +228,7 @@ class Searching(Screen):
         targetInput.pack(pady = (15,0), padx = 5) 
 
         # Button - confirms target
-        tk.Button(optionsFrame, text = "Set target.", width = 9, font = ("Arial", 11), relief = "solid", command = self.placeholder)\
+        tk.Button(optionsFrame, text = "Set target.", width = 9, font = (self.FONT, 11), relief = "solid", command = self.placeholder)\
             .pack(pady = (2, 0), padx = 8, anchor = "e")
             
         # Creates a slider that goes 0 to 1 then 2
@@ -208,154 +241,80 @@ class Searching(Screen):
         self.speedSlider.config(label = "Slow") 
 
         # Makes sure there is enough space for extra options
-        tk.Label(optionsFrame, text = "Filler for extra options", font = ("Arial", 12)).pack(pady = 15)
+        tk.Label(optionsFrame, text = "Filler for extra options", font = (self.FONT, 12)).pack(pady = 15)
 
         # Frame to store stop and solve buttons in a grid layout
         stopSolveFrame = tk.Frame(optionsFrame, bg = "white")
         stopSolveFrame.pack(side = "bottom")
         # Allows user to see the algorithm in action
-        tk.Button(stopSolveFrame, text = "Solve.", width = 7, relief = "solid", font = ("Arial", 12), command = self.placeholder)\
+        tk.Button(stopSolveFrame, text = "Solve.", width = 7, relief = "solid", font = (self.FONT, 12), command = self.placeholder)\
             .grid(row = 0, column = 0, pady = (0,15), padx = 11) 
         # Allows user to stop algorithm whilst it's running - button is initially disabled
-        tk.Button(stopSolveFrame, text = "Stop.", width = 7, relief = "solid", font = ("Arial", 12), state = "disabled", command = self.placeholder)\
-            .grid(row = 0, column = 1, pady = (0,10), padx = 11) 
-    
-    # Creates the frame that stores the numbers in the array
-    # A seperate frame is used as it will be easier to prevent the array from extending past displayFrame
-    def createArrayFrame(self, layout):
-        displayFrame = layout.getdisplayFrame()
-        # Stored as attribute so it can be accessed by add(), randomAdd(), deleteElement() and clearArray() methods
-        self.arrayFrame = tk.Frame(displayFrame, bg = "White")
-        self.arrayFrame.pack(pady = 15)
+        tk.Button(stopSolveFrame, text = "Stop.", width = 7, relief = "solid", font = (self.FONT, 12), state = "disabled", command = self.placeholder)\
+            .grid(row = 0, column = 1, pady = (0,15), padx = 11) 
         
     # When the slider has changed value a label is added with the relevant speed
     def intToSpeed(self, value): 
         self.speedSlider.config(label = self.numbersToSpeed[int(value)])  
     
-    # Placeholder function, just prints the array
-    def placeholder(self):
-        print(self.intArray) 
-
     # Input texboxes have default text
     # When a textbox is clicked for the first time the default text is deleted
     def deleteDefaultText(self, event, textbox):
         textbox.delete(0, tk.END)
         # Removes the italic font 
-        textbox.config(font = ("Arial")) 
+        textbox.config(font = (self.FONT)) 
         # Unbind event - so user input isn't deleted whenever they click the textbox
         textbox.unbind("<Button-1>") 
 
-    # Adds user typed element to the array
-    def add(self, layout, textbox): 
-        # Offset leaves blank space between array and frame 
-        offset = 60
-        # Needed to check if array is within bounds of the display frame
-        displayFrame = layout.getdisplayFrame()
-        # Value user entered 
-        element = textbox.get()
-        # By default border colour is set to red - signifies user has not entered an integer
-        borderColour = "red"
-        # if string user inputted is a number and array is still within bounds 
-        if(element.isnumeric() and self.arrayFrame.winfo_width() < displayFrame.winfo_width() - offset):  
-            # The length of the integer array is used to decide what column the element is stored in arrayFrame
-            elementColumn = len(self.intArray)
-            # If the array has more than one element, add comma to the previous element
-            if(elementColumn > 0): 
-                # Gets the last element stored in the array frame
-                previousElement = self.arrayFrame.winfo_children()[-1]
-                # adds comma to the element
-                previousElement.config(text = previousElement.cget("text") + ",")
-            # label containing element, added to next column of array frame
-            tk.Label(self.arrayFrame, text = element, font = ("Arial", 11), bg = "white").grid(row = 0, column = elementColumn) 
-            # set border colour to black
-            borderColour = "black"
-            # Cast string to int and add to array
-            self.intArray.append(int(element))
-            #clears textbox when number is successfully added
-            textbox.delete(0, tk.END) 
-        # updates width of array frame - important to prevent array from extending past display Frame
-        self.view.update()
-        # Sets border colour of textbox - easy way to tell user if what they inputted was valid or not  
-        textbox.config(highlightbackground = borderColour, highlightcolor= borderColour) 
+    # Adds the number if user typed to the array
+    def add(self): 
+        pass
     
-    def randomAdd(self, layout):
-         # Offset leaves blank space between array and frame 
-        offset = 60
-        if(len(self.intArray) > 0):
-            self.clearArray()
-        # Needed to check if array is within bounds of the display frame
-        displayFrame = layout.getdisplayFrame()
-        # keeps track of columns 
-        i = 0 
-        # Randomly give array a size
-        arraySize = random.randint(5, 75) 
-        
-        while(i < arraySize and self.arrayFrame.winfo_width() < displayFrame.winfo_width() - offset):
-            # Randomly create element between 1 and 100
-            element = random.randint(0, 100)
-            # Add element to ineteger array
-            self.intArray.append(element)
-            # Adds label on screen containing new element
-            label = tk.Label(self.arrayFrame, text = f'{element},', bg = "white", font = ("Arial", 11))
-            label.grid(row = 0, column = i)
-            # Update widths of widgets
-            self.view.update()
-            i += 1  
-        # Remove comma from last element 
-        self.removeComma(label)
-        self.view.update() 
+    # Generates a random array 
+    def randomAdd(self):
+        # Gets canvas
+        arrayCanvas = self.layout.getArrayCanvas() 
+        # Generates random array
+        # The maximum value is the one calculated from the calculateLargestNumber() method
+        self.array = [random.randint(1, self.largestNumber) for i in range(0, self.maxBars)]
+        for x,y in enumerate(self.array): 
+            x1 = x * self.barDist + x * self.barWidth + self.padding
+            y1 = arrayCanvas.winfo_height() - y 
+            x2 = x * self.barDist + x * self.barWidth + self.barWidth + self.padding
+            y2 = arrayCanvas.winfo_height() 
+            arrayCanvas.create_rectangle(x1, y1, x2, y2, fill = "black")     
+        print(self.array)
+    # Removes all elements from the array and clears the screen
+    def clear(self): 
+        pass
     
-    # Removes all elements from the array and the array frame
-    def clearArray(self): 
-        # loop through frame and removes all widgets
-        for widget in self.arrayFrame.winfo_children():
-            widget.destroy()
-        # Clear array
-        self.intArray.clear() 
-        # Reset width of array frame
-        self.arrayFrame.config(width = 1) 
-        # updates new width of frame
-        self.view.update() 
+    # Delete a single element from the array
+    def delete(self): 
+        pass 
+
+    # Placeholder function, just prints the array
+    def placeholder(self):
+        print(self.array)  
+
+    # Largest number that can be displayed on screen
+    def calculateLargestNumber(self):
+        arrayCanvas = self.layout.getArrayCanvas()
+        return arrayCanvas.winfo_height() - 6 
     
-    def deleteElement(self): 
-        arraySize = len(self.intArray)
-        # Does nothing if array is empty
-        if(arraySize == 0): return 
-        # Remove last element from the array
-        self.intArray.pop() 
-        # get last element from array frame
-        lastElement = self.arrayFrame.winfo_children()[-1] 
-        # If the array is now empty set width of array frame to 1
-        if(arraySize == 0): self.arrayFrame.config(width = 1) 
-        # Adjust array frames width by subtracting width of the element label 
-        # from the current width of the array frame
-        else: self.arrayFrame.config(width = self.arrayFrame.winfo_width() - lastElement.winfo_width())   
-        # Remove element
-        lastElement.destroy()
-        # removes comma from the new last element
-        if(arraySize > 1): self.removeComma(self.arrayFrame.winfo_children()[-1])
-        # Updates width
-        self.view.update() 
-    
-    def removeComma(self, elementLabel):
-        # Remove comma from last element 
-        elementLabel.config(text = elementLabel.cget("text")[:-1]) 
-
-
-
-
-
-
-
-    
-        
-
-
-
-
-
-
-
-        
-
-
+    # Calculates the best distance between displayed array and borders of canvas
+    # Makes displayed array look as centred as possible
+    def calculatePadding(self):
+        canvasArray = self.layout.getArrayCanvas()
+        minPadding = 5 
+        maxPadding = 21 
+        for i in range(minPadding, maxPadding):
+            # Calculates how many bars can be displayed on the screen 
+            bars = self.calculateMaxBars(canvasArray, i)
+            # If the number of bars is a while number
+            if((bars).is_integer()): 
+                self.maxBars = int(bars)
+                return i 
+                
+    # Calculates maximum number of bars that can be displayed given the padding
+    def calculateMaxBars(self, canvasArray, padding):
+        return ((canvasArray.winfo_width()) - padding * 2) / (self.barWidth + self.barDist)

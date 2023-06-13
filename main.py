@@ -1,12 +1,8 @@
-# TO DO:
-# a logo would be cool but idk where it would be placed (do last, get it working then make it look nice)
-# adds button to display a list of algorithms(?) 
-
 from view import *
 from screens import *
 
 if(__name__ == "__main__"):
-    view = View(800, 550) 
+    view = View(759, 500) 
     view.create()
     view.addScreen(Introduction(view))
     view.show() 
