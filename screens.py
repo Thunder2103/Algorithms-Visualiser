@@ -39,6 +39,9 @@ class SharedLayout():
         self.barWidth = 5
         # Distance between each bar 
         self.barDist = 2 
+
+        # Target is initially set to none 
+        self.target = None 
     
     def createTemplate(self):
         # Get content Frame to store all widgets
@@ -204,7 +207,7 @@ class Searching(Screen, SharedLayout):
         targetInput.pack(pady = (15,0), padx = 5) 
 
         # Button - confirms target
-        tk.Button(self.optionsFrame, text = "Set target.", width = 9, font = (self.FONT, 11), relief = "solid", command = self.placeholder)\
+        tk.Button(self.optionsFrame, text = "Set target.", width = 9, font = (self.FONT, 11), relief = "solid", command = lambda: self.setTarget(targetInput))\
             .pack(pady = (2, 0), padx = 8, anchor = "e")
             
         # Creates a slider that goes 0 to 1 then 2
@@ -242,7 +245,7 @@ class Searching(Screen, SharedLayout):
         # Unbind event - so user input isn't deleted whenever they click the textbox
         textbox.unbind("<Button-1>") 
 
-    # Adds the number the user typed to the array
+    # Adds the number the user typed to the array and displays updated array
     def add(self, textbox):  
         # Get user input 
         element = textbox.get()
@@ -253,7 +256,7 @@ class Searching(Screen, SharedLayout):
         if(element.isnumeric() and int(element) <= self.largestNumber):  
             # If the maximum amount of elements hasn't been reached - new element is added
             if(len(self.array) < self.maxBars):  
-                # Border colour set to black - signifies element added to array and displayed on screen 
+                # Border colour set to black - signifies element has been added to array and displayed on screen 
                 borderColour = "black"
                 # Add new element to array
                 self.array.append(int(element))
@@ -294,7 +297,24 @@ class Searching(Screen, SharedLayout):
         # Clear array displayed on screen
         self.arrayCanvas.delete('all')
         # Redraw array
-        self.displayArray(self.calculatePadding())
+        self.displayArray(self.calculatePadding()) 
+    
+    # Sets element algorithms will search for
+    def setTarget(self, textbox):
+        # Gets user input
+        target = textbox.get() 
+        # Sets border colour to red - signifies an error
+        borderColour = "red"
+        # Checks if inputted value is a number
+        if(target.isnumeric()):
+            # Sets border colour to black - signifies that target successfully set
+            borderColour = "black"
+            # Stores target
+            self.target = target
+        # Sets textbox colour to whatever borderColour has been set to 
+        textbox.config(highlightbackground = borderColour, highlightcolor = borderColour)
+
+
     
     # Display array on screen.
     # Iterates through array and draws bars on screen 
@@ -330,6 +350,6 @@ class Searching(Screen, SharedLayout):
     # Calculates the padding to centre the array of any size
     def calculatePadding(self):
         return ((self.arrayCanvas.winfo_width() - (len(self.array) * (self.barDist + self.barWidth))) // 2) + self.barDist
-
+    
     def placeholder(self):
         print(self.array)
