@@ -152,7 +152,7 @@ class Searching(Screen, SharedLayout):
         self.largestNumber = self.calculateLargestNumber()
         
         # Calculates spacing between canvas border and displayed array 
-        self.padding = self.calculatePadding()
+        self.padding = self.calculateSmallestPadding()
         
     # This functions handles creating and displaying the options the user is presented with
     def createOptions(self):
@@ -175,11 +175,11 @@ class Searching(Screen, SharedLayout):
         addElement.pack(pady = (15,0)) 
         
         # Button - confirm element to be added
-        tk.Button(self.optionsFrame, text = "Add.", width = 7, font = (self.FONT, 11), relief = "solid", command = self.add)\
+        tk.Button(self.optionsFrame, text = "Add.", width = 7, font = (self.FONT, 11), relief = "solid", command = lambda: self.add(addElement))\
             .pack(pady = (2, 0), padx = 8, anchor = "e")
 
         # Randomly generate new array
-        tk.Button(self.optionsFrame, text = "Generate.", relief = "solid", font = (self.FONT, 12), width = 12, command = self.randomAdd)\
+        tk.Button(self.optionsFrame, text = "Generate.", relief = "solid", font = (self.FONT, 12), width = 12, command = self.randomGenerate)\
             .pack(pady = (15,0), padx = 12)
 
         # Frame to store Clear and Delete buttons allows them to be arranged in a grid layout
@@ -242,37 +242,77 @@ class Searching(Screen, SharedLayout):
         # Unbind event - so user input isn't deleted whenever they click the textbox
         textbox.unbind("<Button-1>") 
 
-    # Adds the number if user typed to the array
-    def add(self): 
-        pass
-    
-    # Generates a random array 
-    def randomAdd(self):
+    # Adds the number the user typed to the array
+    def add(self, textbox):  
+        # Get user input 
+        element = textbox.get()
+        # Border colour set to red by default - signifies an error  
+        borderColour = "red"
+        # isnumeric() filters out non-integer inputs and negatives
+        # the second check makes sure the input is smaller than or equal to the largest number
+        if(element.isnumeric() and int(element) <= self.largestNumber):  
+            # If the maximum amount of elements hasn't been reached - new element is added
+            if(len(self.array) < self.maxBars):  
+                # Border colour set to black - signifies element added to array and displayed on screen 
+                borderColour = "black"
+                # Add new element to array
+                self.array.append(int(element))
+                # Clear whatevers on screen 
+                self.arrayCanvas.delete('all')
+                # If the array is now at maximum size, can just use padding calculated by calculatePadding() method
+                if(len(self.array) == self.maxBars): self.displayArray(self.padding)
+                # Otherwise display array with newly calulated padding
+                else: self.displayArray(self.calculatePadding())
+        # Sets textbox colour to whatever borderColour has been set to 
+        textbox.config(highlightbackground = borderColour, highlightcolor = borderColour)
+
+    # Generates a random array and displayes it
+    def randomGenerate(self):
+        # Clear array and whatever is displayed on screen before generating new array
+        self.clear() 
+        # The length of the array is no greater than the maximum number of bars calculated by the calculatePadding() method
+        arraySize = random.randint(1, self.maxBars)
         # Generates random array
-        # The maximum value is the one calculated from the calculateLargestNumber() method
-        self.array = [random.randint(1, self.largestNumber) for i in range(0, self.maxBars)]
-        for x,y in enumerate(self.array): 
-            x1 = x * self.barDist + x * self.barWidth + self.padding
-            y1 = self.arrayCanvas.winfo_height() - y 
-            x2 = x * self.barDist + x * self.barWidth + self.barWidth + self.padding
-            y2 = self.arrayCanvas.winfo_height() 
-            arrayCanvas.create_rectangle(x1, y1, x2, y2, fill = "black")     
-        print(self.array)
+        # The largest value that can be in the array is calculated from the calculateLargestNumber() method 
+        self.array = [random.randint(1, self.largestNumber) for i in range(0, arraySize)]  
+        # If the array is now at maximum size, can just use padding calculated by calculatePadding() method
+        if(arraySize == self.maxBars): self.displayArray(self.padding)
+        # Otherwise display array with newly calulated padding
+        else: self.displayArray(self.calculatePadding()) 
+     
     # Removes all elements from the array and clears the screen
     def clear(self): 
-        pass
+        self.arrayCanvas.delete('all')
+        self.array.clear()
     
     # Delete a single element from the array
     def delete(self): 
-        pass 
+        # Can't delete anything if array is empty
+        if(len(self.array) == 0): return 
+        # Remove last element from array
+        self.array.pop()
+        # Clear array displayed on screen
+        self.arrayCanvas.delete('all')
+        # Redraw array
+        self.displayArray(self.calculatePadding())
+    
+    # Display array on screen.
+    # Iterates through array and draws bars on screen 
+    def displayArray(self, padding):
+        for x,y in enumerate(self.array): 
+            x1 = x * self.barDist + x * self.barWidth + padding
+            y1 = self.arrayCanvas.winfo_height() - y 
+            x2 = x * self.barDist + x * self.barWidth + self.barWidth + padding
+            y2 = self.arrayCanvas.winfo_height() 
+            self.arrayCanvas.create_rectangle(x1, y1, x2, y2, fill = "black") 
 
     # Largest number that can be displayed on screen
     def calculateLargestNumber(self):
         return self.arrayCanvas.winfo_height() - 6 
     
-    # Calculates the best distance between displayed array and borders of canvas
-    # Makes displayed array look as centred as possible
-    def calculatePadding(self):
+    # Finds the best distance between the displayed array and the edges of canvas, 
+    # to maximise the number of elements and centre the array as best as possible
+    def calculateSmallestPadding(self):
         minPadding = 5 
         maxPadding = 21 
         for i in range(minPadding, maxPadding):
@@ -286,3 +326,10 @@ class Searching(Screen, SharedLayout):
     # Calculates maximum number of bars that can be displayed given the padding
     def calculateMaxBars(self, padding):
         return ((self.arrayCanvas.winfo_width()) - padding * 2) / (self.barWidth + self.barDist)
+
+    # Calculates the padding to centre the array of any size
+    def calculatePadding(self):
+        return ((self.arrayCanvas.winfo_width() - (len(self.array) * (self.barDist + self.barWidth))) // 2) + self.barDist
+
+    def placeholder(self):
+        print(self.array)
