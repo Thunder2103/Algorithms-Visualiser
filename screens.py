@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from abc import ABC, abstractmethod
 import random
+import math 
 
 # If the file is run as is this message is returned and program exits
 if(__name__ == "__main__"): 
@@ -36,9 +37,9 @@ class SharedLayout():
         }   
 
         # How big each bar is
-        self.barWidth = 5
+        self.barWidth = 3
         # Distance between each bar 
-        self.barDist = 2 
+        self.barDist = 2
 
         # Target is initially set to none 
         self.target = None 
@@ -155,7 +156,7 @@ class Searching(Screen, SharedLayout):
         self.largestNumber = self.calculateLargestNumber()
         
         # Calculates spacing between canvas border and displayed array 
-        self.padding = self.calculateSmallestPadding()
+        self.padding = self.calculateBestPadding()
         
     # This functions handles creating and displaying the options the user is presented with
     def createOptions(self):
@@ -278,8 +279,8 @@ class Searching(Screen, SharedLayout):
         # Generates random array
         # The largest value that can be in the array is calculated from the calculateLargestNumber() method 
         self.array = [random.randint(1, self.largestNumber) for i in range(0, arraySize)]  
-        # If the array is now at maximum size, can just use padding calculated by calculatePadding() method
-        if(arraySize == self.maxBars): self.displayArray(self.padding)
+        # If the array is now at maximum size, can just use padding calculated by calculatePadding() method 
+        if(len(self.array) == self.maxBars): self.displayArray(self.padding)
         # Otherwise display array with newly calulated padding
         else: self.displayArray(self.calculatePadding()) 
      
@@ -332,20 +333,28 @@ class Searching(Screen, SharedLayout):
     
     # Finds the best distance between the displayed array and the edges of canvas, 
     # to maximise the number of elements and centre the array as best as possible
-    def calculateSmallestPadding(self):
-        minPadding = 5 
-        maxPadding = 21 
+    def calculateBestPadding(self):
+        minPadding = 4
+        maxPadding = 20
+        compromisePadding = 0
         for i in range(minPadding, maxPadding):
             # Calculates how many bars can be displayed on the screen 
-            bars = self.calculateMaxBars(i)
-            # If the number of bars is a while number
-            if((bars).is_integer()): 
+            bars = self.calculateMaxBars(i)  
+            print(i, bars)
+            # If the number of bars is a whole number
+            if((bars).is_integer()):  
+                # Maximum size the array can be
                 self.maxBars = int(bars)
-                return i 
+                # End function 
+                return i
+        # If no whole number can be found, just use the max padding (the array being off centre is less noticeable) 
+        self.maxBars = round(self.calculateMaxBars(maxPadding))
+        return maxPadding
+       
                 
     # Calculates maximum number of bars that can be displayed given the padding
     def calculateMaxBars(self, padding):
-        return ((self.arrayCanvas.winfo_width()) - padding * 2) / (self.barWidth + self.barDist)
+        return ((self.arrayCanvas.winfo_width()) - (padding * 2)) / (self.barWidth + self.barDist)
 
     # Calculates the padding to centre the array of any size
     def calculatePadding(self):
@@ -353,3 +362,4 @@ class Searching(Screen, SharedLayout):
     
     def placeholder(self):
         print(self.array)
+        print(len(self.array))
