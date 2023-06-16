@@ -209,11 +209,11 @@ class Searching(Screen, SharedLayout):
         addElement.pack(pady = (5,0))
         
         # Button - confirm element to be added
-        tk.Button(self.optionsWidgetsFrame, text = "Add.", font = (self.FONT, 11), relief = "solid", command = lambda: self.add(addElement))\
+        tk.Button(self.optionsWidgetsFrame, text = "Add", font = (self.FONT, 11), relief = "solid", command = lambda: self.add(addElement))\
             .pack(anchor = "e", pady = (3, 0))
 
         # Randomly generate new array
-        tk.Button(self.optionsWidgetsFrame, text = "Generate.", relief = "solid", font = (self.FONT, 12), command = self.randomGenerate)\
+        tk.Button(self.optionsWidgetsFrame, text = "Generate.", width = 11, relief = "solid", font = (self.FONT, 12), command = self.randomGenerate)\
             .pack(pady = (5, 0))
 
         # Frame to store Clear and Delete buttons allows them to be arranged in a grid layout
@@ -221,12 +221,12 @@ class Searching(Screen, SharedLayout):
         clearDeleteFrame.pack(pady = (5, 0))
 
         # Allows user to clear the array
-        tk.Button(clearDeleteFrame, text = "Clear.", relief = "solid", font = (self.FONT, 12), command = self.clear)\
-            .grid(row = 0, column = 0, padx = 10)
+        tk.Button(clearDeleteFrame, text = "Clear.", width = 6, relief = "solid", font = (self.FONT, 12), command = self.clear)\
+            .grid(row = 0, column = 0, padx = (0,10))
 
         # Allows user to delete a single element from the end of the array
-        tk.Button(clearDeleteFrame, text = "Delete.", relief = "solid", font = (self.FONT, 12), command = self.delete)\
-            .grid(row = 0, column = 1, padx = 10)
+        tk.Button(clearDeleteFrame, text = "Delete.", width = 6, relief = "solid", font = (self.FONT, 12), command = self.delete)\
+            .grid(row = 0, column = 1, padx = (10,0))
 
 
         # Textbox, let's user choose what the search algorithms look for
@@ -254,11 +254,11 @@ class Searching(Screen, SharedLayout):
         stopSolveFrame = tk.Frame(self.optionsWidgetsFrame, bg = "white")
         stopSolveFrame.pack(side = "bottom", pady = (0,5))
         # Allows user to see the algorithm in action
-        tk.Button(stopSolveFrame, text = "Solve.", relief = "solid", font = (self.FONT, 12), command = self.placeholder)\
-            .grid(row = 0, column = 0, padx = 15) 
+        tk.Button(stopSolveFrame, text = "Solve.", width = 6, relief = "solid", font = (self.FONT, 12), command = self.placeholder)\
+            .grid(row = 0, column = 0, padx = (0,10)) 
         # Allows user to stop algorithm whilst it's running - button is initially disabled
-        tk.Button(stopSolveFrame, text = "Stop.", relief = "solid", font = (self.FONT, 12), state = "disabled", command = self.placeholder)\
-            .grid(row = 0, column = 1, padx = 15) 
+        tk.Button(stopSolveFrame, text = "Stop.", width = 6, relief = "solid", font = (self.FONT, 12), state = "disabled", command = self.placeholder)\
+            .grid(row = 0, column = 1, padx = (10,0)) 
         
     # When the slider has changed value a label is added with the relevant speed
     def intToSpeed(self, value): 
