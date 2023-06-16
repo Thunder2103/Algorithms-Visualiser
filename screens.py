@@ -52,7 +52,7 @@ class SharedLayout():
         contentFrameWidth = self.view.getContentFrameWidth()
        
         # This black frame will give the appearence that every frame inside it has a border - prevents overlapping issues
-        optionsHomeBorder = tk.Frame(contentFrame, bg = "black", width = contentFrameWidth - 578, height = contentFrameHeight)
+        optionsHomeBorder = tk.Frame(contentFrame, bg = "black", width = 202, height = contentFrameHeight)
         optionsHomeBorder.pack(side = "left")
         optionsHomeBorder.grid_propagate(False)
         
@@ -81,9 +81,6 @@ class SharedLayout():
         # Updates widths - used to calculate other widgets widths
         self.view.update()
 
-        print(self.optionsFrame.winfo_width())
-
-
         # This black frame will give the appearence that every frame inside it has a border - prevents overlapping issues
         algorithmBorder = tk.Frame(contentFrame, bg = "blue", height = contentFrameHeight, width = contentFrameWidth - optionsHomeBorder.winfo_width())
         algorithmBorder.pack()
@@ -91,13 +88,19 @@ class SharedLayout():
 
         # Updates widths - used to calculate other widgets widths
         self.view.update()
+        print(algorithmBorder.winfo_width()) 
+        print(algorithmBorder.winfo_width() // 2)
 
         # Height of the canvas and algorithm info frame 
-        # Minus two takes into account the two pixels used by the border frame
-        #canvasFrameHeight = (contentFrameHeight // 2) - 2
-        # Width of the canvas and the border
-        # Minus six takes into account the 6 pixels used taken up by the border frames
-        #canvasFrameWidth = algorithmBorder.winfo_width()
+        # If the height of the border frame is even then 
+        if(algorithmBorder.winfo_height() % 2 == 0):
+            canvasFrameHeight = algorithmBorder.winfo_height() // 2
+            algorithmInfoHeight = algorithmBorder.winfo_height() // 2 - 2
+        else:
+            canvasFrameHeight = algorithmBorder.winfo_height() // 2 + 1
+            algorithmInfoHeight = algorithmBorder.winfo_height() // 2
+        # Width of the canvas and the algorithm info frame
+        canvasFrameWidth = algorithmBorder.winfo_width()
 
         # This canvas will be where the array is displayed.    
         #self.arrayCanvas = tk.Canvas(algorithmBorder, height = 76, width = canvasFrameWidth, bg = "white"\
@@ -105,10 +108,15 @@ class SharedLayout():
         #self.arrayCanvas.grid(row = 0, column = 0, pady = (0,2))
         #self.arrayCanvas.pack_propagate(False)
 
+         # This frame will be where information on the algorithm will be displayed 
+        canvasFrame = tk.Frame(algorithmBorder, height = canvasFrameHeight, width = canvasFrameWidth, bg = "white")
+        canvasFrame.grid(row = 0, column = 0, pady = (0,2)) 
+        canvasFrame.pack_propagate(False)
+
         # This frame will be where information on the algorithm will be displayed 
-        #self.algorithmInfoFrame = tk.Frame(algorithmBorder, height = 25, width = canvasFrameWidth, bg = "black")
-        #self.algorithmInfoFrame.grid(row = 1, column = 0, padx = (2,0)) 
-        #self.algorithmInfoFrame.pack_propagate(False)
+        self.algorithmInfoFrame = tk.Frame(algorithmBorder, height = algorithmInfoHeight, width = canvasFrameWidth, bg = "white")
+        self.algorithmInfoFrame.grid(row = 1, column = 0) 
+        self.algorithmInfoFrame.pack_propagate(False)
        
         # Updates widths
         #self.view.update()
