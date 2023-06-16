@@ -169,66 +169,72 @@ class Searching(Screen, SharedLayout):
         self.createTemplate()
     
         # Creating and displaying options
-        #self.createOptions() 
+        self.createOptions() 
 
         # Calculates largest number that can be displayed on screen
-        #self.largestNumber = self.calculateLargestNumber()
+        self.largestNumber = self.calculateLargestNumber()
         
         # Calculates spacing between canvas border and displayed array 
-        #self.padding = self.calculateBestPadding()
+        self.padding = self.calculateBestPadding()
         
     # This functions handles creating and displaying the options the user is presented with
     def createOptions(self):
+        # Distance between widget and edge of frame 
+        widgetPadding = 4 
+
         #combo box, allows the user to choose what algorithm they want
-        algorithmOptions = ttk.Combobox(self.optionsFrame, textvariable = tk.StringVar(), state = "readonly", width = 17, font = (self.FONT, 12))
+        algorithmOptions = ttk.Combobox(self.optionsFrame, textvariable = tk.StringVar(), state = "readonly", font = (self.FONT, 12))
         algorithmOptions['value'] = ('1',
                                      '2', 
                                      '3', 
                                      '4')
         algorithmOptions.set('Select an algorithm.')
-        algorithmOptions.pack(pady = (10,0))
+        algorithmOptions.pack()
                 
         # Textbox allows user to enter a number to be added
-        addElement = tk.Entry(self.optionsFrame, font = (f'{self.FONT} italic', 12),width = 19,\
-             highlightthickness = 2, highlightbackground = "black", highlightcolor= "black")
+        addElement = tk.Entry(self.optionsFrame, font = (f'{self.FONT} italic', 12),\
+             highlightthickness = 2, highlightbackground = "black", highlightcolor= "black", width = (self.optionsFrame.winfo_width() - widgetPadding*2 - 8) // 10)
+
         # Default text
         addElement.insert(0, "Click to enter element.")
         # Binds event to textbox, deleteDefaultText() is called when the textbox is clicked
-        addElement.bind("<Button-1>", lambda event: self.deleteDefaultText(event, addElement))
-        addElement.pack(pady = (15,0)) 
+        #addElement.bind("<Button-1>", lambda event: self.deleteDefaultText(event, addElement))
+        addElement.pack() 
+        self.view.update()
+        print(addElement.winfo_width())
         
         # Button - confirm element to be added
-        tk.Button(self.optionsFrame, text = "Add.", width = 7, font = (self.FONT, 11), relief = "solid", command = lambda: self.add(addElement))\
-            .pack(pady = (2, 0), padx = 8, anchor = "e")
+        tk.Button(self.optionsFrame, text = "Add.", font = (self.FONT, 11), relief = "solid", command = lambda: self.add(addElement))\
+            .pack()
 
         # Randomly generate new array
-        tk.Button(self.optionsFrame, text = "Generate.", relief = "solid", font = (self.FONT, 12), width = 12, command = self.randomGenerate)\
-            .pack(pady = (15,0), padx = 12)
+        tk.Button(self.optionsFrame, text = "Generate.", relief = "solid", font = (self.FONT, 12), command = self.randomGenerate)\
+            .pack()
 
         # Frame to store Clear and Delete buttons allows them to be arranged in a grid layout
         clearDeleteFrame = tk.Frame(self.optionsFrame, bg = "White")
-        clearDeleteFrame.pack(pady = (15,0))
+        clearDeleteFrame.pack()
 
         # Allows user to clear the array
-        tk.Button(clearDeleteFrame, text = "Clear.", relief = "solid", font = (self.FONT, 12), width = 7, command = self.clear)\
-            .grid(row = 0, column = 0, padx = 11)
+        tk.Button(clearDeleteFrame, text = "Clear.", relief = "solid", font = (self.FONT, 12), command = self.clear)\
+            .grid(row = 0, column = 0)
 
         # Allows user to delete a single element from the end of the array
-        tk.Button(clearDeleteFrame, text = "Delete.", relief = "solid", font = (self.FONT, 12), width = 7, command = self.delete)\
-            .grid(row = 0, column = 1, padx = 11)
+        tk.Button(clearDeleteFrame, text = "Delete.", relief = "solid", font = (self.FONT, 12), command = self.delete)\
+            .grid(row = 0, column = 1)
 
         # Textbox, let's user choose what the search algorithms look for
-        targetInput = tk.Entry(self.optionsFrame, width = 19, font = (f'{self.FONT} italic', 12), \
+        targetInput = tk.Entry(self.optionsFrame, font = (f'{self.FONT} italic', 12), \
             highlightthickness = 2, highlightbackground = "black", highlightcolor= "black")
         # Default text
-        targetInput.insert(0, "Click to enter target.") 
+        #targetInput.insert(0, "Click to enter target.") 
         # Binds event to textbox, deleteDefaultText() is called when the textbox is clicked
-        targetInput.bind("<Button-1>", lambda event: self.deleteDefaultText(event, targetInput))
-        targetInput.pack(pady = (15,0), padx = 5) 
+        #targetInput.bind("<Button-1>", lambda event: self.deleteDefaultText(event, targetInput))
+        targetInput.pack() 
 
         # Button - confirms target
-        tk.Button(self.optionsFrame, text = "Set target.", width = 9, font = (self.FONT, 11), relief = "solid", command = lambda: self.setTarget(targetInput))\
-            .pack(pady = (2, 0), padx = 8, anchor = "e")
+        tk.Button(self.optionsFrame, text = "Set target.", font = (self.FONT, 11), relief = "solid", command = lambda: self.setTarget(targetInput))\
+            .pack()
             
         # Creates a slider that goes 0 to 1 then 2
         # It has three options correlating to the three speeds; slow, medium, fast 
@@ -246,11 +252,11 @@ class Searching(Screen, SharedLayout):
         stopSolveFrame = tk.Frame(self.optionsFrame, bg = "white")
         stopSolveFrame.pack(side = "bottom")
         # Allows user to see the algorithm in action
-        tk.Button(stopSolveFrame, text = "Solve.", width = 7, relief = "solid", font = (self.FONT, 12), command = self.placeholder)\
-            .grid(row = 0, column = 0, pady = (0,15), padx = 11) 
+        tk.Button(stopSolveFrame, text = "Solve", relief = "solid", font = (self.FONT, 12), command = self.placeholder)\
+            .grid(row = 0, column = 0) 
         # Allows user to stop algorithm whilst it's running - button is initially disabled
-        tk.Button(stopSolveFrame, text = "Stop.", width = 7, relief = "solid", font = (self.FONT, 12), state = "disabled", command = self.placeholder)\
-            .grid(row = 0, column = 1, pady = (0,15), padx = 11) 
+        tk.Button(stopSolveFrame, text = "Stop.", relief = "solid", font = (self.FONT, 12), state = "disabled", command = self.placeholder)\
+            .grid(row = 0, column = 1) 
         
     # When the slider has changed value a label is added with the relevant speed
     def intToSpeed(self, value): 
@@ -353,9 +359,8 @@ class Searching(Screen, SharedLayout):
     # Finds the best distance between the displayed array and the edges of canvas, 
     # to maximise the number of elements and centre the array as best as possible
     def calculateBestPadding(self):
-        minPadding = 4
+        minPadding = 5
         maxPadding = 20
-        compromisePadding = 0
         for i in range(minPadding, maxPadding):
             # Calculates how many bars can be displayed on the screen 
             bars = self.calculateMaxBars(i)  
