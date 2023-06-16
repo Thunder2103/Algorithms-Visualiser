@@ -178,12 +178,16 @@ class Searching(Screen, SharedLayout):
         self.padding = self.calculateBestPadding()
         
     # This functions handles creating and displaying the options the user is presented with
-    def createOptions(self):
-        # Distance between widget and edge of frame 
-        widgetPadding = 4 
+    def createOptions(self): 
+        widgetFrame = tk.Frame(self.optionsFrame, bg = "white", width = self.optionsFrame.winfo_width() - 10,\
+             height = self.optionsFrame.winfo_height())
+        widgetFrame.pack()
+        widgetFrame.pack_propagate(False)
 
-        #combo box, allows the user to choose what algorithm they want
-        algorithmOptions = ttk.Combobox(self.optionsFrame, textvariable = tk.StringVar(), state = "readonly", font = (self.FONT, 12))
+        self.view.update()
+
+        #combo box, allows the user to chooseyt what algorithm they want
+        algorithmOptions = ttk.Combobox(widgetFrame, textvariable = tk.StringVar(), state = "readonly", font = (self.FONT, 12), width = widgetFrame.winfo_width())
         algorithmOptions['value'] = ('1',
                                      '2', 
                                      '3', 
@@ -192,27 +196,20 @@ class Searching(Screen, SharedLayout):
         algorithmOptions.pack()
                 
         # Textbox allows user to enter a number to be added
-        addElement = tk.Entry(self.optionsFrame, font = (f'{self.FONT} italic', 12),\
-             highlightthickness = 2, highlightbackground = "black", highlightcolor= "black", width = (self.optionsFrame.winfo_width() - widgetPadding*2 - 8) // 10)
-
-        # Default text
-        addElement.insert(0, "Click to enter element.")
-        # Binds event to textbox, deleteDefaultText() is called when the textbox is clicked
-        #addElement.bind("<Button-1>", lambda event: self.deleteDefaultText(event, addElement))
-        addElement.pack() 
-        self.view.update()
-        print(addElement.winfo_width())
+        addElement = tk.Entry(widgetFrame, font = (f'{self.FONT} italic', 12),\
+            highlightbackground = "black", highlightcolor= "black", width = widgetFrame.winfo_width())
+        addElement.pack()
         
         # Button - confirm element to be added
-        tk.Button(self.optionsFrame, text = "Add.", font = (self.FONT, 11), relief = "solid", command = lambda: self.add(addElement))\
-            .pack()
+        tk.Button(widgetFrame, text = "Add.", font = (self.FONT, 11), relief = "solid", command = lambda: self.add(addElement))\
+            .pack(anchor = "e")
 
         # Randomly generate new array
-        tk.Button(self.optionsFrame, text = "Generate.", relief = "solid", font = (self.FONT, 12), command = self.randomGenerate)\
+        tk.Button(widgetFrame, text = "Generate.", relief = "solid", font = (self.FONT, 12), command = self.randomGenerate)\
             .pack()
 
         # Frame to store Clear and Delete buttons allows them to be arranged in a grid layout
-        clearDeleteFrame = tk.Frame(self.optionsFrame, bg = "White")
+        clearDeleteFrame = tk.Frame(widgetFrame, bg = "White")
         clearDeleteFrame.pack()
 
         # Allows user to clear the array
@@ -224,32 +221,28 @@ class Searching(Screen, SharedLayout):
             .grid(row = 0, column = 1)
 
         # Textbox, let's user choose what the search algorithms look for
-        targetInput = tk.Entry(self.optionsFrame, font = (f'{self.FONT} italic', 12), \
-            highlightthickness = 2, highlightbackground = "black", highlightcolor= "black")
-        # Default text
-        #targetInput.insert(0, "Click to enter target.") 
-        # Binds event to textbox, deleteDefaultText() is called when the textbox is clicked
-        #targetInput.bind("<Button-1>", lambda event: self.deleteDefaultText(event, targetInput))
+        targetInput = tk.Entry(widgetFrame, font = (f'{self.FONT} italic', 12), \
+            highlightbackground = "black", highlightcolor= "black")
         targetInput.pack() 
 
         # Button - confirms target
-        tk.Button(self.optionsFrame, text = "Set target.", font = (self.FONT, 11), relief = "solid", command = lambda: self.setTarget(targetInput))\
-            .pack()
+        tk.Button(widgetFrame, text = "Set target.", font = (self.FONT, 11), relief = "solid", command = lambda: self.setTarget(targetInput))\
+           .pack(anchor = "e")
             
         # Creates a slider that goes 0 to 1 then 2
         # It has three options correlating to the three speeds; slow, medium, fast 
         # Every time the sliders value is changed the intToSpeed() method is called
-        self.speedSlider = tk.Scale(self.optionsFrame, from_ = 0, to_ = 2, length = 175,\
+        self.speedSlider = tk.Scale(widgetFrame, from_ = 0, to_ = 2, length = 175,\
                                 orient = "horizontal", showvalue = False, bg =  "white", highlightbackground = "white", command = self.intToSpeed)
         self.speedSlider.pack()  
         # Initially the slider is set at 0, which is the Slow speed
         self.speedSlider.config(label = "Slow") 
 
         # Makes sure there is enough space for extra options
-        tk.Label(self.optionsFrame, text = "Filler for extra options", font = (self.FONT, 12)).pack(pady = 15)
+        #tk.Label(self.optionsFrame, text = "Filler for extra options", font = (self.FONT, 12)).pack()
 
         # Frame to store stop and solve buttons in a grid layout
-        stopSolveFrame = tk.Frame(self.optionsFrame, bg = "white")
+        stopSolveFrame = tk.Frame(widgetFrame, bg = "white")
         stopSolveFrame.pack(side = "bottom")
         # Allows user to see the algorithm in action
         tk.Button(stopSolveFrame, text = "Solve", relief = "solid", font = (self.FONT, 12), command = self.placeholder)\
@@ -262,15 +255,6 @@ class Searching(Screen, SharedLayout):
     def intToSpeed(self, value): 
         self.speedSlider.config(label = self.numbersToSpeed[int(value)])  
     
-    # Input texboxes have default text
-    # When a textbox is clicked for the first time the default text is deleted
-    def deleteDefaultText(self, event, textbox):
-        textbox.delete(0, tk.END)
-        # Removes the italic font 
-        textbox.config(font = (self.FONT)) 
-        # Unbind event - so user input isn't deleted whenever they click the textbox
-        textbox.unbind("<Button-1>") 
-
     # Adds the number the user typed to the array and displays updated array
     def add(self, textbox):  
         # Get user input 
@@ -364,7 +348,6 @@ class Searching(Screen, SharedLayout):
         for i in range(minPadding, maxPadding):
             # Calculates how many bars can be displayed on the screen 
             bars = self.calculateMaxBars(i)  
-            print(i, bars)
             # If the number of bars is a whole number
             if((bars).is_integer()):  
                 # Maximum size the array can be
