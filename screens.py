@@ -206,6 +206,10 @@ class Searching(Screen, SharedLayout):
         # Textbox allows user to enter a number to be added
         addElement = tk.Entry(self.optionsWidgetsFrame, font = (f'{self.FONT} italic', 12),\
             highlightbackground = "black", highlightcolor= "black", highlightthickness = 2, width = self.optionsWidgetsFrame.winfo_width())
+        # Default text
+        addElement.insert(0, "Click to enter element.")
+        # Binds event to textbox, deleteDefaultText() is called when the textbox is clicked
+        addElement.bind("<Button-1>", lambda event: self.deleteDefaultText(event, addElement))
         addElement.pack(pady = (5,0))
         
         # Button - confirm element to be added
@@ -232,6 +236,10 @@ class Searching(Screen, SharedLayout):
         # Textbox, let's user choose what the search algorithms look for
         targetInput = tk.Entry(self.optionsWidgetsFrame, font = (f'{self.FONT} italic', 12), \
             highlightbackground = "black", highlightcolor= "black", highlightthickness = 2, width = self.optionsWidgetsFrame.winfo_width())
+        # Default text
+        targetInput.insert(0, "Click to enter target.") 
+        # Binds event to textbox, deleteDefaultText() is called when the textbox is clicked
+        targetInput.bind("<Button-1>", lambda event: self.deleteDefaultText(event, targetInput))
         targetInput.pack(pady = (5,0)) 
 
         # Button - confirms target
@@ -263,6 +271,15 @@ class Searching(Screen, SharedLayout):
     # When the slider has changed value a label is added with the relevant speed
     def intToSpeed(self, value): 
         self.speedSlider.config(label = self.numbersToSpeed[int(value)])  
+    
+    # Input texboxes have default text
+    # When a textbox is clicked for the first time the default text is deleted
+    def deleteDefaultText(self, event, textbox):
+        textbox.delete(0, tk.END)
+        # Removes the italic font 
+        textbox.config(font = (self.FONT)) 
+        # Unbind event - so user input isn't deleted whenever they click the textbox
+        textbox.unbind("<Button-1>")  
     
     # Adds the number the user typed to the array and displays updated array
     def add(self, textbox):  
