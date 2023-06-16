@@ -82,14 +82,15 @@ class SharedLayout():
         self.view.update()
 
         # This black frame will give the appearence that every frame inside it has a border - prevents overlapping issues
-        algorithmBorder = tk.Frame(contentFrame, bg = "blue", height = contentFrameHeight, width = contentFrameWidth - optionsHomeBorder.winfo_width())
+        algorithmBorder = tk.Frame(contentFrame, bg = "black", height = contentFrameHeight, width = contentFrameWidth - optionsHomeBorder.winfo_width())
         algorithmBorder.pack()
         algorithmBorder.grid_propagate(False)
 
         # Updates widths - used to calculate other widgets widths
         self.view.update()
-        print(algorithmBorder.winfo_width()) 
-        print(algorithmBorder.winfo_width() // 2)
+     
+        # Width of the canvas and the algorithm info frame
+        canvasFrameWidth = algorithmBorder.winfo_width()
 
         # Height of the canvas and algorithm info frame 
         # If the height of the border frame is even then 
@@ -99,16 +100,9 @@ class SharedLayout():
         else:
             canvasFrameHeight = algorithmBorder.winfo_height() // 2 + 1
             algorithmInfoHeight = algorithmBorder.winfo_height() // 2
-        # Width of the canvas and the algorithm info frame
-        canvasFrameWidth = algorithmBorder.winfo_width()
+        
 
-        # This canvas will be where the array is displayed.    
-        #self.arrayCanvas = tk.Canvas(algorithmBorder, height = 76, width = canvasFrameWidth, bg = "white"\
-        #    ,highlightbackground = "red", highlightcolor = "red") 
-        #self.arrayCanvas.grid(row = 0, column = 0, pady = (0,2))
-        #self.arrayCanvas.pack_propagate(False)
-
-         # This frame will be where information on the algorithm will be displayed 
+        # This frame will be where information on the algorithm will be displayed 
         canvasFrame = tk.Frame(algorithmBorder, height = canvasFrameHeight, width = canvasFrameWidth, bg = "white")
         canvasFrame.grid(row = 0, column = 0, pady = (0,2)) 
         canvasFrame.pack_propagate(False)
@@ -119,8 +113,15 @@ class SharedLayout():
         self.algorithmInfoFrame.pack_propagate(False)
        
         # Updates widths
-        #self.view.update()
-    
+        self.view.update()
+
+        # This canvas will be where the array is displayed.    
+        self.arrayCanvas = tk.Canvas(canvasFrame, height = canvasFrame.winfo_height(), width = canvasFrame.winfo_width(), bg = "white") 
+        self.arrayCanvas.pack()
+        self.arrayCanvas.pack_propagate(False)
+
+        # Updates widths
+        self.view.update()  
 # Ideally this should be the first screen the user sees 
 class Introduction(Screen):
     def __init__(self, view):
