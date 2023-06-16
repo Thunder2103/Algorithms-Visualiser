@@ -50,26 +50,28 @@ class SharedLayout():
         # Get content frames width and height
         contentFrameHeight = self.view.getContentFrameHeight()
         contentFrameWidth = self.view.getContentFrameWidth()
-        
+       
         # This black frame will give the appearence that every frame inside it has a border - prevents overlapping issues
-        OptionsHomeBorder = tk.Frame(contentFrame, bg = "black")
-        OptionsHomeBorder.pack(side = "left", anchor = "n")
+        optionsHomeBorder = tk.Frame(contentFrame, bg = "black", width = contentFrameWidth - 580, height = contentFrameHeight)
+        optionsHomeBorder.pack(side = "left")
+        optionsHomeBorder.grid_propagate(False)
+        
+        self.view.update()
 
-        # Frame to store options users can interact with 
-        # The size of the frame is calculated using the fixed size of the home frame
-        self.optionsFrame = tk.Frame(OptionsHomeBorder, height = contentFrame.winfo_height() - 50, width = 195, bg = "white")
-        self.optionsFrame.grid(row = 0, column = 0) 
-        self.optionsFrame.pack_propagate(False)
-
-        # Frame to store button to redirect user back to the Introduction Screen 
-        # This frame is always a fixed size, this is used to calculate the size of the options frame
-        homeFrame = tk.Frame(OptionsHomeBorder, height = 50, \
-            width = 195, bg = "white")
-        homeFrame.grid(row = 1, column = 0, pady = 2)
-        homeFrame.pack_propagate(False)
+        # Frame to store button to redirect user back to Introduction Screen
+        # This frame should always bee fixed in size
+        homeFrame = tk.Frame(optionsHomeBorder, height = 50, width = optionsHomeBorder.winfo_width() - 1, bg = "white")
+        homeFrame.grid(row = 1, column = 0, pady = (2,0))
 
         # Updates widths - used to calculate other widgets widths
-        self.view.update()
+        self.view.update() 
+
+          # Frame to store options users can interact with 
+        # The size of the frame is calculated using the fixed size of the home frame
+        self.optionsFrame = tk.Frame(optionsHomeBorder, width = optionsHomeBorder.winfo_width() - 1,\
+            height = optionsHomeBorder.winfo_height() - homeFrame.winfo_height() - 2, bg = "white")
+        self.optionsFrame.grid(row = 0, column = 0) 
+        self.optionsFrame.pack_propagate(False) 
       
         # Creates and places button in the centre of the frame
         tk.Button(homeFrame, text = "Home", font = (self.FONT, 12), width = 7, height = 1, borderwidth = 2, relief = "solid",\
@@ -77,8 +79,9 @@ class SharedLayout():
                 .place(relx = 0.5, rely = 0.5, anchor = "center") 
 
         # This black frame will give the appearence that every frame inside it has a border - prevents overlapping issues
-        algorithmBorder = tk.Frame(contentFrame, bg = "black")
+        algorithmBorder = tk.Frame(contentFrame, bg = "black", height = contentFrameHeight, width = contentFrameWidth - optionsHomeBorder.winfo_width())
         algorithmBorder.pack(side = "right", anchor = "n")
+        algorithmBorder.grid_propagate(False)
 
         # Updates widths - used to calculate other widgets widths
         self.view.update()
@@ -88,20 +91,20 @@ class SharedLayout():
         canvasFrameHeight = (contentFrameHeight // 2) - 2
         # Width of the canvas and the border
         # Minus six takes into account the 6 pixels used taken up by the border frames
-        canvasFrameWidth = (contentFrameWidth - self.optionsFrame.winfo_width()) - 6
+        canvasFrameWidth = algorithmBorder.winfo_width()
 
         # This canvas will be where the array is displayed.    
-        self.arrayCanvas = tk.Canvas(algorithmBorder, height = canvasFrameHeight, width = canvasFrameWidth, bg = "white") 
-        self.arrayCanvas.grid(row = 0, column = 0, padx = 2)
+        self.arrayCanvas = tk.Canvas(algorithmBorder, height = canvasFrameHeight, width = canvasFrameWidth - 3, bg = "white") 
+        self.arrayCanvas.grid(row = 0, column = 0, padx = (1,0), pady = (0,2))
         self.arrayCanvas.pack_propagate(False)
 
         # This frame will be where information on the algorithm will be displayed 
-        self.algorithmInfoFrame = tk.Frame(algorithmBorder, height = canvasFrameHeight, width = canvasFrameWidth + 4, bg = "white")
-        self.algorithmInfoFrame.grid(row = 1, column = 0, pady = 2, padx = 2) 
+        self.algorithmInfoFrame = tk.Frame(algorithmBorder, height = canvasFrameHeight, width = canvasFrameWidth - 1, bg = "white")
+        self.algorithmInfoFrame.grid(row = 1, column = 0, padx = (1,0)) 
         self.algorithmInfoFrame.pack_propagate(False)
        
         # Updates widths
-        self.view.update()
+        #self.view.update()
     
 # Ideally this should be the first screen the user sees 
 class Introduction(Screen):
@@ -150,13 +153,13 @@ class Searching(Screen, SharedLayout):
         self.createTemplate()
     
         # Creating and displaying options
-        self.createOptions() 
+        #self.createOptions() 
 
         # Calculates largest number that can be displayed on screen
-        self.largestNumber = self.calculateLargestNumber()
+        #self.largestNumber = self.calculateLargestNumber()
         
         # Calculates spacing between canvas border and displayed array 
-        self.padding = self.calculateBestPadding()
+        #self.padding = self.calculateBestPadding()
         
     # This functions handles creating and displaying the options the user is presented with
     def createOptions(self):
