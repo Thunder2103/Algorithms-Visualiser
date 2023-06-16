@@ -66,12 +66,25 @@ class SharedLayout():
         # Updates widths - used to calculate other widgets widths
         self.view.update() 
 
-          # Frame to store options users can interact with 
+        # Frame to store options users can interact with 
         # The size of the frame is calculated using the fixed size of the home frame
-        self.optionsFrame = tk.Frame(optionsHomeBorder, width = optionsHomeBorder.winfo_width() - 2,\
+        optionsFrame = tk.Frame(optionsHomeBorder, width = optionsHomeBorder.winfo_width() - 2,\
             height = optionsHomeBorder.winfo_height() - homeFrame.winfo_height(), bg = "white")
-        self.optionsFrame.grid(row = 0, column = 0) 
-        self.optionsFrame.pack_propagate(False) 
+        optionsFrame.grid(row = 0, column = 0) 
+        optionsFrame.pack_propagate(False) 
+
+        # Updates widths - used to calculate other widgets widths
+        self.view.update() 
+
+        # This is the frame where the actual option widgets are stored
+        # This is needed or otherwise the formatting breaks for different devices
+        self.optionsWidgetsFrame = tk.Frame(optionsFrame, bg = "white", width = optionsFrame.winfo_width() - 10,\
+             height = optionsFrame.winfo_height())
+        self.optionsWidgetsFrame.pack()
+        self.optionsWidgetsFrame.pack_propagate(False)
+
+        # Updates widths - used to calculate other widgets widths
+        self.view.update() 
       
         # Creates and places button in the centre of the frame
         tk.Button(homeFrame, text = "Home", font = (self.FONT, 12), width = 7, height = 1, borderwidth = 2, relief = "solid",\
@@ -179,60 +192,56 @@ class Searching(Screen, SharedLayout):
         
     # This functions handles creating and displaying the options the user is presented with
     def createOptions(self): 
-        widgetFrame = tk.Frame(self.optionsFrame, bg = "white", width = self.optionsFrame.winfo_width() - 10,\
-             height = self.optionsFrame.winfo_height())
-        widgetFrame.pack()
-        widgetFrame.pack_propagate(False)
-
-        self.view.update()
-
-        #combo box, allows the user to chooseyt what algorithm they want
-        algorithmOptions = ttk.Combobox(widgetFrame, textvariable = tk.StringVar(), state = "readonly", font = (self.FONT, 12), width = widgetFrame.winfo_width())
+        print(self.optionsWidgetsFrame.winfo_width())
+        #combo box, allows the user to choose what algorithm they want
+        algorithmOptions = ttk.Combobox(self.optionsWidgetsFrame, textvariable = tk.StringVar(), state = "readonly", font = (self.FONT, 12),\
+             width = self.optionsWidgetsFrame.winfo_width())
         algorithmOptions['value'] = ('1',
                                      '2', 
                                      '3', 
                                      '4')
         algorithmOptions.set('Select an algorithm.')
-        algorithmOptions.pack()
+        algorithmOptions.pack(pady = (5,0))
                 
         # Textbox allows user to enter a number to be added
-        addElement = tk.Entry(widgetFrame, font = (f'{self.FONT} italic', 12),\
-            highlightbackground = "black", highlightcolor= "black", width = widgetFrame.winfo_width())
-        addElement.pack()
+        addElement = tk.Entry(self.optionsWidgetsFrame, font = (f'{self.FONT} italic', 12),\
+            highlightbackground = "black", highlightcolor= "black", highlightthickness = 2, width = self.optionsWidgetsFrame.winfo_width())
+        addElement.pack(pady = (5,0))
         
         # Button - confirm element to be added
-        tk.Button(widgetFrame, text = "Add.", font = (self.FONT, 11), relief = "solid", command = lambda: self.add(addElement))\
-            .pack(anchor = "e")
+        tk.Button(self.optionsWidgetsFrame, text = "Add.", font = (self.FONT, 11), relief = "solid", command = lambda: self.add(addElement))\
+            .pack(anchor = "e", pady = (3, 0))
 
         # Randomly generate new array
-        tk.Button(widgetFrame, text = "Generate.", relief = "solid", font = (self.FONT, 12), command = self.randomGenerate)\
-            .pack()
+        tk.Button(self.optionsWidgetsFrame, text = "Generate.", relief = "solid", font = (self.FONT, 12), command = self.randomGenerate)\
+            .pack(pady = (5, 0))
 
         # Frame to store Clear and Delete buttons allows them to be arranged in a grid layout
-        clearDeleteFrame = tk.Frame(widgetFrame, bg = "White")
-        clearDeleteFrame.pack()
+        clearDeleteFrame = tk.Frame(self.optionsWidgetsFrame, bg = "White")
+        clearDeleteFrame.pack(pady = (5, 0))
 
         # Allows user to clear the array
         tk.Button(clearDeleteFrame, text = "Clear.", relief = "solid", font = (self.FONT, 12), command = self.clear)\
-            .grid(row = 0, column = 0)
+            .grid(row = 0, column = 0, padx = 10)
 
         # Allows user to delete a single element from the end of the array
         tk.Button(clearDeleteFrame, text = "Delete.", relief = "solid", font = (self.FONT, 12), command = self.delete)\
-            .grid(row = 0, column = 1)
+            .grid(row = 0, column = 1, padx = 10)
+
 
         # Textbox, let's user choose what the search algorithms look for
-        targetInput = tk.Entry(widgetFrame, font = (f'{self.FONT} italic', 12), \
-            highlightbackground = "black", highlightcolor= "black")
-        targetInput.pack() 
+        targetInput = tk.Entry(self.optionsWidgetsFrame, font = (f'{self.FONT} italic', 12), \
+            highlightbackground = "black", highlightcolor= "black", highlightthickness = 2, width = self.optionsWidgetsFrame.winfo_width())
+        targetInput.pack(pady = (5,0)) 
 
         # Button - confirms target
-        tk.Button(widgetFrame, text = "Set target.", font = (self.FONT, 11), relief = "solid", command = lambda: self.setTarget(targetInput))\
-           .pack(anchor = "e")
+        tk.Button(self.optionsWidgetsFrame, text = "Set target.", font = (self.FONT, 11), relief = "solid", command = lambda: self.setTarget(targetInput))\
+           .pack(anchor = "e", pady = (3,0))
             
         # Creates a slider that goes 0 to 1 then 2
         # It has three options correlating to the three speeds; slow, medium, fast 
         # Every time the sliders value is changed the intToSpeed() method is called
-        self.speedSlider = tk.Scale(widgetFrame, from_ = 0, to_ = 2, length = 175,\
+        self.speedSlider = tk.Scale(self.optionsWidgetsFrame, from_ = 0, to_ = 2, length = 175,\
                                 orient = "horizontal", showvalue = False, bg =  "white", highlightbackground = "white", command = self.intToSpeed)
         self.speedSlider.pack()  
         # Initially the slider is set at 0, which is the Slow speed
@@ -242,14 +251,14 @@ class Searching(Screen, SharedLayout):
         #tk.Label(self.optionsFrame, text = "Filler for extra options", font = (self.FONT, 12)).pack()
 
         # Frame to store stop and solve buttons in a grid layout
-        stopSolveFrame = tk.Frame(widgetFrame, bg = "white")
-        stopSolveFrame.pack(side = "bottom")
+        stopSolveFrame = tk.Frame(self.optionsWidgetsFrame, bg = "white")
+        stopSolveFrame.pack(side = "bottom", pady = (0,5))
         # Allows user to see the algorithm in action
-        tk.Button(stopSolveFrame, text = "Solve", relief = "solid", font = (self.FONT, 12), command = self.placeholder)\
-            .grid(row = 0, column = 0) 
+        tk.Button(stopSolveFrame, text = "Solve.", relief = "solid", font = (self.FONT, 12), command = self.placeholder)\
+            .grid(row = 0, column = 0, padx = 15) 
         # Allows user to stop algorithm whilst it's running - button is initially disabled
         tk.Button(stopSolveFrame, text = "Stop.", relief = "solid", font = (self.FONT, 12), state = "disabled", command = self.placeholder)\
-            .grid(row = 0, column = 1) 
+            .grid(row = 0, column = 1, padx = 15) 
         
     # When the slider has changed value a label is added with the relevant speed
     def intToSpeed(self, value): 
