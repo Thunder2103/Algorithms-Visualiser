@@ -164,13 +164,13 @@ class Introduction(Screen):
         buttonsFrame = tk.Frame(contentFrame, bg = "white")
         buttonsFrame.pack()
 
-        tk.Button(buttonsFrame, text = "Tree Traversal", font = (self.FONT, 12), height = 2, width = 15, relief = "solid")\
+        tk.Button(buttonsFrame, text = "Path Finding", font = (self.FONT, 12), height = 2, width = 15, relief = "solid")\
             .pack(pady = (25, 0)) 
 
-        tk.Button(buttonsFrame, text = "Searching",  font = (self.FONT, 12), height = 2, width = 15, relief = "solid", \
+        tk.Button(buttonsFrame, text = "Array Searching",  font = (self.FONT, 12), height = 2, width = 15, relief = "solid", \
                 command = lambda : [self.view.removeScreen(), self.view.addScreen(Searching(self.view))]).pack(side = "left", pady = 15, padx = (100, 0))
 
-        tk.Button(buttonsFrame, text = "Sorting",  font = (self.FONT, 12), height = 2, width = 15, relief = "solid",\
+        tk.Button(buttonsFrame, text = "Array Sorting",  font = (self.FONT, 12), height = 2, width = 15, relief = "solid",\
                 command = lambda : self.view.removeScreen()).pack(side = "left", padx = 100) 
 
         tk.Label(contentFrame, text = "Created by Thomas Gibson", bg = "white", justify = "left")\
@@ -185,14 +185,12 @@ class Searching(Screen, SharedLayout):
         self.createOptions() 
 
         # Calculates largest number that can be displayed on screen
-        self.largestNumber = self.calculateLargestNumber()
-        
+        self.maximumPixels = self.calculateMaximumPixels()
         # Calculates spacing between canvas border and displayed array 
         self.padding = self.calculateBestPadding()
         
     # This functions handles creating and displaying the options the user is presented with
     def createOptions(self): 
-        print(self.optionsWidgetsFrame.winfo_width())
         #combo box, allows the user to choose what algorithm they want
         algorithmOptions = ttk.Combobox(self.optionsWidgetsFrame, textvariable = tk.StringVar(), state = "readonly", font = (self.FONT, 12),\
              width = self.optionsWidgetsFrame.winfo_width())
@@ -289,7 +287,7 @@ class Searching(Screen, SharedLayout):
         borderColour = "red"
         # isnumeric() filters out non-integer inputs and negatives
         # the second check makes sure the input is smaller than or equal to the largest number
-        if(element.isnumeric() and int(element) <= self.largestNumber):  
+        if(element.isnumeric() and int(element) <= self.maximumPixels):  
             # If the maximum amount of elements hasn't been reached - new element is added
             if(len(self.array) < self.maxBars):  
                 # Border colour set to black - signifies element has been added to array and displayed on screen 
@@ -313,7 +311,7 @@ class Searching(Screen, SharedLayout):
         arraySize = random.randint(1, self.maxBars)
         # Generates random array
         # The largest value that can be in the array is calculated from the calculateLargestNumber() method 
-        self.array = [random.randint(1, self.largestNumber) for i in range(0, arraySize)]  
+        self.array = [random.randint(1, self.maximumPixels) for i in range(0, arraySize)]  
         # If the array is now at maximum size, can just use padding calculated by calculatePadding() method 
         if(len(self.array) == self.maxBars): self.displayArray(self.padding)
         # Otherwise display array with newly calulated padding
@@ -355,16 +353,18 @@ class Searching(Screen, SharedLayout):
     # Display array on screen.
     # Iterates through array and draws bars on screen 
     def displayArray(self, padding):
+        largestElement = max(self.array)
+        print(largestElement)
         for x,y in enumerate(self.array): 
             x1 = x * self.barDist + x * self.barWidth + padding
-            y1 = self.arrayCanvas.winfo_height() - y 
+            y1 = largestElement - y 
             x2 = x * self.barDist + x * self.barWidth + self.barWidth + padding
             y2 = self.arrayCanvas.winfo_height() 
             self.arrayCanvas.create_rectangle(x1, y1, x2, y2, fill = "black") 
 
     # Largest number that can be displayed on screen
-    def calculateLargestNumber(self):
-        return self.arrayCanvas.winfo_height() - 6 
+    def calculateMaximumPixels(self):
+        return self.arrayCanvas.winfo_height() - 2
     
     # Finds the best distance between the displayed array and the edges of canvas, 
     # to maximise the number of elements and centre the array as best as possible
