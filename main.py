@@ -2,7 +2,7 @@ from view import *
 from screens import *
 
 if(__name__ == "__main__"):
-    view = View(75, 50) 
+    view = View(750, 500) 
     view.create()
     view.addScreen(Introduction(view))
     view.show() 
