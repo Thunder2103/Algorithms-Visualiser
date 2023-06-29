@@ -82,9 +82,6 @@ class SharedLayout():
         # Distance between each bar 
         self.barDist = 2
 
-        # Target is initially set to none 
-        self.target = None 
-    
     def createTemplate(self):
         # Get content Frame to store all widgets
         contentFrame = self.view.getContentFrame()
@@ -181,19 +178,23 @@ class Searching(Screen, SharedLayout):
                                      '3', 
                                      '4')
         algorithmOptions.set('Select an algorithm.')
-        algorithmOptions.pack(pady = (5,0))
+        algorithmOptions.pack(pady = (10,0))
                         
         # Creates a slider that goes 0 to 1 then 2
         # It has three options correlating to the three speeds; slow, medium, fast 
         # Every time the sliders value is changed the intToSpeed() method is called
         self.speedSlider = tk.Scale(self.optionsWidgetsFrame, from_ = 0, to_ = 2, length = self.optionsWidgetsFrame.winfo_width(),\
                                 orient = "horizontal", showvalue = False, bg =  "white", highlightbackground = "white", command = self.intToSpeed)
-        self.speedSlider.pack()  
+        self.speedSlider.pack(pady = (10, 0))  
         # Initially the slider is set at 0, which is the Slow speed
         self.speedSlider.config(label = "Slow") 
 
+        self.arraySizeSlider = tk.Scale(self.optionsWidgetsFrame, from_ = 0, to_ = 1000, length = self.optionsWidgetsFrame.winfo_width(),\
+            orient = "horizontal", bg = "white", highlightbackground = "white")
+        self.arraySizeSlider.pack(pady = (10, 0))
+
         # Makes sure there is enough space for extra options
-        tk.Label(self.optionsWidgetsFrame, text = "Filler for extra options", font = (self.FONT, 12)).pack()
+        tk.Label(self.optionsWidgetsFrame, text = "Filler for extra options", font = (self.FONT, 12)).pack(pady = (10, 0))
 
         # Frame to store stop and solve buttons in a grid layout
         stopSolveFrame = tk.Frame(self.optionsWidgetsFrame, bg = "white")
@@ -243,7 +244,6 @@ class Searching(Screen, SharedLayout):
         self.maxBars = round(self.calculateMaxBars(maxPadding))
         return maxPadding
        
-                
     # Calculates maximum number of bars that can be displayed given the padding
     def calculateMaxBars(self, padding):
         return ((self.arrayCanvas.winfo_width()) - (padding * 2)) / (self.barWidth + self.barDist)
