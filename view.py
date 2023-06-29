@@ -9,10 +9,13 @@ if(__name__ == "__main__"):
 # View Class - Creates a blank tkinter window
 class View():
     def __init__(self, width, height):
+        # Variables to store minimum width and height - means they can be easily changed
+        minWidth = 750 
+        minHeight = 500
         # This prevents screens being made smaller than 750x500
-        if(width < 750 or height < 500):
-            self.width = 750
-            self.height = 500
+        if(width < minWidth or height < minHeight):
+            self.width = minWidth
+            self.height = minHeight
         else:
             self.width = width
             self.height = height  
@@ -26,21 +29,22 @@ class View():
         # Declaring window
         self.window = tk.Tk()
         self.window.title('Useful Algorithms')
-        
+
         # windows dimensions
         self.window.geometry(f'{self.width}x{self.height}')
         self.window.resizable(False, False) 
 
-        # Set minimum size
-        self.window.minsize(750, 500)
-        
         #changed window colour to grey 
         # gives window solid black border
         self.window.config(bg = "#CCCCCC", borderwidth = 2, relief = "solid")
         
+        # Size of border
+        borderSize = 2
+
         # This gives the appearance that the content frame has a border
         # There are built in hyperparamters for adding a border but this caused issues with widgets being centred
-        tk.Frame(self.window, bg = "black", width = self.contentFrameWidth + 4, height = self.contentFrameHeight + 4).place(relx = 0.5, rely = 0.5, anchor = "center")
+        tk.Frame(self.window, bg = "black", width = self.contentFrameWidth + (borderSize * 2),\
+            height = self.contentFrameHeight + (borderSize * 2)).place(relx = 0.5, rely = 0.5, anchor = "center")
 
         # Declaring and customising the frame
         # This is where all the displayed content 
