@@ -142,8 +142,11 @@ class SharedLayout():
         canvasFrame.grid(row = 0, column = 1, padx = (2,0)) 
         canvasFrame.pack_propagate(False)
 
+        # Updates widths
+        self.view.update()  
+
         # This canvas will be where the array is displayed.    
-        self.arrayCanvas = tk.Canvas(canvasFrame, height = canvasFrame.winfo_height(), width = canvasFrame.winfo_width(), bg = "green") 
+        self.arrayCanvas = tk.Canvas(canvasFrame, height = canvasFrame.winfo_height(), width = canvasFrame.winfo_width(), bg = "white") 
         self.arrayCanvas.pack()
         self.arrayCanvas.pack_propagate(False)
 
@@ -151,23 +154,27 @@ class SharedLayout():
         self.algorithmInfoFrame = tk.Frame(borderFrame, height = 50, width = canvasAlgorithmInfoWidth, bg = "white")
         self.algorithmInfoFrame.grid(row = 1, column = 1, pady = (2,0), padx = (2,0)) 
         self.algorithmInfoFrame.pack_propagate(False)
-      
+        
         # Updates widths
         self.view.update()  
-
+    
 class Searching(Screen, SharedLayout):
     def initScreen(self):
         # Creates basic layout of the screen
         self.createTemplate()
-    
+
+        # Returns the height of the canvas - maximum number of pixels an element can possibly have
+        self.maximumPixels = self.calculateMaximumPixels()
+        
+        # Calculates spacing between canvas border and displayed array 
+        # Is also used to calculate the largest possible size of the array
+        self.padding = self.calculateBestPadding() 
+
         # Creating and displaying options
         self.createOptions() 
 
-        # Calculates largest number that can be displayed on screen
-        #self.maximumPixels = self.calculateMaximumPixels()
-        # Calculates spacing between canvas border and displayed array 
-        #self.padding = self.calculateBestPadding()
-        
+        self.displayArray('1')
+  
     # This functions handles creating and displaying the options the user is presented with
     def createOptions(self): 
         #combo box, allows the user to choose what algorithm they want
@@ -189,8 +196,8 @@ class Searching(Screen, SharedLayout):
         # Initially the slider is set at 0, which is the Slow speed
         self.speedSlider.config(label = "Slow") 
 
-        self.arraySizeSlider = tk.Scale(self.optionsWidgetsFrame, from_ = 0, to_ = 1000, length = self.optionsWidgetsFrame.winfo_width(),\
-            orient = "horizontal", bg = "white", highlightbackground = "white")
+        self.arraySizeSlider = tk.Scale(self.optionsWidgetsFrame, from_ = 1, to_ = self.maxBars, length = self.optionsWidgetsFrame.winfo_width(),\
+            orient = "horizontal", bg = "white", highlightbackground = "white", command = self.displayArray)
         self.arraySizeSlider.pack(pady = (10, 0))
 
         # Makes sure there is enough space for extra options
@@ -204,7 +211,9 @@ class Searching(Screen, SharedLayout):
             .grid(row = 0, column = 0, padx = (0,5)) 
         # Allows user to stop algorithm whilst it's running - button is initially disabled
         tk.Button(stopSolveFrame, text = "Stop.", width = 7, relief = "solid", font = (self.FONT, 12), state = "disabled", command = self.placeholder)\
-            .grid(row = 0, column = 1) 
+            .grid(row = 0, column = 1)  
+
+        tk.Button(self.optionsWidgetsFrame, text = "dsf", command = self.displayArray).pack()
         
     # When the slider has changed value a label is added with the relevant speed
     def intToSpeed(self, value): 
@@ -212,18 +221,44 @@ class Searching(Screen, SharedLayout):
        
     # Display array on screen.
     # Iterates through array and draws bars on screen 
-    def displayArray(self, padding):
-        largestElement = max(self.array)
-        print(largestElement)
-        for x,y in enumerate(self.array): 
+    def displayArray(self, value):
+        if(int(value) < len(self.array)): self.deleteElements(int(value))
+        if(len(self.array) == self.maxBars): return
+        
+        self.clearDisplayedArray()
+        self.addElements(int(value))
+        
+        if(len(self.array) != self.maxBars): padding = self.calculatePadding()
+        else: padding = self.padding
+        
+        yStretch = self.maximumPixels / max(self.array)
+        for x, y in enumerate(self.array):
             x1 = x * self.barDist + x * self.barWidth + padding
-            y1 = largestElement - y 
+            y1 = self.arrayCanvas.winfo_height() - (y * yStretch) 
             x2 = x * self.barDist + x * self.barWidth + self.barWidth + padding
             y2 = self.arrayCanvas.winfo_height() 
-            self.arrayCanvas.create_rectangle(x1, y1, x2, y2, fill = "black") 
+            self.arrayCanvas.create_rectangle(x1, y1, x2, y2, fill = "Black")
+        # I hate magic numbers 
+        # print(3 / yStretch)
+        print(len(self.array))
+   
+    # Wipes everything off the canvas
+    def clearDisplayedArray(self):
+        self.arrayCanvas.delete("all")
+
+    # Adds amount of elements corresponding to the value
+    def addElements(self, value):
+        for i in range(len(self.array), value):
+            self.array.append(random.randint(10,100)) 
+    
+    # Deletes number of elements corresponding to the value
+    def deleteElements(self, value):
+        for i in range(len(self.array), value - 1, -1):
+            self.array.pop()
 
     # Largest number that can be displayed on screen
     def calculateMaximumPixels(self):
+        # Two is taken from the canvas' height because the canvas widget has a border where no pixels are drawn  
         return self.arrayCanvas.winfo_height() - 2
     
     # Finds the best distance between the displayed array and the edges of canvas, 
@@ -248,7 +283,7 @@ class Searching(Screen, SharedLayout):
     def calculateMaxBars(self, padding):
         return ((self.arrayCanvas.winfo_width()) - (padding * 2)) / (self.barWidth + self.barDist)
 
-    # Calculates the padding to centre the array of any size
+    # Calculates the padding to centre the array of a given size
     def calculatePadding(self):
         return ((self.arrayCanvas.winfo_width() - (len(self.array) * (self.barDist + self.barWidth))) // 2) + self.barDist
     
