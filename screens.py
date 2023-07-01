@@ -77,10 +77,17 @@ class SharedLayout():
             2: "Fast"
         }   
 
-        # How big each bar is
-        self.barWidth = 3
+        # Current size of bars
+        self.barWidth = 15
+        # Smallest bars can be 
+        self.minBarWidth = 2
+        # Largest bar can be 
+        self.maxBarWidth = 15
         # Distance between each bar 
         self.barDist = 2
+        # Maximum and minimum distance between displayed array and edge of canvas
+        self.minPadding = 5
+        self.maxPadding = 20
 
     def createTemplate(self):
         # Get content Frame to store all widgets
@@ -221,13 +228,16 @@ class Searching(Screen, SharedLayout):
     # Iterates through array and draws bars on screen 
     def displayArray(self, value):
         # If the value given from the scrollbar is less than the arrays size
-        # Delete elements from the array
-        if(int(value) < len(self.array)): self.deleteElements(int(value))
-        # Otherwise add elements to the array
-        else: self.addElements(int(value))
+        # Delete elements from the array and check if bar size can increase
+        if(int(value) < len(self.array)): 
+            self.deleteElements(int(value))
+            self.increaseBarSize()
+        # Otherwise add elements to the array and check is bar size needs to decrease
+        else: 
+            self.addElements(int(value))
+            self.decreaseBarSize()
         # Clear displayed array on screen
         self.clearDisplayedArray()
-    
         # If the array less than the maximum number of bars. 
         # Calculate padding 
         if(len(self.array) != self.maxBars): padding = self.calculatePadding()
@@ -264,6 +274,20 @@ class Searching(Screen, SharedLayout):
         for i in range(len(self.array), value, -1):
             self.array.pop()
 
+    # Determines if bars need to shrink in size as array grows
+    def decreaseBarSize(self):
+        for i in range(self.barWidth, self.minBarWidth, -1):
+            if(len(self.array) < round(self.calculateMaxBars(i, self.maxPadding))):
+                self.barWidth = i
+                return
+        self.barWidth = self.minBarWidth
+            
+    # Determines if bars needs to increase in size as array shrinks
+    def increaseBarSize(self):
+        for i in range(self.barWidth + 1, self.maxBarWidth + 1):
+             if(len(self.array) < round(self.calculateMaxBars(i, self.maxPadding))):
+                self.barWidth = i 
+    
     # Calculate upper and lower bounds of the array
     def calculateArrayBounds(self):
         # Choose an arbitary number, this is used to calculate the upper and lower bounds 
@@ -280,8 +304,7 @@ class Searching(Screen, SharedLayout):
     
         # Draw the first element on screen
         self.displayArray('1')
-       
-
+    
     # Largest number that can be displayed on screen
     def calculateMaximumPixels(self):
         # Two is taken from the canvas' height because the canvas widget has a border where no pixels are drawn  
@@ -290,11 +313,9 @@ class Searching(Screen, SharedLayout):
     # Finds the best distance between the displayed array and the edges of canvas, 
     # to maximise the number of elements and centre the array as best as possible
     def calculateBestPadding(self):
-        minPadding = 5
-        maxPadding = 20
-        for i in range(minPadding, maxPadding):
+        for i in range(self.minPadding, self.maxPadding):
             # Calculates how many bars can be displayed on the screen 
-            bars = self.calculateMaxBars(i)  
+            bars = self.calculateMaxBars(self.minBarWidth, i)  
             # If the number of bars is a whole number
             if((bars).is_integer()):  
                 # Maximum size the array can be
@@ -302,12 +323,12 @@ class Searching(Screen, SharedLayout):
                 # Function terminates - returning the best padding (i)
                 return i
         # If no whole number can be found, just use the max padding (the array being off centre is less noticeable) 
-        self.maxBars = round(self.calculateMaxBars(maxPadding))
-        return maxPadding
+        self.maxBars = round(self.calculateMaxBars(self.minBarWidth, self.maxPadding))
+        return self.maxPadding
        
     # Calculates maximum number of bars that can be displayed given the padding
-    def calculateMaxBars(self, padding):
-        return ((self.arrayCanvas.winfo_width()) - (padding * 2)) / (self.barWidth + self.barDist)
+    def calculateMaxBars(self, barWidth, padding):
+        return ((self.arrayCanvas.winfo_width()) - (padding * 2)) / (barWidth + self.barDist)
 
     # Calculates the padding to centre the array of a given size
     def calculatePadding(self):
