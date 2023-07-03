@@ -1,6 +1,6 @@
 import tkinter as tk
 
-# If the file is run as is message is returned and program exits
+# If the file is run as is message this returned and program exits
 if(__name__ == "__main__"):
     print("This is file shouldn't be run on it's own. \nIt should be imported only.")
     exit()
