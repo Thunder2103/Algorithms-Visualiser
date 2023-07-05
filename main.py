@@ -1,4 +1,4 @@
-from view import *
+from view import View
 from screens.introduction_screen import Introduction
 
 if(__name__ == "__main__"):

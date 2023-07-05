@@ -4,8 +4,10 @@ if(__name__ == "__main__"):
     print("This is file shouldn't be run on it's own. \nIt should be imported only.")
     exit()
 
-from screens.screen import Screen
-from screens.screens_template import SharedLayout
+from .screen import Screen
+from .screens_template import SharedLayout
+from searching_algorithms.algorithm_names import getAlgorithms
+from searching_algorithms.linear_search import LinearSearch
 import tkinter as tk 
 from tkinter import ttk
 import random
@@ -34,10 +36,7 @@ class Searching(Screen, SharedLayout):
         #combo box, allows the user to choose what algorithm they want
         algorithmOptions = ttk.Combobox(self.optionsWidgetsFrame, textvariable = tk.StringVar(), state = "readonly", font = (self.FONT, 12),\
              width = self.optionsWidgetsFrame.winfo_width())
-        algorithmOptions['value'] = ('1',
-                                     '2', 
-                                     '3', 
-                                     '4')
+        algorithmOptions['value'] = getAlgorithms()
         algorithmOptions.set('Select an algorithm.')
         algorithmOptions.pack(pady = (10,0))
                         
@@ -182,4 +181,5 @@ class Searching(Screen, SharedLayout):
     
     def placeholder(self):
         print(self.array)
-        print(len(self.array))
+        print(len(self.array)) 
+    

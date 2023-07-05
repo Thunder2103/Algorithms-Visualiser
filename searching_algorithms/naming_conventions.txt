@@ -1,0 +1,10 @@
+(So I don't forget)
+
+Module names: (algorithm name)_search.py
+              e.g. linear_search.py
+
+Class names: Capital letter beginning each word
+             e.g. LinearSearch 
+        
+Function names: Camel case 
+                e.g. linearSearch 

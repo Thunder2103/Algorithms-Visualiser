@@ -4,8 +4,8 @@ if(__name__ == "__main__"):
     print("This is file shouldn't be run on it's own. \nIt should be imported only.")
     exit()
 
-from screens.screen import Screen
-from screens.searching_screen import Searching
+from .screen import Screen
+from .searching_screen import Searching
 import tkinter as tk 
 
 # Ideally this should be the first screen the user sees 

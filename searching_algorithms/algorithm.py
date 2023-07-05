@@ -4,7 +4,8 @@ if(__name__ == "__main__"):
     exit()
 
 from abc import ABC, abstractmethod
-# Abstract class - every screen must implement the initScreen method
-class Screen(ABC):
+# Abstract class - every algorithm must implement the algorithmName method
+class Algorithm(ABC):
     @abstractmethod
-    def initScreen(self): pass 
+    def getName(self): pass 
+
