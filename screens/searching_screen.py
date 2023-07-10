@@ -4,16 +4,14 @@ if(__name__ == "__main__"):
     print("This is file shouldn't be run on it's own. \nIt should be imported only.")
     exit()
 
-from .screen import Screen
-from .screens_template import SharedLayout
+import screens as sc
 from searching_algorithms.algorithm_names import getAlgorithms
-from searching_algorithms.linear_search import LinearSearch
 import tkinter as tk 
 from tkinter import ttk
 import random
 import math
 
-class Searching(Screen, SharedLayout):
+class Searching(sc.Screen, sc.SharedLayout):
     def initScreen(self):
         # Creates basic layout of the screen
         self.createTemplate()
@@ -38,6 +36,8 @@ class Searching(Screen, SharedLayout):
              width = self.optionsWidgetsFrame.winfo_width())
         algorithmOptions['value'] = getAlgorithms()
         algorithmOptions.set('Select an algorithm.')
+        # Removes the blue highlighting when something is selected that annoyed me
+        algorithmOptions.bind("<<ComboboxSelected>>", lambda e: self.algorithmInfoFrame.focus())
         algorithmOptions.pack(pady = (10,0))
                         
         # Creates a slider that goes 0 to 1 then 2
@@ -60,7 +60,7 @@ class Searching(Screen, SharedLayout):
         stopSolveFrame = tk.Frame(self.optionsWidgetsFrame, bg = "white")
         stopSolveFrame.pack(side = "bottom", pady = (0,5))
         # Allows user to see the algorithm in action
-        tk.Button(stopSolveFrame, text = "Solve.", width = 7, relief = "solid", font = (self.FONT, 12), command = self.placeholder)\
+        tk.Button(stopSolveFrame, text = "Solve.", width = 7, relief = "solid", font = (self.FONT, 12), command = lambda: self.initAlgorithm(algorithmOptions))\
             .grid(row = 0, column = 0, padx = (0,5)) 
         # Allows user to stop algorithm whilst it's running - button is initially disabled
         tk.Button(stopSolveFrame, text = "Stop.", width = 7, relief = "solid", font = (self.FONT, 12), state = "disabled", command = self.placeholder)\
@@ -177,8 +177,15 @@ class Searching(Screen, SharedLayout):
 
     # Calculates the padding to centre the array of a given size
     def calculatePadding(self):
-        return ((self.arrayCanvas.winfo_width() - (len(self.array) * (self.barDist + self.barWidth))) // 2) + self.barDist
-    
+        return ((self.arrayCanvas.winfo_width() - (len(self.array) * (self.barDist + self.barWidth))) // 2) + self.barDist 
+
+    # Makes sure user has selected an algorithm
+    def initAlgorithm(self, algorithmOptions):
+        if(algorithmOptions.get() == 'Select an algorithm.'): 
+            algorithmOptions.config(foreground = "red")
+        else: 
+            print("Selected")
+
     def placeholder(self):
         print(self.array)
         print(len(self.array)) 

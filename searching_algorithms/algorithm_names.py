@@ -58,6 +58,7 @@ def getAlgorithmNames(modules):
             # Add name of algorithm to list
             algorithmNames.append(algorithmInstance.getName())
         except(AttributeError): 
+            print("The getName() method could not be found")
             continue
     # Convert list to tuple and returns it 
     return tuple(algorithmNames)

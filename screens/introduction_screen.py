@@ -4,12 +4,11 @@ if(__name__ == "__main__"):
     print("This is file shouldn't be run on it's own. \nIt should be imported only.")
     exit()
 
-from .screen import Screen
-from .searching_screen import Searching
+import screens as sc 
 import tkinter as tk 
 
 # Ideally this should be the first screen the user sees 
-class Introduction(Screen):
+class Introduction(sc.Screen):
     def __init__(self, view):
         # Stores reference to view object
         self.view = view
@@ -41,7 +40,7 @@ class Introduction(Screen):
             .pack(pady = (25, 0)) 
 
         tk.Button(buttonsFrame, text = "Array Searching",  font = (self.FONT, 12), height = 2, width = 15, relief = "solid", \
-                command = lambda : [self.view.removeScreen(), self.view.addScreen(Searching(self.view))]).pack(side = "left", pady = 15, padx = (100, 0))
+                command = lambda : [self.view.removeScreen(), self.view.addScreen(sc.Searching(self.view))]).pack(side = "left", pady = 15, padx = (100, 0))
 
         tk.Button(buttonsFrame, text = "Array Sorting",  font = (self.FONT, 12), height = 2, width = 15, relief = "solid",)\
             .pack(side = "left", padx = 100) 

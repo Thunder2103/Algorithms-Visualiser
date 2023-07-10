@@ -5,15 +5,14 @@ if(__name__ == "__main__"):
     exit()
 
 from .algorithm import Algorithm
+import time
 
-class LinearSearch(Algorithm):
+class LinearSearch():
     def getName(self):
         return "Linear Search" 
     
-    def linearSearch(array, target):
-        i = 0
-        while(i < len(array)):
-            if(array[i] == target): return i   
-            i += 1
+    def linearSearch(self, array, target):
+        for i, element in enumerate(array):
+            if element == target: return i
         return -1 
-
+    

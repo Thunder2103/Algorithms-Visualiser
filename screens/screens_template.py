@@ -4,6 +4,7 @@ if(__name__ == "__main__"):
     print("This is file shouldn't be run on it's own. \nIt should be imported only.")
     exit()
 
+import screens as sc
 import tkinter as tk 
 
 # Searching and Sorting Screens both use the same basic layout
@@ -87,7 +88,7 @@ class SharedLayout():
 
         # Creates and places button in the centre of the frame
         tk.Button(homeButtonFrame, text = "Home.", font = (self.FONT, 12), width = 7, height = 1, borderwidth = 2, relief = "solid",\
-             command = lambda: [self.view.removeScreen(), self.view.addScreen(Introduction(self.view))])\
+             command = lambda: [self.view.removeScreen(), self.view.addScreen(sc.Introduction(self.view))])\
                 .place(relx = 0.5, rely = 0.5, anchor = "center") 
     
         # Width of canvas frame and algorithm info frame
