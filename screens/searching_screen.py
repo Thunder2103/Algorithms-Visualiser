@@ -6,25 +6,56 @@ if(__name__ == "__main__"):
 
 import screens as sc
 from searching_algorithms.algorithm_names import getAlgorithms
+from searching_algorithms.init_algorithm import callAlgorithm
 import tkinter as tk 
 from tkinter import ttk
 import random
-import math
-
 class Searching(sc.Screen, sc.SharedLayout):
     def initScreen(self):
         # Creates basic layout of the screen
         self.createTemplate()
+
+        #array to be searched
+        self.array = []
+
+        # Dictionary pairing numbers to speed
+        # This allows the slider to show "Small", "Medium" and "Fast" instead of 0, 1, 2
+        self.numbersToSpeed = {
+            0: ["Slow", 4],
+            1: ["Medium", 2.5],
+            2: ["Fast", 1],
+            3: ["Super Fast", 0.5]
+        }   
+
+        # Binds number the speed to an integer value -> number seconds to delay algorithm
+        self.speedToSeconds = {
+            "Slow": 4,
+            "Medium": 2.5,
+            "Fast": 1,
+            "Super Fast": 0.5
+        }
+
+        # Dictionary pairing numbers to speed 
+        self.numbersToText = {
+            0: ["Target: Random", self.targetRandom], 
+            1: ["Target: In array", self.targetIn],
+            2: ["Target: Not in array", self.targetOut]
+        }
 
         # Returns the height of the canvas - maximum number of pixels an element can possibly have
         self.maximumPixels = self.calculateMaximumPixels()
         
         # Calculates spacing between canvas border and displayed array 
         # Is also used to calculate the largest possible size of the array
-        self.padding = self.calculateBestPadding() 
+        self.minPadding = self.calculateBestPadding() 
 
         # Creating and displaying options
         self.createOptions() 
+
+        # Lowest value that can appear in array
+        self.LOWEST = 100 
+        # Highest value that can appear in array
+        self.HIGHEST = 5000
 
         # Calculate upper and lower array bounds
         self.calculateArrayBounds()
@@ -43,16 +74,25 @@ class Searching(sc.Screen, sc.SharedLayout):
         # Creates a slider that goes 0 to 1 then 2
         # It has three options correlating to the three speeds; slow, medium, fast 
         # Every time the sliders value is changed the intToSpeed() method is called
-        self.speedSlider = tk.Scale(self.optionsWidgetsFrame, from_ = 0, to_ = 2, length = self.optionsWidgetsFrame.winfo_width(),\
+        self.speedSlider = tk.Scale(self.optionsWidgetsFrame, from_ = 0, to_ = 3, length = self.optionsWidgetsFrame.winfo_width(),\
                                 orient = "horizontal", showvalue = False, bg =  "white", highlightbackground = "white", command = self.intToSpeed)
         self.speedSlider.pack(pady = (10, 0))  
         # Initially the slider is set at 0, which is the Slow speed
         self.speedSlider.config(label = "Slow") 
 
         self.arraySizeSlider = tk.Scale(self.optionsWidgetsFrame, from_ = 1, to_ = self.maxBars, length = self.optionsWidgetsFrame.winfo_width(),\
-            orient = "horizontal", bg = "white", highlightbackground = "white", command = self.displayArray)
+            orient = "horizontal", bg = "white", highlightbackground = "white", command = self.adjustArray)
         self.arraySizeSlider.pack(pady = (10, 0))
 
+        # Creates a slider that goes from 0 to 1 to 2
+        # The three values correlate to the three possible target options
+        # The target can guranteed to be in the array, guaranteed to not be in the array or randomly selected
+        self.targetSlider = tk.Scale(self.optionsWidgetsFrame, from_ = 0, to_ = 2, length = self.optionsWidgetsFrame.winfo_width(),\
+            orient = "horizontal", bg = "white", highlightbackground = "white", showvalue = False, command = self.intToText)
+        self.targetSlider.pack(pady = (10, 0))
+        # Initially the slider is set at 0, which is the target being randomly selected
+        self.targetSlider.config(label = "Target: Random") 
+        
         # Makes sure there is enough space for extra options
         tk.Label(self.optionsWidgetsFrame, text = "Filler for extra options", font = (self.FONT, 12)).pack(pady = (10, 0))
 
@@ -65,13 +105,17 @@ class Searching(sc.Screen, sc.SharedLayout):
         # Allows user to stop algorithm whilst it's running - button is initially disabled
         tk.Button(stopSolveFrame, text = "Stop.", width = 7, relief = "solid", font = (self.FONT, 12), state = "disabled", command = self.placeholder)\
             .grid(row = 0, column = 1)  
-        
+    
     # When the slider has changed value a label is added with the relevant speed
     def intToSpeed(self, value): 
-        self.speedSlider.config(label = self.numbersToSpeed[int(value)])  
-       
-    # Iterates through array and draws bars on screen 
-    def displayArray(self, value):
+        self.speedSlider.config(label = self.numbersToSpeed[int(value)][0])  
+
+    # When the target slider has changed value a label is added to show the relevant target information
+    def intToText(self, value):
+        self.targetSlider.config(label = self.numbersToText[int(value)][0]) 
+               
+    # Adjusts size of bars so amount of elements can fit on screen and stay in the canvas' centre
+    def adjustArray(self, value):
         # If the value given from the scrollbar is less than the arrays size
         # Delete elements from the array and check if bar size can increase
         if(int(value) < len(self.array)): 
@@ -81,29 +125,41 @@ class Searching(sc.Screen, sc.SharedLayout):
         else: 
             self.addElements(int(value))
             self.decreaseBarSize()
-        # Clear displayed array on screen
-        self.clearDisplayedArray()
         # If the array less than the maximum number of bars. 
         # Calculate padding 
-        if(len(self.array) != self.maxBars): padding = self.calculatePadding()
+        if(len(self.array) != self.maxBars): self.padding = self.calculatePadding()
         # If the array is now at maximum size, 
         # padding is the value calulated by the calculateBestPadding() method
-        else: padding = self.padding
+        else: self.padding = self.minPadding
         
         # The amount each elements is stretched along the y-axis 
         # Means the elements are scaled with the largest element
-        yStretch = self.maximumPixels / max(self.array)
-        # Calculate where each bar is placed on screen
-        for x, y in enumerate(self.array):
-            # Bottom left co-ord
-            x1 = x * self.barDist + x * self.barWidth + padding
-            # Top left coord
-            y1 = self.arrayCanvas.winfo_height() - (y * yStretch)  
-            # Bottom right coord
-            x2 = x * self.barDist + x * self.barWidth + self.barWidth + padding
-            # Top right coord
-            y2 = self.arrayCanvas.winfo_height() 
-            self.arrayCanvas.create_rectangle(x1, y1, x2, y2, fill = "Black")
+        self.yStretch = self.maximumPixels / max(self.array)
+        # Draw the actual array with all the adjustments made
+        # Since there is no algorithm active, all bars are drawn as black
+        self.displayArray("Black")
+        
+    # Iterates through array, drawing each bar
+    # The function has two default arguements -> currentIndex and altColour both initialised to None
+    def displayArray(self, defaultColour, currentIndex = None, altColour = None):
+            # Clear displayed array on screen
+            self.clearDisplayedArray()
+            for x, y in enumerate(self.array):
+                # Calculate where each bar is placed on screen
+                # Bottom left co-ord
+                x1 = x * self.barDist + x * self.barWidth + self.padding
+                # Top left coord
+                y1 = self.arrayCanvas.winfo_height() - (y * self.yStretch)  
+                # Bottom right coord
+                x2 = x * self.barDist + x * self.barWidth + self.barWidth + self.padding
+                # Top right coord
+                y2 = self.arrayCanvas.winfo_height() 
+                
+                # Chooses correct colour for bar to be filled in with
+                if x == currentIndex: self.arrayCanvas.create_rectangle(x1, y1, x2, y2, fill = altColour) 
+                else: self.arrayCanvas.create_rectangle(x1, y1, x2, y2, fill = defaultColour) 
+            # Updates screen so bars can be seen onscreen
+            self.view.update()
       
     # Wipes everything off the canvas
     def clearDisplayedArray(self):
@@ -136,7 +192,7 @@ class Searching(sc.Screen, sc.SharedLayout):
     # Calculate upper and lower bounds of the array
     def calculateArrayBounds(self):
         # Choose an arbitary number, this is used to calculate the upper and lower bounds 
-        mid = random.randint(100, 5000)
+        mid = random.randint(self.LOWEST, self.HIGHEST)
         # Upper is the largest value the array can display
         self.upper = mid * 2 
         
@@ -148,7 +204,7 @@ class Searching(sc.Screen, sc.SharedLayout):
         self.lower = round((self.arrayCanvas.winfo_height() - self.maximumPixels + 1) / (self.maximumPixels / self.upper))  
     
         # Draw the first element on screen
-        self.displayArray('1')
+        self.adjustArray('1')
     
     # Largest number that can be displayed on screen
     def calculateMaximumPixels(self):
@@ -179,14 +235,57 @@ class Searching(sc.Screen, sc.SharedLayout):
     def calculatePadding(self):
         return ((self.arrayCanvas.winfo_width() - (len(self.array) * (self.barDist + self.barWidth))) // 2) + self.barDist 
 
-    # Makes sure user has selected an algorithm
+    # Gets options user has selected from the slider (an intger used as the dictionary key)
+    # and calls the paired function stored in the dictionary 
+    # Each function returns an integers -> the target
+    def generateTarget(self):
+        return self.numbersToText[self.targetSlider.get()][1]()
+    
+    # Makes sure that target generated has (almost) equal chance to be in the arry or not 
+    def targetRandom(self): 
+        # Chooses either 1 or 0 
+        # If 1 is chosen then call function to gurantee target is in array
+        if random.randint(0 , 1): return self.targetIn()
+        # Else call function to gurantee target not in array
+        else: return self.targetOut()
+    
+    # Guarantees target is in the array
+    def targetIn(self): 
+       # Randomly chooses index from array and returns integers at that index
+       return self.array[random.randint(0, len(self.array) - 1)] 
+
+    # Guarantees target is not in arrat
+    def targetOut(self): 
+        # Chooses a number from absolute lower and upper bounds
+        target = random.randint(self.LOWEST, self.HIGHEST)
+        # If generated number in array recall function
+        if target in self.array: self.targetOut()
+        # If generated number not in array then just return value
+        else: return target
+        
+    # Call algorithm user has selected
     def initAlgorithm(self, algorithmOptions):
+        # Doesn't do anything is user hasn't chosen an algorithm
         if(algorithmOptions.get() == 'Select an algorithm.'): 
             algorithmOptions.config(foreground = "red")
-        else: 
-            print("Selected")
-
-    def placeholder(self):
-        print(self.array)
-        print(len(self.array)) 
+        else:
+            # Generates target the algorithm looks for 
+            self.target = self.generateTarget()
+            # Call algorithm -> so this program actually has a use
+            callAlgorithm(self, algorithmOptions.get())
     
+    # Returns array
+    def getArray(self):
+        return self.array
+
+    # Returns target
+    def getTarget(self):
+        return self.target
+    
+    # Returns number of seconds to delay each iteration of algorithm
+    def getDelay(self):
+        return self.numbersToSpeed[self.speedSlider.get()][1]
+    
+    # Just a placeholder until I write actual functions 
+    def placeholder(self): 
+        print(self.array)

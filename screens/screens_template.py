@@ -17,17 +17,6 @@ class SharedLayout():
         # Font every widget uses 
         self.FONT = "Arial"
         
-        #array to be searched
-        self.array = []
-
-        # Object stores the dictionary pairing numbers to speed
-        # This allows the slider to show "Small", "Medium" and "Fast" instead of 0, 1, 2
-        self.numbersToSpeed = {
-            0: "Slow",
-            1: "Medium",
-            2: "Fast"
-        }   
-
         # Current size of bars
         self.barWidth = 15
         # Smallest bars can be 

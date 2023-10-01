@@ -6,13 +6,22 @@ if(__name__ == "__main__"):
 
 from .algorithm import Algorithm
 import time
-
-class LinearSearch():
+class LinearSearch(Algorithm):
     def getName(self):
         return "Linear Search" 
     
-    def linearSearch(self, array, target):
-        for i, element in enumerate(array):
-            if element == target: return i
-        return -1 
-    
+    # Retrieves whatever algorithm needs to run
+    def init(self, Searching):
+        self.array = Searching.getArray()
+        self.target = Searching.getTarget()
+        self.delay = Searching.getDelay()
+        
+    # Linear Searching algorithm -> see markdown for explanation
+    def linearSearch(self, Searching):
+        self.init(Searching)
+        for index, num in enumerate(self.array):
+            if num == self.target:
+                Searching.displayArray("Black", index, "Green")
+                return 1
+            else: Searching.displayArray("Black", index, "Red")
+            time.sleep(self.delay)       

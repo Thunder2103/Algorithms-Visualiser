@@ -13,14 +13,14 @@ import importlib
 # Instead I have spent more time than it's worth to automate it
 
 # Makes sure only files containing the algorithms are selected  
-# Provided files containing algorithms follow the naming convention
+# Provided files containing algorithms follow the naming convention -> (name)_search.py
 def filterFileNames(file):
-    return True if "search" in file else False 
+    return True if file[-9:] == "search.py" else False 
 
-# Makes sure only algorithm classes are selected 
-# Privded that the naming convention is followed
+# Checks that relevant files follow inheritance and naming convenvtions 
+# Checks if any class name has words "Algorithm" or "Search" in them
 def filterClassNames(className):
-    return True if "Search" in className else False
+    return True if "Search" in className or "Algorithm" in className else False
 
 # Returns the name of each algorithm that has been written
 # Provided the naming conventions have been followed
@@ -45,21 +45,45 @@ def getAlgorithmNames(modules):
     algorithmNames = []
     # Imports relevant modules and gets relevant classes
     for module in modules:
+        # Imports module
         algorithmModule = importlib.import_module("searching_algorithms." + module)
-        # This is just makes a list of all classes in a given module 
+       
+        # This just creates a list of all classes in the imported module 
         # I love one line list comprehensions (Thx Haskell)
         moduleClasses = [name for name, obj in inspect.getmembers(algorithmModule)] 
-        # filters out any classes that aren't needed (just in case)
-        algorithmClass = "".join(filter(filterClassNames, moduleClasses))
-        # Create instance of the relevant class 
-        algorithmInstance = getattr(algorithmModule, algorithmClass)()
-        # Just in case a class that doesn't have the required function slips through the cracks
-        try: 
-            # Add name of algorithm to list
-            algorithmNames.append(algorithmInstance.getName())
-        except(AttributeError): 
-            print("The getName() method could not be found")
+        # filters out any classes that aren't needed (classes without the words "Algorithm" or "Search")
+        algorithmClasses = list((filter(filterClassNames, moduleClasses)))
+        
+        # Check algorithm class includes the manditory Algorithm class
+        if "Algorithm" in algorithmClasses: algorithmClasses.remove("Algorithm")
+        else: continue
+
+        # If the list is empty then "Search" was not included in the class name
+        if not algorithmClasses: continue
+
+        # Checks if "Search" is at the end of the algorithms class name or not
+        # If not then the naming convention has not been followed and the algorithm won't be added
+        if not algorithmClasses[0][-6:] == "Search": continue 
+        
+        # Attempts to create an instance of given class
+        # If class doesn't have an implementation for all abstract methods then an error is thrown
+        try:
+            algorithmInstance = getattr(algorithmModule, algorithmClasses[0])() 
+        except Exception as error: 
+            print(f"{algorithmClasses[0]}:", error)
             continue
+
+        # Checks correct function is in algorithm class -> so it can be called later
+        algorithmFunction = algorithmClasses[0][0].lower() + algorithmClasses[0][1:]
+        # List of all functions in given algorithm class
+        classFunctions = dir(algorithmInstance) 
+
+        # If required function not in algorithm class -> it can't be called later, 
+        # so class is not added to list
+        if not algorithmFunction in classFunctions: continue 
+
+        algorithmNames.append(algorithmInstance.getName())
+
     # Convert list to tuple and returns it 
     return tuple(algorithmNames)
 
