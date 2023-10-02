@@ -7,6 +7,7 @@ if(__name__ == "__main__"):
 from .algorithm import Algorithm
 import time
 class LinearSearch(Algorithm):
+    # Returns algorithms name -> user sees this when selecting algorithm
     def getName(self):
         return "Linear Search" 
     

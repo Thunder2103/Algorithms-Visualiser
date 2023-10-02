@@ -1,7 +1,6 @@
 # Algorithm Visualiser
 
-Visualising algorithms in python.  
-Created by Thomas Gibson.
+Written in python by Thomas Gibson.
 
 ---
 | Table of contents                                              | 
@@ -25,7 +24,7 @@ Algorithm Steps:<br>
 2. Compare current value to the target
 3. If the value is equal to the target then return true
 4. If the value is not equal to the target then go to the next element
-5. Repeat steps 2 - 5 until the end of array is reached or target is found
+5. Repeat steps 2 - 4 until the end of array is reached or target is found
 6. If the end of the array has been reached and target has not beem found, return false
 
 Time Complexity: O(n)<br>
@@ -39,15 +38,24 @@ If any one of these conventions aren't met the automated system will not display
 --- 
 ### Naming Files: 
 ---
+New algorithms must be in files created in the "searching_algorithms" directory.
+
 Please follow this format:
 - algorithm_name_search.py 
 - e.g. binary_search.py 
 - e.g. linear_search.py 
+
+Please note the file <b>must</b> end in "search.py" otherwise the automated system won't show the algorithm as an option to the user.<br>
+(Technically the file can be called anything as long as it ends with "search.py")
+
 ---
 ### Naming Classes:
 ---
+New algorithms must be implemented as a class.<br>
+Each class must be a child class of the [Algorithm class](#algorithm---parent-class) and implement a [mandatory method](#mandatory-function-naming-and-arguments)
+
 Please follow this format:
-- AlgorithmNameSearch.py 
+- AlgorithmNameSearch
 - e.g. BinarySearch 
 - e.g. LinearSearch  
 --- 
@@ -55,7 +63,7 @@ Please follow this format:
 ### Algorithm - Parent Class: 
 --- 
 Every new search algorithm must be a child of the Algorithm class. The Algorithm class contains an abstract method<br> called 'getName'. The 'getName' method should just return a string containing the algorithms name. <br> 
-For example the equivalent method in the  BinarySearch class would return the string "Binary Search".
+For example the equivalent method in the  #BinarySearch class would return the string "Binary Search".
 
 ---
 ### Mandatory Function Naming and Arguments:
@@ -65,11 +73,11 @@ For example the equivalent method in the  BinarySearch class would return the st
 The function that actually executes the algorithm needs to be named in a specific way and take in certain arguments.<br><br> 
 Please follow this convention:
 
-- algorithmNameSearch(self, Searching)
-- e.g. BinarySearch would have the follwing function - binarySearch(self, Searching)  
+- algorithmnameSearch(self, Searching)
+- e.g. BinarySearch would have the following function - binarySearch(self, Searching)  
 - e.g. LinearSearch would have the follwing function - linearSearch(self, Searching) 
 
-The "Searching" arguement is an object that contains the array, target and displayArray() method the algorithm needs to run.
+The "Searching" arguement is an object that contains all the variables and methods a searching algorithm needs to actually run.
 
 ---
 

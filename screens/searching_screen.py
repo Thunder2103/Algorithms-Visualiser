@@ -256,8 +256,8 @@ class Searching(sc.Screen, sc.SharedLayout):
 
     # Guarantees target is not in arrat
     def targetOut(self): 
-        # Chooses a number from absolute lower and upper bounds
-        target = random.randint(self.LOWEST, self.HIGHEST)
+        # Chooses a number between the range of arrays smallest value - 20 and arrays largest value + 20
+        target = random.randint(min(self.array) - 20, max(self.array) + 20)
         # If generated number in array recall function
         if target in self.array: self.targetOut()
         # If generated number not in array then just return value
