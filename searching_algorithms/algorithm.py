@@ -6,10 +6,5 @@ if(__name__ == "__main__"):
 from abc import ABC, abstractmethod
 # Abstract class - every algorithm must implement the getName() method
 class Algorithm(ABC):
-    
     @abstractmethod
     def getName(self): pass 
-
-
-
-
