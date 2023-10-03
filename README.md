@@ -31,6 +31,24 @@ Time Complexity: O(n)<br>
 Space Complexity: O(1)
 
 ---
+### Binary Search 
+---
+Algorithm steps:
+
+1. Intialise a variable called low with a value of 0
+2. Intialise a variable called high that is equal to the length of the array minus one
+3. While low is less than or equal to high 
+4. Calculate mid - (low + high) // 2
+5. If the value at mid is equal to the target, return True
+6. If the value at mid is greater than the target, set low to mid plus one
+7. If the value at mid is less than the target, set high to mid minus one 
+8. Repeat steps 3 - 7 
+9. If the loop terminates, return False
+
+Time complexity: O(log n)<br>
+Space Complexity: O(1)
+
+---
 ## Searching Algorithms: Conventions:
 Please follow these conventions for files, classes and functions when adding new searching algorithms.<br> 
 If any one of these conventions aren't met the automated system will not display the algorithm to the user and <br>subsequently won't visualise the algorithm.
