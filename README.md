@@ -49,6 +49,24 @@ Time complexity: O(log n)<br>
 Space Complexity: O(1)
 
 ---
+
+### Jump Search 
+--- 
+Algorithm Steps:
+
+1. Initialise a variable called step and set it's value to $\sqrt{n}$ (where n is the length of the array)
+2. Create a variable called prev and set it's value to 0
+3. While step is less than n, set prev to the value of set and increment step by $\sqrt{n}$. <br>
+If prev is greater than or equal to n, return false. Else if the value at index step is greater than target, break loop.   
+4. Starting at index corresponding to prev value
+5. If the current index is equal to the target, return true
+6. If the current index is greater than the target, retirn false
+7. Repeat steps 5 - 6 until reached index corresponding to prev + $\sqrt{n}$  
+
+Time Complexity: O($\sqrt{n}$)<br>
+Space Complexity: O(1)
+
+---
 ## Searching Algorithms - Conventions:
 Please follow these conventions for files, classes and functions when adding new searching algorithms.<br> 
 If any one of these conventions aren't met the automated system will not display the algorithm to the user and <br>subsequently won't visualise the algorithm.
