@@ -10,7 +10,7 @@ class Algorithm(ABC):
     @abstractmethod
     def getName(self): pass 
 
-    # All Searching Algorithms need the array, the target and the delay
+    # All Searching Algorithms need the array, the target and the time delay
     def init(self, Searching):
         self.array = Searching.getArray()
         self.target = Searching.getTarget()

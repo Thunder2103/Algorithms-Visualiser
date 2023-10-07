@@ -70,7 +70,7 @@ Please note the file <b>must</b> end in "search.py" otherwise the automated syst
 ### Naming Classes:
 ---
 New algorithms must be implemented as a class.<br>
-Each class must be a child class of the [Algorithm class](#algorithm---parent-class) and implement a [mandatory method](#mandatory-function-naming-and-arguments)
+Each class must be a child of the [Algorithm class](#algorithm---parent-class) and implement a [mandatory method](#mandatory-function-naming-and-arguments)
 
 Please follow this format:
 - AlgorithmNameSearch
@@ -81,8 +81,11 @@ Please follow this format:
 ### Parent Class - Algorithm: 
 --- 
 Every new search algorithm must be a child of the Algorithm class. The Algorithm class contains an abstract method<br> called 'getName()' which must be implemented.<br> 
-The 'getName()' method should return a string containing the algorithms name. Each word in the string should be capitalised.<br>
-E.g. the binary search classes 'getName()' method would return the string "Binary Search"
+The 'getName()' takes in no arguments and must return a string containing the algorithms name. Each word in the string should be capitalised.<br>
+E.g. the binary search classes 'getName()' method would return the string "Binary Search"<br>
+The Algorithm class also contains a method called 'init(self, Searching)'. This method gets the array, target and time delay each searching algorithm needs, <br>
+storing them as attributes the child object can access. It does this by taking in the Searching object as an argument and calling the relevant getter methods. <br>
+The class contains another method called 'sortArray()', this just sorts the array which is a precondition needed for several searching algorithms.
 
 ---
 ### Mandatory Function Naming and Arguments:
@@ -90,13 +93,13 @@ E.g. the binary search classes 'getName()' method would return the string "Binar
 --- 
 
 The function that actually executes the algorithm needs to be named in a specific way and take in certain arguments.<br><br> 
-Please follow this convention:
+Please follow this format:
 
 - algorithmnameSearch(self, Searching)
 - e.g. BinarySearch would have the following function - binarySearch(self, Searching)  
 - e.g. LinearSearch would have the follwing function - linearSearch(self, Searching) 
 
-The "Searching" argument is an object that contains all the variables and methods a searching algorithm needs to actually run.
+The "Searching" argument is an object that contains all the variables and methods a searching algorithm needs to actually run. 
 
 ---
 
