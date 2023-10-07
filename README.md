@@ -6,7 +6,7 @@ Written in python by Thomas Gibson.
 | Table of contents                                              | 
 | -------------------------------------------------------------- |
 |   [1. Searching Algorithms](#searching-algorithms)             |  
-|   [2. Searching Algorithms: Conventions](#searching-algorithms-conventions) |
+|   [2. Searching Algorithms - Conventions](#searching-algorithms) |
 |   
 
 
@@ -49,7 +49,7 @@ Time complexity: O(log n)<br>
 Space Complexity: O(1)
 
 ---
-## Searching Algorithms: Conventions:
+## Searching Algorithms - Conventions:
 Please follow these conventions for files, classes and functions when adding new searching algorithms.<br> 
 If any one of these conventions aren't met the automated system will not display the algorithm to the user and <br>subsequently won't visualise the algorithm.
 
@@ -78,10 +78,11 @@ Please follow this format:
 - e.g. LinearSearch  
 --- 
 
-### Algorithm - Parent Class: 
+### Parent Class - Algorithm: 
 --- 
-Every new search algorithm must be a child of the Algorithm class. The Algorithm class contains an abstract method<br> called 'getName'. The 'getName' method should just return a string containing the algorithms name. <br> 
-For example the equivalent method in the  #BinarySearch class would return the string "Binary Search".
+Every new search algorithm must be a child of the Algorithm class. The Algorithm class contains an abstract method<br> called 'getName()' which must be implemented.<br> 
+The 'getName()' method should return a string containing the algorithms name. Each word in the string should be capitalised.<br>
+E.g. the binary search classes 'getName()' method would return the string "Binary Search"
 
 ---
 ### Mandatory Function Naming and Arguments:
@@ -95,7 +96,7 @@ Please follow this convention:
 - e.g. BinarySearch would have the following function - binarySearch(self, Searching)  
 - e.g. LinearSearch would have the follwing function - linearSearch(self, Searching) 
 
-The "Searching" arguement is an object that contains all the variables and methods a searching algorithm needs to actually run.
+The "Searching" argument is an object that contains all the variables and methods a searching algorithm needs to actually run.
 
 ---
 

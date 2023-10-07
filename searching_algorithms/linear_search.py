@@ -11,18 +11,17 @@ class LinearSearch(Algorithm):
     def getName(self):
         return "Linear Search" 
     
-    # Retrieves whatever algorithm needs to run
-    def init(self, Searching):
-        self.array = Searching.getArray()
-        self.target = Searching.getTarget()
-        self.delay = Searching.getDelay()
-        
-    # Linear Searching algorithm -> see markdown for explanation
+    # Linear Search Algorithm
     def linearSearch(self, Searching):
-        self.init(Searching)
+        # Gets everything algorithm needs to run
+        self.init(Searching) 
+        
+        # Iterate through array one element at a time
         for index, num in enumerate(self.array):
+            # If current element is equal to the target
             if num == self.target:
                 Searching.displayArray("Black", index, "Green")
                 return 1
-            else: Searching.displayArray("Black", index, "Red")
+            Searching.displayArray("Black", index, "Red")
             time.sleep(self.delay)       
+        return 0

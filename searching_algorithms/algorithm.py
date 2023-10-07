@@ -4,7 +4,22 @@ if(__name__ == "__main__"):
     exit()
 
 from abc import ABC, abstractmethod
+import time
 # Abstract class - every algorithm must implement the getName() method
 class Algorithm(ABC):
     @abstractmethod
     def getName(self): pass 
+
+    # All Searching Algorithms need the array, the target and the delay
+    def init(self, Searching):
+        self.array = Searching.getArray()
+        self.target = Searching.getTarget()
+        self.delay = Searching.getDelay()
+    
+    # Sorts given array -> since several algorithms need a sorted array
+    def sortArray(self, Searching):
+        self.array.sort()
+        Searching.displayArray("Black")
+        # Small delay after sorting and displaying array
+        time.sleep(0.5)
+    
