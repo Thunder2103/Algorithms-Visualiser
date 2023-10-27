@@ -4,7 +4,7 @@ if(__name__ == "__main__"):
     print("This is file shouldn't be run on it's own. \nIt should be imported only.")
     exit()
 
-import screens as sc
+import Introduction_Screen as sc
 import tkinter as tk 
 
 # Searching and Sorting Screens both use the same basic layout

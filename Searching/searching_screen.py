@@ -4,13 +4,14 @@ if(__name__ == "__main__"):
     print("This is file shouldn't be run on it's own. \nIt should be imported only.")
     exit()
 
-import screens as sc
-from searching_algorithms.algorithm_names import getAlgorithms
-from searching_algorithms.init_algorithm import callAlgorithm
+import Screen_Templates as st
+from .algorithm_names import getAlgorithms
+from Searching.init_algorithm import callAlgorithm
 import tkinter as tk 
 from tkinter import ttk
 import random
-class Searching(sc.Screen, sc.SharedLayout):
+
+class Searching(st.Screen, st.SharedLayout):
     def initScreen(self):
         # Creates basic layout of the screen
         self.createTemplate()

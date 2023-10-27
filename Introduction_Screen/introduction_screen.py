@@ -4,11 +4,12 @@ if(__name__ == "__main__"):
     print("This is file shouldn't be run on it's own. \nIt should be imported only.")
     exit()
 
-import screens as sc 
+import Screen_Templates as st
+import Searching as sc
 import tkinter as tk 
 
 # Ideally this should be the first screen the user sees 
-class Introduction(sc.Screen):
+class Introduction(st.Screen):
     def __init__(self, view):
         # Stores reference to view object
         self.view = view

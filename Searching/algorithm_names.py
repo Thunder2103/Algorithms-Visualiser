@@ -32,7 +32,7 @@ def getAlgorithms():
 
 # Gets modules names in this package 
 def getModuleNames():
-    path = "./searching_algorithms"
+    path = "./Searching/Algorithms"
     # Gets every file in the given directory
     # and filters out files that don't contain the algorithms
     algorithmFiles = filter(filterFileNames, os.listdir(path)) 
@@ -46,7 +46,7 @@ def getAlgorithmNames(modules):
     # Imports relevant modules and gets relevant classes
     for module in modules:
         # Imports module
-        algorithmModule = importlib.import_module("searching_algorithms." + module)
+        algorithmModule = importlib.import_module("Searching.Algorithms." + module)
        
         # This just creates a list of all classes in the imported module 
         # I love one line list comprehensions (Thx Haskell)

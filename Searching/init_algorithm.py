@@ -11,7 +11,7 @@ def callAlgorithm(Searching, algorithm):
     # Constructs name of module where algorithm class is stored
     fileName = "_".join(algorithm.split(" ")).lower()
     # Imports module
-    algorithmModule = importlib.import_module("searching_algorithms." + fileName)
+    algorithmModule = importlib.import_module("Searching.Algorithms." + fileName)
     # Constructs name of class so it can be instantiated
     algorithmClass = algorithm.replace(" ", "")
     # Create instance of the relevant class 

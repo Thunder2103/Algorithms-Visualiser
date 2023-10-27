@@ -6,8 +6,8 @@ if(__name__ == "__main__"):
     exit()
 
 
-# View Class - Creates a blank tkinter window
-class View():
+# Window Class - Creates a blank tkinter window
+class Window():
     def __init__(self, width, height):
         # Variables to store minimum width and height - means they can be easily changed
         minWidth = 750 
