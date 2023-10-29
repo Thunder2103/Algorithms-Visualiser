@@ -1,10 +1,10 @@
 from Window import Window 
-from Introduction_Screen import Introduction
+from Introduction_Screen import IntroductionScreen
 
 if(__name__ == "__main__"):
     window = Window(750, 500) 
     window.create()
-    window.addScreen(Introduction(window))
+    window.addScreen(IntroductionScreen(window))
     window.show()  
 else:
     print("This file has no functions to import")

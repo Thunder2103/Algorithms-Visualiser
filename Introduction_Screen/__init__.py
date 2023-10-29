@@ -1,2 +1,2 @@
-from .introduction_screen import Introduction
+from .introduction_screen import IntroductionScreen
 

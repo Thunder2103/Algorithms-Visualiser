@@ -9,7 +9,7 @@ import Searching as sc
 import tkinter as tk 
 
 # Ideally this should be the first screen the user sees 
-class Introduction(st.Screen):
+class IntroductionScreen(st.Screen):
     def __init__(self, view):
         # Stores reference to view object
         self.view = view
@@ -41,7 +41,7 @@ class Introduction(st.Screen):
             .pack(pady = (25, 0)) 
 
         tk.Button(buttonsFrame, text = "Array Searching",  font = (self.FONT, 12), height = 2, width = 15, relief = "solid", \
-                command = lambda : [self.view.removeScreen(), self.view.addScreen(sc.Searching(self.view))]).pack(side = "left", pady = 15, padx = (100, 0))
+                command = lambda : [self.view.removeScreen(), self.view.addScreen(sc.SearchScreen(self.view))]).pack(side = "left", pady = 15, padx = (100, 0))
 
         tk.Button(buttonsFrame, text = "Array Sorting",  font = (self.FONT, 12), height = 2, width = 15, relief = "solid",)\
             .pack(side = "left", padx = 100) 

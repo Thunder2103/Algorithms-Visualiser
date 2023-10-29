@@ -5,19 +5,17 @@ if(__name__ == "__main__"):
     exit()
 
 import Screen_Templates as st
+from .searching_model import SearchModel
 from .algorithm_names import getAlgorithms
 from Searching.init_algorithm import callAlgorithm
 import tkinter as tk 
 from tkinter import ttk
 import random
 
-class Searching(st.Screen, st.SharedLayout):
+class SearchScreen(st.Screen, st.SharedLayout):
     def initScreen(self):
         # Creates basic layout of the screen
         self.createTemplate()
-
-        #array to be searched
-        self.array = []
 
         # Dictionary pairing numbers to speed
         # This allows the slider to show "Small", "Medium" and "Fast" instead of 0, 1, 2
@@ -53,10 +51,16 @@ class Searching(st.Screen, st.SharedLayout):
         # Creating and displaying options
         self.createOptions() 
 
-        # Lowest value that can appear in array
-        self.LOWEST = 100 
+        # SearchModel contains all the data
+        self.model = SearchModel()
+     
+        # Get array from SearchModel
+        self.array = self.model.getArray()
+
+        # Lower bound 
+        self.randomLow = self.model.getLow() 
         # Highest value that can appear in array
-        self.HIGHEST = 5000
+        self.randomHigh = self.model.getHigh()
 
         # Calculate upper and lower array bounds
         self.calculateArrayBounds()
@@ -126,10 +130,10 @@ class Searching(st.Screen, st.SharedLayout):
         else: 
             self.addElements(int(value))
             self.decreaseBarSize()
-        # If the array less than the maximum number of bars. 
+        # If the array size is less than the maximum number of bars. 
         # Calculate padding 
         if(len(self.array) != self.maxBars): self.padding = self.calculatePadding()
-        # If the array is now at maximum size, 
+        # If the array size is now at maximum size, 
         # padding is the value calulated by the calculateBestPadding() method
         else: self.padding = self.minPadding
         
@@ -169,7 +173,8 @@ class Searching(st.Screen, st.SharedLayout):
     # Adds amount of elements corresponding to the value
     def addElements(self, value):
         for i in range(len(self.array), value):
-            self.array.append(random.randint(self.lower, self.upper)) 
+            # Choose random number inbetween upper and lower bounds
+            self.array.append(random.randint(self.lowerBound, self.upperBound)) 
     
     # Deletes number of elements corresponding to the value
     def deleteElements(self, value):
@@ -192,17 +197,16 @@ class Searching(st.Screen, st.SharedLayout):
     
     # Calculate upper and lower bounds of the array
     def calculateArrayBounds(self):
-        # Choose an arbitary number, this is used to calculate the upper and lower bounds 
-        mid = random.randint(self.LOWEST, self.HIGHEST)
-        # Upper is the largest value the array can display
-        self.upper = mid * 2 
+        # Calculate maximum value the array can have by:
+        # Choosing an arbitrary number between randomLow and randomHigh and doubling it 
+        self.upperBound = random.randint(self.randomLow, self.randomHigh) * 2 
         
         # Long explanation time...
         # Lower is the absolute minimum value that can appear on screen 
         # Bars are only visible if the top right coorindate is less than or equal to the value of maximumPixels - 0.5 
         # So lower can be calculated be rearranging the y1 coord equation to solve for y
         # 0.5 was rounded up to 1 because it looks nicer
-        self.lower = round((self.arrayCanvas.winfo_height() - self.maximumPixels + 1) / (self.maximumPixels / self.upper))  
+        self.lowerBound = round((self.arrayCanvas.winfo_height() - self.maximumPixels + 1) / (self.maximumPixels / self.upperBound))  
     
         # Draw the first element on screen
         self.adjustArray('1')

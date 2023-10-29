@@ -1,1 +1,2 @@
-from .searching_screen import Searching
+from .searching_screen import SearchScreen
+from .searching_model import SearchModel
