@@ -71,18 +71,8 @@ class SearchScreen(st.Screen, st.SharedLayout):
         self.createSpeedAdjuster()
         self.createArrayAdjuster()
         self.createTargetAdjuster()
+        self.createStopSolveButtons()
 
-
-        # Frame to store stop and solve buttons in a grid layout
-        stopSolveFrame = tk.Frame(self.optionsWidgetsFrame, bg = "white")
-        stopSolveFrame.pack(side = "bottom", pady = (0,5))
-        # Allows user to see the algorithm in action
-        tk.Button(stopSolveFrame, text = "Solve.", width = 7, relief = "solid", font = (self.FONT, 12), command = lambda: self.initAlgorithm())\
-            .grid(row = 0, column = 0, padx = (0,5)) 
-        # Allows user to stop algorithm whilst it's running - button is initially disabled
-        tk.Button(stopSolveFrame, text = "Stop.", width = 7, relief = "solid", font = (self.FONT, 12), state = "disabled", command = self.placeholder)\
-            .grid(row = 0, column = 1)  
-    
     # Creates a combo box which displays all algorithms 
     def createAlgorithmOptions(self) -> None:
         #combo box, allows the user to choose what algorithm they want
@@ -111,6 +101,7 @@ class SearchScreen(st.Screen, st.SharedLayout):
             orient = "horizontal", bg = "white", highlightbackground = "white", command = self.adjustArray)
         self.arraySizeSlider.pack(pady = (10, 0))
 
+    # Creates a slider that lets sers decide if the target is in the array, not in the array or randomly generated
     def createTargetAdjuster(self) -> None:
         # Creates a slider that goes from 0 to 1 to 2
         # The three values correlate to the three possible target options
@@ -120,6 +111,18 @@ class SearchScreen(st.Screen, st.SharedLayout):
         self.targetSlider.pack(pady = (10, 0))
         # Initially the slider is set at 0, which is the target being randomly selected
         self.targetSlider.config(label = "Target: Random") 
+    
+    # Creates buttons that lets user execute algorithms or stop them
+    def createStopSolveButtons(self) -> None:
+        # Frame to store stop and solve buttons in a grid layout
+        stopSolveFrame = tk.Frame(self.optionsWidgetsFrame, bg = "white")
+        stopSolveFrame.pack(side = "bottom", pady = (0,5))
+        # Allows user to see the algorithm in action
+        tk.Button(stopSolveFrame, text = "Solve.", width = 7, relief = "solid", font = (self.FONT, 12), command = lambda: self.initAlgorithm())\
+            .grid(row = 0, column = 0, padx = (0,5)) 
+        # Allows user to stop algorithm whilst it's running - button is initially disabled
+        tk.Button(stopSolveFrame, text = "Stop.", width = 7, relief = "solid", font = (self.FONT, 12), state = "disabled", command = self.placeholder)\
+            .grid(row = 0, column = 1)  
 
     # When the slider has changed value a label is added with the relevant speed
     def intToSpeed(self, value : str) -> None: 

@@ -4,7 +4,7 @@ from Introduction_Screen import IntroductionScreen
 if(__name__ == "__main__"):
     window = Window(750, 500) 
     window.create()
-    window.addScreen(IntroductionScreen(window))
+    window.loadScreen(IntroductionScreen(window))
     window.show()  
 else:
     print("This file has no functions to import")
