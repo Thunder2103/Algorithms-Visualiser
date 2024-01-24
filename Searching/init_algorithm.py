@@ -7,7 +7,7 @@ if(__name__ == "__main__"):
 import importlib
 
 # Creates instance of algorithm  
-def callAlgorithm(Searching, algorithm):
+def callAlgorithm(Searching, algorithm : str) -> None:
     # Constructs name of module where algorithm class is stored
     fileName = "_".join(algorithm.split(" ")).lower()
     # Imports module

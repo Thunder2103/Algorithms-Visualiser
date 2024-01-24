@@ -39,19 +39,19 @@ class SearchModel():
         else:
             self.highest = highest 
     
-    def getArray(self):
+    def getArray(self) -> list:
         return self.array 
 
-    # If user wants to chnage default LOWEST value
-    def setLow(self, value):
+    # If user wants to change default LOWEST value
+    def setLow(self, value : int) -> None:
         self.lowest = value 
 
     # If user wants to change default HIGHEST value 
-    def setHigh(self, value):
+    def setHigh(self, value : int) -> None:
         self.highest = value 
     
-    def getLow(self):
+    def getLow(self) -> int:
         return self.lowest
 
-    def getHigh(self):
+    def getHigh(self) -> int:
         return self.highest

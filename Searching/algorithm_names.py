@@ -14,24 +14,24 @@ import importlib
 
 # Makes sure only files containing the algorithms are selected  
 # Provided files containing algorithms follow the naming convention -> (name)_search.py
-def filterFileNames(file):
+def filterFileNames(file) -> bool:
     return True if file[-9:] == "search.py" else False 
 
 # Checks that relevant files follow inheritance and naming convenvtions 
 # Checks if any class name has words "Algorithm" or "Search" in them
-def filterClassNames(className):
+def filterClassNames(className) -> bool:
     return True if "Search" in className or "Algorithm" in className else False
 
 # Returns the name of each algorithm that has been written
 # Provided the naming conventions have been followed
-def getAlgorithms():
+def getAlgorithms() -> tuple:
     # Get the name of each algorithm module
     moduleNames = getModuleNames()
     # Returns a list of the every algorithms name
     return getAlgorithmNames(moduleNames)
 
 # Gets modules names in this package 
-def getModuleNames():
+def getModuleNames() -> list:
     path = "./Searching/Algorithms"
     # Gets every file in the given directory
     # and filters out files that don't contain the algorithms
@@ -41,7 +41,7 @@ def getModuleNames():
 
 # Returns a tuple containing every algorithms name 
 # So the names can be seen in the drop down menu
-def getAlgorithmNames(modules):
+def getAlgorithmNames(modules) -> tuple:
     algorithmNames = []
     # Imports relevant modules and gets relevant classes
     for module in modules:
@@ -86,5 +86,3 @@ def getAlgorithmNames(modules):
 
     # Convert list to tuple and returns it 
     return tuple(algorithmNames)
-
-

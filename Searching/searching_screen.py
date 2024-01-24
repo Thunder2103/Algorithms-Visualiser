@@ -13,7 +13,7 @@ from tkinter import ttk
 import random
 
 class SearchScreen(st.Screen, st.SharedLayout):
-    def initScreen(self):
+    def initScreen(self) -> None:
         # Creates basic layout of the screen
         self.createTemplate()
 
@@ -66,16 +66,36 @@ class SearchScreen(st.Screen, st.SharedLayout):
         self.calculateArrayBounds()
 
     # This functions handles creating and displaying the options the user is presented with
-    def createOptions(self): 
+    def createOptions(self) -> None: 
+        self.createAlgorithmOptions()               
+        self.createSpeedAdjuster()
+        self.createArrayAdjuster()
+        self.createTargetAdjuster()
+
+
+        # Frame to store stop and solve buttons in a grid layout
+        stopSolveFrame = tk.Frame(self.optionsWidgetsFrame, bg = "white")
+        stopSolveFrame.pack(side = "bottom", pady = (0,5))
+        # Allows user to see the algorithm in action
+        tk.Button(stopSolveFrame, text = "Solve.", width = 7, relief = "solid", font = (self.FONT, 12), command = lambda: self.initAlgorithm())\
+            .grid(row = 0, column = 0, padx = (0,5)) 
+        # Allows user to stop algorithm whilst it's running - button is initially disabled
+        tk.Button(stopSolveFrame, text = "Stop.", width = 7, relief = "solid", font = (self.FONT, 12), state = "disabled", command = self.placeholder)\
+            .grid(row = 0, column = 1)  
+    
+    # Creates a combo box which displays all algorithms 
+    def createAlgorithmOptions(self) -> None:
         #combo box, allows the user to choose what algorithm they want
-        algorithmOptions = ttk.Combobox(self.optionsWidgetsFrame, textvariable = tk.StringVar(), state = "readonly", font = (self.FONT, 12),\
+        self.algorithmOptions = ttk.Combobox(self.optionsWidgetsFrame, textvariable = tk.StringVar(), state = "readonly", font = (self.FONT, 12),\
              width = self.optionsWidgetsFrame.winfo_width())
-        algorithmOptions['value'] = getAlgorithms()
-        algorithmOptions.set('Select an algorithm.')
+        self.algorithmOptions['value'] = getAlgorithms()
+        self.algorithmOptions.set('Select an algorithm.')
         # Removes the blue highlighting when something is selected that annoyed me
-        algorithmOptions.bind("<<ComboboxSelected>>", lambda e: self.algorithmInfoFrame.focus())
-        algorithmOptions.pack(pady = (10,0))
-                        
+        self.algorithmOptions.bind("<<ComboboxSelected>>", lambda _: self.algorithmInfoFrame.focus())
+        self.algorithmOptions.pack(pady = (10,0)) 
+    
+    # Creates a slider that allows users to adjust an algorithms speed
+    def createSpeedAdjuster(self) -> None:
         # Creates a slider that goes 0 to 1 then 2
         # It has three options correlating to the three speeds; slow, medium, fast 
         # Every time the sliders value is changed the intToSpeed() method is called
@@ -83,12 +103,15 @@ class SearchScreen(st.Screen, st.SharedLayout):
                                 orient = "horizontal", showvalue = False, bg =  "white", highlightbackground = "white", command = self.intToSpeed)
         self.speedSlider.pack(pady = (10, 0))  
         # Initially the slider is set at 0, which is the Slow speed
-        self.speedSlider.config(label = "Slow") 
-
+        self.speedSlider.config(label = "Slow")  
+    
+    # Creates a slider that allows users to alter an arrays size
+    def createArrayAdjuster(self) -> None:
         self.arraySizeSlider = tk.Scale(self.optionsWidgetsFrame, from_ = 1, to_ = self.maxBars, length = self.optionsWidgetsFrame.winfo_width(),\
             orient = "horizontal", bg = "white", highlightbackground = "white", command = self.adjustArray)
         self.arraySizeSlider.pack(pady = (10, 0))
 
+    def createTargetAdjuster(self) -> None:
         # Creates a slider that goes from 0 to 1 to 2
         # The three values correlate to the three possible target options
         # The target can guranteed to be in the array, guaranteed to not be in the array or randomly selected
@@ -97,30 +120,17 @@ class SearchScreen(st.Screen, st.SharedLayout):
         self.targetSlider.pack(pady = (10, 0))
         # Initially the slider is set at 0, which is the target being randomly selected
         self.targetSlider.config(label = "Target: Random") 
-        
-        # Makes sure there is enough space for extra options
-        tk.Label(self.optionsWidgetsFrame, text = "Filler for extra options", font = (self.FONT, 12)).pack(pady = (10, 0))
 
-        # Frame to store stop and solve buttons in a grid layout
-        stopSolveFrame = tk.Frame(self.optionsWidgetsFrame, bg = "white")
-        stopSolveFrame.pack(side = "bottom", pady = (0,5))
-        # Allows user to see the algorithm in action
-        tk.Button(stopSolveFrame, text = "Solve.", width = 7, relief = "solid", font = (self.FONT, 12), command = lambda: self.initAlgorithm(algorithmOptions))\
-            .grid(row = 0, column = 0, padx = (0,5)) 
-        # Allows user to stop algorithm whilst it's running - button is initially disabled
-        tk.Button(stopSolveFrame, text = "Stop.", width = 7, relief = "solid", font = (self.FONT, 12), state = "disabled", command = self.placeholder)\
-            .grid(row = 0, column = 1)  
-    
     # When the slider has changed value a label is added with the relevant speed
-    def intToSpeed(self, value): 
+    def intToSpeed(self, value : str) -> None: 
         self.speedSlider.config(label = self.numbersToSpeed[int(value)][0])  
 
     # When the target slider has changed value a label is added to show the relevant target information
-    def intToText(self, value):
+    def intToText(self, value : str) -> None:
         self.targetSlider.config(label = self.numbersToText[int(value)][0]) 
                
     # Adjusts size of bars so amount of elements can fit on screen and stay in the canvas' centre
-    def adjustArray(self, value):
+    def adjustArray(self, value : str) -> None:
         # If the value given from the scrollbar is less than the arrays size
         # Delete elements from the array and check if bar size can increase
         if(int(value) < len(self.array)): 
@@ -146,7 +156,7 @@ class SearchScreen(st.Screen, st.SharedLayout):
         
     # Iterates through array, drawing each bar
     # The function has two default arguements -> currentIndex and altColour both initialised to None
-    def displayArray(self, defaultColour, currentIndex = None, altColour = None):
+    def displayArray(self, defaultColour, currentIndex = None, altColour = None) -> None:
             # Clear displayed array on screen
             self.clearDisplayedArray()
             for x, y in enumerate(self.array):
@@ -159,7 +169,6 @@ class SearchScreen(st.Screen, st.SharedLayout):
                 x2 = x * self.barDist + x * self.barWidth + self.barWidth + self.padding
                 # Top right coord
                 y2 = self.arrayCanvas.winfo_height() 
-                
                 # Chooses correct colour for bar to be filled in with
                 if x == currentIndex: self.arrayCanvas.create_rectangle(x1, y1, x2, y2, fill = altColour) 
                 else: self.arrayCanvas.create_rectangle(x1, y1, x2, y2, fill = defaultColour) 
@@ -167,22 +176,22 @@ class SearchScreen(st.Screen, st.SharedLayout):
             self.view.update()
       
     # Wipes everything off the canvas
-    def clearDisplayedArray(self):
+    def clearDisplayedArray(self) -> None:
         self.arrayCanvas.delete("all")
 
     # Adds amount of elements corresponding to the value
     def addElements(self, value):
-        for i in range(len(self.array), value):
+        for _ in range(len(self.array), value):
             # Choose random number inbetween upper and lower bounds
             self.array.append(random.randint(self.lowerBound, self.upperBound)) 
     
     # Deletes number of elements corresponding to the value
-    def deleteElements(self, value):
-        for i in range(len(self.array), value, -1):
+    def deleteElements(self, value) -> None:
+        for _ in range(len(self.array), value, -1):
             self.array.pop()
 
     # Determines if bars need to shrink in size as array grows
-    def decreaseBarSize(self):
+    def decreaseBarSize(self) -> None:
         for i in range(self.barWidth, self.minBarWidth, -1):
             if(len(self.array) < round(self.calculateMaxBars(i, self.maxPadding))):
                 self.barWidth = i
@@ -190,13 +199,13 @@ class SearchScreen(st.Screen, st.SharedLayout):
         self.barWidth = self.minBarWidth
             
     # Determines if bars needs to increase in size as array shrinks
-    def increaseBarSize(self):
+    def increaseBarSize(self) -> None:
         for i in range(self.barWidth + 1, self.maxBarWidth + 1):
              if(len(self.array) < round(self.calculateMaxBars(i, self.maxPadding))):
                 self.barWidth = i 
     
     # Calculate upper and lower bounds of the array
-    def calculateArrayBounds(self):
+    def calculateArrayBounds(self) -> None:
         # Calculate maximum value the array can have by:
         # Choosing an arbitrary number between randomLow and randomHigh and doubling it 
         self.upperBound = random.randint(self.randomLow, self.randomHigh) * 2 
@@ -212,13 +221,13 @@ class SearchScreen(st.Screen, st.SharedLayout):
         self.adjustArray('1')
     
     # Largest number that can be displayed on screen
-    def calculateMaximumPixels(self):
-        # Two is taken from the canvas' height because the canvas widget has a border where no pixels are drawn  
+    def calculateMaximumPixels(self) -> int:
+        # Two is taken from the canvas' height because the canvas widget has a border where no pixels are drawn   
         return self.arrayCanvas.winfo_height() - 2
     
     # Finds the best distance between the displayed array and the edges of canvas, 
     # to maximise the number of elements and centre the array as best as possible
-    def calculateBestPadding(self):
+    def calculateBestPadding(self) -> int:
         for i in range(self.minPadding, self.maxPadding):
             # Calculates how many bars can be displayed on the screen 
             bars = self.calculateMaxBars(self.minBarWidth, i)  
@@ -233,21 +242,21 @@ class SearchScreen(st.Screen, st.SharedLayout):
         return self.maxPadding
        
     # Calculates maximum number of bars that can be displayed given the padding
-    def calculateMaxBars(self, barWidth, padding):
+    def calculateMaxBars(self, barWidth, padding) -> int:
         return ((self.arrayCanvas.winfo_width()) - (padding * 2)) / (barWidth + self.barDist)
 
     # Calculates the padding to centre the array of a given size
-    def calculatePadding(self):
+    def calculatePadding(self) -> int:
         return ((self.arrayCanvas.winfo_width() - (len(self.array) * (self.barDist + self.barWidth))) // 2) + self.barDist 
 
     # Gets options user has selected from the slider (an intger used as the dictionary key)
     # and calls the paired function stored in the dictionary 
-    # Each function returns an integers -> the target
-    def generateTarget(self):
+    # Each function returns an integer -> the target
+    def generateTarget(self) -> int:
         return self.numbersToText[self.targetSlider.get()][1]()
     
     # Makes sure that target generated has (almost) equal chance to be in the arry or not 
-    def targetRandom(self): 
+    def targetRandom(self) -> int: 
         # Chooses either 1 or 0 
         # If 1 is chosen then call function to gurantee target is in array
         if random.randint(0 , 1): return self.targetIn()
@@ -255,12 +264,12 @@ class SearchScreen(st.Screen, st.SharedLayout):
         else: return self.targetOut()
     
     # Guarantees target is in the array
-    def targetIn(self): 
+    def targetIn(self) -> int: 
        # Randomly chooses index from array and returns integers at that index
        return self.array[random.randint(0, len(self.array) - 1)] 
 
     # Guarantees target is not in arrat
-    def targetOut(self): 
+    def targetOut(self) -> int: 
         # Chooses a number between the range of arrays smallest value - 20 and arrays largest value + 20
         target = random.randint(min(self.array) - 20, max(self.array) + 20)
         # If generated number in array recall function
@@ -269,26 +278,30 @@ class SearchScreen(st.Screen, st.SharedLayout):
         else: return target
         
     # Call algorithm user has selected
-    def initAlgorithm(self, algorithmOptions):
+    def initAlgorithm(self) -> None:
         # Doesn't do anything is user hasn't chosen an algorithm
-        if(algorithmOptions.get() == 'Select an algorithm.'): 
-            algorithmOptions.config(foreground = "red")
+        if(self.getAlgorithmChoice() == 'Select an algorithm.'): 
+            self.algorithmOptions.config(foreground = "red")
         else:
             # Generates target the algorithm looks for 
             self.target = self.generateTarget()
             # Call algorithm -> so this program actually has a use
-            callAlgorithm(self, algorithmOptions.get())
+            callAlgorithm(self, self.getAlgorithmChoice())
     
+    # Returns algorithm the user has selected 
+    def getAlgorithmChoice(self) -> str:
+        return self.algorithmOptions.get()
+
     # Returns array
-    def getArray(self):
+    def getArray(self) -> list:
         return self.array
 
     # Returns target
-    def getTarget(self):
+    def getTarget(self) -> int:
         return self.target
     
     # Returns number of seconds to delay each iteration of algorithm
-    def getDelay(self):
+    def getDelay(self) -> int:
         return self.numbersToSpeed[self.speedSlider.get()][1]
     
     # Just a placeholder until I write actual functions 

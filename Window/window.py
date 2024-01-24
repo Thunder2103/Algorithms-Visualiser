@@ -8,7 +8,7 @@ if(__name__ == "__main__"):
 
 # Window Class - Creates a blank tkinter window
 class Window():
-    def __init__(self, width, height):
+    def __init__(self, width : int, height : int) -> None:
         # Variables to store minimum width and height - means they can be easily changed
         minWidth = 750 
         minHeight = 500
@@ -20,7 +20,7 @@ class Window():
             self.width = width
             self.height = height  
     
-    def create(self):
+    def create(self) -> None:
         # Dimensions for the frame all widgets stored in
         # Stored as attributes so they can be accessed by other objects later
         self.contentFrameWidth = self.width - 20
@@ -57,27 +57,27 @@ class Window():
         self.contentFrame.pack_propagate(False) 
 
     # Draws window
-    def show(self):
+    def show(self) -> None:
         self.window.mainloop() 
  
     # Takes in a new object (the new screen) and calls the relevant function
-    def addScreen(self, newScreen):
+    def addScreen(self, newScreen ) -> None:
         newScreen.initScreen()
 
     # Removes every widget from the passed frame
-    def removeScreen(self): 
+    def removeScreen(self) -> None: 
         for widget in self.contentFrame.winfo_children():
             widget.destroy()
 
-    def update(self):
+    def update(self) -> None:
         self.window.update() 
 
-    def getContentFrame(self):
+    def getContentFrame(self) -> tk.Frame:
         return self.contentFrame
         
-    def getContentFrameHeight(self):
+    def getContentFrameHeight(self) -> int:
         return self.contentFrameHeight 
 
-    def getContentFrameWidth(self):
+    def getContentFrameWidth(self) -> int:
         return self.contentFrameWidth 
     

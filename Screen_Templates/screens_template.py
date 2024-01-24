@@ -29,7 +29,7 @@ class SharedLayout():
         self.minPadding = 5
         self.maxPadding = 20
 
-    def createTemplate(self):
+    def createTemplate(self) -> None:
         # Get content Frame to store all widgets
         contentFrame = self.view.getContentFrame()
         # Get content frames width and height

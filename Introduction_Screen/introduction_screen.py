@@ -15,7 +15,7 @@ class IntroductionScreen(st.Screen):
         self.view = view
         self.FONT = "Arial"
 
-    def initScreen(self):
+    def initScreen(self) -> None:
         # Get content Frame to store all widgets
         contentFrame = self.view.getContentFrame()
         # The introductory text is kept as a string 
