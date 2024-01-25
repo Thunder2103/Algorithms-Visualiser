@@ -10,9 +10,9 @@ import tkinter as tk
 # All screens that visualise the algorithms have the same fundamental layout
 # This class delegates the reponsiblity of creating the basic layout
 class SharedLayout():
-    def __init__(self, view) -> None:
-        # Stores reference to view object
-        self.view = view  
+    def __init__(self, window) -> None:
+        # Stores reference to Window object
+        self.window = window  
         # Font every widget uses 
         self.FONT = "Arial"
         # Current size of bars
@@ -29,10 +29,10 @@ class SharedLayout():
 
     def createTemplate(self) -> None:
         # Get content Frame to store all widgets
-        contentFrame = self.view.getContentFrame()
+        contentFrame = self.window.getContentFrame()
         # Get content frames width and height
-        contentFrameHeight = self.view.getContentFrameHeight()
-        contentFrameWidth = self.view.getContentFrameWidth()
+        contentFrameHeight = self.window.getContentFrameHeight()
+        contentFrameWidth = self.window.getContentFrameWidth()
 
         # width of the border
         borderSize = 2
@@ -56,7 +56,7 @@ class SharedLayout():
         # This frame should always be fixed in height
         homeButtonFrame = self.createHomeButtonFrame(borderFrame, optionsHomeWidth, homeButtonFrameHeight)
         # Updates sizes of frames
-        self.view.update()
+        self.window.update()
 
         # This is the frame where the actual option widgets are stored
         self.createOptionWidget(optionsFrame, optionsHomeWidth - padding, optionsFrame.winfo_height())
@@ -65,13 +65,13 @@ class SharedLayout():
         # This frame stores the canvas that displays array
         canvasFrame = self.createCanvasFrame(borderFrame, canvasFrameWidth, canvasFrameHeight)
         # Updates widths
-        self.view.update()  
+        self.window.update()  
         # Creates canvas to display the array 
         self.createArrayCanvas(canvasFrame, canvasFrame.winfo_width(), canvasFrame.winfo_height())
         # This frame will be where information on the algorithm will be displayed 
         self.createAlgorithmIntoFrame(borderFrame, canvasFrameWidth, 50)
         # Updates widths
-        self.view.update()  
+        self.window.update()  
 
     # Creates frame to display the border
     def createBorderFrame(self, root : tk.Frame, frameWidth : int, frameHeight : int) -> tk.Frame:
@@ -113,7 +113,7 @@ class SharedLayout():
     def createHomeButton(self, root : tk.Frame) -> None: 
         # Creates and places button in the centre of the frame
         tk.Button(root, text = "Home.", font = (self.FONT, 12), width = 7, height = 1, borderwidth = 2, relief = "solid",\
-             command = lambda: [self.view.removeScreen(), self.view.loadScreen(isc.IntroductionScreen(self.view))])\
+             command = lambda: [self.window.removeScreen(), self.window.loadScreen(isc.IntroductionScreen(self.window))])\
                 .place(relx = 0.5, rely = 0.5, anchor = "center") 
     
     # Creates the frame to store the canvas

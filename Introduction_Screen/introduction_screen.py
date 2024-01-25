@@ -10,15 +10,15 @@ import tkinter as tk
 
 # Ideally this should be the first screen the user sees 
 class IntroductionScreen(st.Screen):
-    def __init__(self, view):
-        # Stores reference to view object
-        self.view = view
+    def __init__(self, window):
+        # Stores reference to Window object
+        self.window = window
         self.FONT = "Arial"
 
     # Creates the screen
     def initScreen(self) -> None:
         # Get content Frame to store all widgets
-        self.contentFrame = self.view.getContentFrame()
+        self.contentFrame = self.window.getContentFrame()
         self.createTitle()
         self.createIntroParagraph()
         self.createNavigationButtons()
@@ -51,7 +51,7 @@ class IntroductionScreen(st.Screen):
             .pack(pady = (25, 0))  
         # Navigate to array searching screen
         tk.Button(buttonsFrame, text = "Array Searching",  font = (self.FONT, 12), height = 2, width = 15, relief = "solid", \
-                command = lambda : [self.view.removeScreen(), self.view.loadScreen(sc.SearchScreen(self.view))]).pack(side = "left", pady = 15, padx = (100, 0)) 
+                command = lambda : [self.window.removeScreen(), self.window.loadScreen(sc.SearchScreen(self.window))]).pack(side = "left", pady = 15, padx = (100, 0)) 
         # Navigate to array sorting screen
         tk.Button(buttonsFrame, text = "Array Sorting",  font = (self.FONT, 12), height = 2, width = 15, relief = "solid",)\
             .pack(side = "left", padx = 100) 

@@ -176,7 +176,7 @@ class SearchScreen(st.Screen, st.SharedLayout):
                 if x == currentIndex: self.arrayCanvas.create_rectangle(x1, y1, x2, y2, fill = altColour) 
                 else: self.arrayCanvas.create_rectangle(x1, y1, x2, y2, fill = defaultColour) 
             # Updates screen so bars can be seen onscreen
-            self.view.update()
+            self.window.update()
       
     # Wipes everything off the canvas
     def clearDisplayedArray(self) -> None:
