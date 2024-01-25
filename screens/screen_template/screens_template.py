@@ -43,7 +43,7 @@ class SharedLayout():
         # Width of the home button frame and the options frame
         optionsHomeWidth = 200
         # Width of canvas frame
-        canvasFrameWidth = contentFrameWidth - optionsHomeWidth - borderSize 
+        canvasFrameWidth = algorithmInfoFrameWidth = contentFrameWidth - optionsHomeWidth - borderSize 
         # Height of canvas frame
         canvasFrameHeight = contentFrameHeight - homeButtonFrameHeight - borderSize
 
@@ -69,7 +69,7 @@ class SharedLayout():
         # Creates canvas to display the array 
         self.createArrayCanvas(canvasFrame, canvasFrame.winfo_width(), canvasFrame.winfo_height())
         # This frame will be where information on the algorithm will be displayed 
-        self.createAlgorithmIntoFrame(borderFrame, canvasFrameWidth, 50)
+        self.createAlgorithmIntoFrame(borderFrame, algorithmInfoFrameWidth, 50)
         # Updates widths
         self.__window.update()  
 
@@ -150,6 +150,5 @@ class SharedLayout():
     def getMaxPadding(self): return self.__maxPadding
     def getOptionsWidgetFrame(self): return self.__optionsWidgetsFrame
     def getArrayCanvas(self): return self.__arrayCanvas
-    def getAlgorithmInfoFrame(self): return self.__algorithmInfoFrame
-
+ 
 # Listen to Under You by Foo Fighters
