@@ -11,28 +11,28 @@ import tkinter as tk
 class SharedLayout():
     def __init__(self, window, introScreen) -> None:
         # Stores reference to Window object
-        self.window = window  
-        self.introScreen = introScreen
+        self.__window = window  
+        self.__introScreen = introScreen
         # Font every widget uses 
-        self.FONT = "Arial"
+        self.__FONT = "Arial"
         # Current size of bars
-        self.barWidth = 15
+        self.__barWidth = 15
         # Smallest bars can be 
-        self.minBarWidth = 2
+        self.__minBarWidth = 2
         # Largest bar can be 
-        self.maxBarWidth = 15
+        self.__maxBarWidth = 15
         # Distance between each bar 
-        self.barDist = 2
+        self.__barDist = 2
         # Maximum and minimum distance between displayed array and edge of canvas
-        self.minPadding = 5
-        self.maxPadding = 20
+        self.__minPadding = 5
+        self.__maxPadding = 20
 
     def createTemplate(self) -> None:
         # Get content Frame to store all widgets
-        contentFrame = self.window.getContentFrame()
+        contentFrame = self.__window.getContentFrame()
         # Get content frames width and height
-        contentFrameHeight = self.window.getContentFrameHeight()
-        contentFrameWidth = self.window.getContentFrameWidth()
+        contentFrameHeight = self.__window.getContentFrameHeight()
+        contentFrameWidth = self.__window.getContentFrameWidth()
 
         # width of the border
         borderSize = 2
@@ -56,7 +56,7 @@ class SharedLayout():
         # This frame should always be fixed in height
         homeButtonFrame = self.createHomeButtonFrame(borderFrame, optionsHomeWidth, homeButtonFrameHeight)
         # Updates sizes of frames
-        self.window.update()
+        self.__window.update()
 
         # This is the frame where the actual option widgets are stored
         self.createOptionWidget(optionsFrame, optionsHomeWidth - padding, optionsFrame.winfo_height())
@@ -65,13 +65,13 @@ class SharedLayout():
         # This frame stores the canvas that displays array
         canvasFrame = self.createCanvasFrame(borderFrame, canvasFrameWidth, canvasFrameHeight)
         # Updates widths
-        self.window.update()  
+        self.__window.update()  
         # Creates canvas to display the array 
         self.createArrayCanvas(canvasFrame, canvasFrame.winfo_width(), canvasFrame.winfo_height())
         # This frame will be where information on the algorithm will be displayed 
         self.createAlgorithmIntoFrame(borderFrame, canvasFrameWidth, 50)
         # Updates widths
-        self.window.update()  
+        self.__window.update()  
 
     # Creates frame to display the border
     def createBorderFrame(self, root : tk.Frame, frameWidth : int, frameHeight : int) -> tk.Frame:
@@ -104,16 +104,16 @@ class SharedLayout():
     def createOptionWidget(self, root : tk.Frame, frameWidth : int, frameHeight : int) -> None:
         # This is the frame where the actual option widgets are stored
         # This is needed or otherwise the formatting breaks for different devices
-        self.optionsWidgetsFrame = tk.Frame(root, bg = "white", width = frameWidth,\
+        self.__optionsWidgetsFrame = tk.Frame(root, bg = "white", width = frameWidth,\
              height = frameHeight)
-        self.optionsWidgetsFrame.pack()
-        self.optionsWidgetsFrame.pack_propagate(False)
+        self.__optionsWidgetsFrame.pack()
+        self.__optionsWidgetsFrame.pack_propagate(False)
     
     # Creates the button to let the user navigate back to the main menu
     def createHomeButton(self, root : tk.Frame) -> None: 
         # Creates and places button in the centre of the frame
-        tk.Button(root, text = "Home.", font = (self.FONT, 12), width = 7, height = 1, borderwidth = 2, relief = "solid",\
-             command = lambda: [self.window.removeScreen(), self.window.loadScreen(self.introScreen)])\
+        tk.Button(root, text = "Home.", font = (self.__FONT, 12), width = 7, height = 1, borderwidth = 2, relief = "solid",\
+             command = lambda: [self.__window.removeScreen(), self.__window.loadScreen(self.__introScreen)])\
                 .place(relx = 0.5, rely = 0.5, anchor = "center") 
     
     # Creates the frame to store the canvas
@@ -127,15 +127,29 @@ class SharedLayout():
     # Creates canvas to display the array
     def createArrayCanvas(self, root : tk.Frame, canvasWidth : int, canvasHeight : int) -> None:
          # This canvas will be where the array is displayed.    
-        self.arrayCanvas = tk.Canvas(root, width = canvasWidth, height = canvasHeight, bg = "white") 
-        self.arrayCanvas.pack()
-        self.arrayCanvas.pack_propagate(False)
+        self.__arrayCanvas = tk.Canvas(root, width = canvasWidth, height = canvasHeight, bg = "white") 
+        self.__arrayCanvas.pack()
+        self.__arrayCanvas.pack_propagate(False)
     
     # Creates frame to store the algorithm information
     def createAlgorithmIntoFrame(self, root : tk.Frame, frameWidth : int, frameHeight : int) -> None:
         # This frame will be where information on the algorithm will be displayed 
-        self.algorithmInfoFrame = tk.Frame(root, width = frameWidth, height = frameHeight, bg = "white")
-        self.algorithmInfoFrame.grid(row = 1, column = 1, pady = (2,0), padx = (2,0)) 
-        self.algorithmInfoFrame.pack_propagate(False) 
+        self.__algorithmInfoFrame = tk.Frame(root, width = frameWidth, height = frameHeight, bg = "white")
+        self.__algorithmInfoFrame.grid(row = 1, column = 1, pady = (2,0), padx = (2,0)) 
+        self.__algorithmInfoFrame.pack_propagate(False) 
+
+    def getWindow(self): return self.__window
+    def getFont(self): return self.__FONT
+    def getBarWidth(self): return self.__barWidth
+    def setBarWidth(self, val): self.__barWidth = val 
+    def getMinBarWidth(self): return self.__minBarWidth
+    def getMaxBarWidth(self): return self.__maxBarWidth
+    def getBarDistance(self): return self.__barDist
+    def getMinPadding(self): return self.__minPadding
+    def setMinPadding(self, val): self.__minPadding = val
+    def getMaxPadding(self): return self.__maxPadding
+    def getOptionsWidgetFrame(self): return self.__optionsWidgetsFrame
+    def getArrayCanvas(self): return self.__arrayCanvas
+    def getAlgorithmInfoFrame(self): return self.__algorithmInfoFrame
 
 # Listen to Under You by Foo Fighters
