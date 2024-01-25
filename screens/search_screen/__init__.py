@@ -1,1 +1,2 @@
 from .searching_screen import SearchScreen
+from .search_controller import SearchController

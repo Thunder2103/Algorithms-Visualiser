@@ -5,7 +5,6 @@ if(__name__ == "__main__"):
     exit()
 
 import screens as sc
-from algorithms.searching_model import SearchModel 
 import algorithms.handlers as h
 import tkinter as tk 
 from tkinter import ttk
@@ -50,16 +49,12 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
         # Creating and displaying options
         self.createOptions() 
 
-        # SearchModel contains all the data
-        self.model = SearchModel()
-     
-        # Get array from SearchModel
-        self.array = self.model.getArray()
+        self.array = []
 
         # Lower bound 
-        self.randomLow = self.model.getLow() 
+        self.randomLow = 100
         # Highest value that can appear in array
-        self.randomHigh = self.model.getHigh()
+        self.randomHigh = 5000
 
         # Calculate upper and lower array bounds
         self.calculateArrayBounds()
@@ -120,7 +115,7 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
         tk.Button(stopSolveFrame, text = "Solve.", width = 7, relief = "solid", font = (self.FONT, 12), command = lambda: self.initAlgorithm())\
             .grid(row = 0, column = 0, padx = (0,5)) 
         # Allows user to stop algorithm whilst it's running - button is initially disabled
-        tk.Button(stopSolveFrame, text = "Stop.", width = 7, relief = "solid", font = (self.FONT, 12), state = "disabled", command = self.placeholder)\
+        tk.Button(stopSolveFrame, text = "Stop.", width = 7, relief = "solid", font = (self.FONT, 12), state = "disabled", command = lambda : print("Hello World"))\
             .grid(row = 0, column = 1)  
 
     # When the slider has changed value a label is added with the relevant speed
@@ -306,6 +301,6 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
     def getDelay(self) -> int:
         return self.numbersToSpeed[self.speedSlider.get()][1]
     
-    # Just a placeholder until I write actual functions 
-    def placeholder(self): 
-        print(self.array)
+    # Returns canvas array is drawn on
+    def getArrayCanvas(self) -> tk.Canvas: 
+        return self.arrayCanvas
