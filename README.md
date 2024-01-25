@@ -6,15 +6,20 @@ Written in python by Thomas Gibson.
 | Table of contents                                              | 
 | -------------------------------------------------------------- |
 |   [1. Searching Algorithms](#searching-algorithms)             |  
-|   [2. Searching Algorithms - Conventions](#searching-algorithms) |
-|   
-
+|   [2. Adding a new Search Algorithm](#adding-a-new-search-algorithm) |
 
 ---
 
 ## Searching Algorithms:  
-A list of each search algorithm the platform visualises.<br>
-Each list entry contains some information on each algorithm.
+--- 
+Below is a table containing the algorithms this project visualises. <br>
+The links in the table direct to a information about the algorithm and its implementation steps. 
+
+| Algorithm |
+| --------- |
+| [Linear Search](#linear-search) |
+| [Binary Search](#binary-search) | 
+| [Jump Search](#jump-search) | 
 
 ---
 ### Linear Search:
@@ -24,8 +29,8 @@ Algorithm Steps:<br>
 2. Compare current value to the target
 3. If the value is equal to the target then return true
 4. If the value is not equal to the target then go to the next element
-5. Repeat steps 2 - 4 until the end of array is reached or target is found
-6. If the end of the array has been reached and target has not beem found, return false
+5. Repeat steps 2 - 4 until the end of array is reached
+6. If the end of the array has been reached and target has not been found, return false
 
 Time Complexity: O(n)<br>
 Space Complexity: O(1)
@@ -38,11 +43,11 @@ Algorithm steps:
 1. Intialise a variable called low with a value of 0
 2. Intialise a variable called high that is equal to the length of the array minus one
 3. While low is less than or equal to high 
-4. Calculate mid - (low + high) // 2
-5. If the value at mid is equal to the target, return True
-6. If the value at mid is greater than the target, set low to mid plus one
-7. If the value at mid is less than the target, set high to mid minus one 
-8. Repeat steps 3 - 7 
+4. Initialise a varible called mid and set it to, (low + high) // 2
+5. If the value at index mid is equal to the target, return True
+6. If the value at index mid is greater than the target, set low to mid plus one
+7. If the value at index mid is less than the target, set high to mid minus one 
+8. Repeat steps 3 - 7 until low is greater than high
 9. If the loop terminates, return False
 
 Time complexity: O(log n)<br>
@@ -67,57 +72,40 @@ Time Complexity: O($\sqrt{n}$)<br>
 Space Complexity: O(1)
 
 ---
-## Searching Algorithms - Conventions:
-Please follow these conventions for files, classes and functions when adding new searching algorithms.<br> 
-If any one of these conventions aren't met the automated system will not display the algorithm to the user and <br>subsequently won't visualise the algorithm.
+## Adding a new Search Algorithm
+To add a new search algorithm, the follwing requirements must be met.
 
---- 
-### Naming Files: 
----
-New algorithms must be in files created in the "searching_algorithms" directory.
+| Requirement: | Description: |
+| ------------ | ------------ | 
+| Location     | New algorithm files must be found in the <b>algorithms/searching</b> directory | 
+| File Name    | New files must be named in the following format: <b>algorithm_name_search.py.</b> <br> e.g. binary_search.py, linear_search.py |
+| Class Implementation        | The algorithm must be implemented as a class. | 
+| Class Name   | An algorithm class must be named in the following format: <b>AlgorithmNameSearch.</b> <br> e.g BinarySearch, Linearsearch
+| Inheritance  | Each algorithm class must be a child of the Algorithm class | 
+| Function Implementation | As each new algorithm class must be a child class of the <br>[Algorithm class](#parent-class---algorithm)</b>, they must provide an implementation for the getName() method.  |
+| Function Naming | The function which implements the algorithm must be named in the following format: algorithmNameSearch <br> e.g. binary search would be binarySearch and linear search would be linearSearch |
+| Function Parameters | Each function that implements the new algorithm must include [two manditory parameters](#algorithm-implementation---parameters) |
 
-Please follow this format:
-- algorithm_name_search.py 
-- e.g. binary_search.py 
-- e.g. linear_search.py 
-
-Please note the file <b>must</b> end in "search.py" otherwise the automated system won't show the algorithm as an option to the user.<br>
-(Technically the file can be called anything as long as it ends with "search.py")
-
----
-### Naming Classes:
----
-New algorithms must be implemented as a class.<br>
-Each class must be a child of the [Algorithm class](#algorithm---parent-class) and implement a [mandatory method](#mandatory-function-naming-and-arguments)
-
-Please follow this format:
-- AlgorithmNameSearch
-- e.g. BinarySearch 
-- e.g. LinearSearch  
 --- 
 
 ### Parent Class - Algorithm: 
 --- 
-Every new search algorithm must be a child of the Algorithm class. The Algorithm class contains an abstract method<br> called 'getName()' which must be implemented.<br> 
-The 'getName()' takes in no arguments and must return a string containing the algorithms name. Each word in the string should be capitalised.<br>
-E.g. the binary search classes 'getName()' method would return the string "Binary Search"<br>
-The Algorithm class also contains a method called 'init(self, Searching)'. This method gets the array, target and time delay each searching algorithm needs, <br>
-storing them as attributes the child object can access. It does this by taking in the Searching object as an argument and calling the relevant getter methods. <br>
-The class contains another method called 'sortArray()', this just sorts the array which is a precondition needed for several searching algorithms.
+Every new search algorithm must be a child of the Algorithm class. <br>
+The algorithm class contains the abstract methid 'getName()' which each new algorithm class must provide an implementation for. <br>
+The 'getName()' class should return a string which contains the algorithms namme. <br>
+For the BinarySearch class 'getName()' would return "binary search". <br>
+For the LinearSearch class 'getName()' would return "linear search".
 
 ---
-### Mandatory Function Naming and Arguments:
+### Algorithm Implementation - Parameters:
 
 --- 
 
-The function that actually executes the algorithm needs to be named in a specific way and take in certain arguments.<br><br> 
-Please follow this format:
+The function that actually executes the algorithm needs to take in certain arguments.<br>
 
-- algorithmnameSearch(self, Searching)
-- e.g. BinarySearch would have the following function - binarySearch(self, Searching)  
-- e.g. LinearSearch would have the follwing function - linearSearch(self, Searching) 
-
-The "Searching" argument is an object that contains all the variables and methods a searching algorithm needs to actually run. 
+| Argument: | Description: |
+| self     | Allows function to be called and attributes from the Algorithm class to be entered
+| Searching | Searching contains data the algorithm needs to execute such as the array to be searched and target to searched for |
 
 ---
 

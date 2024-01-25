@@ -1,4 +1,4 @@
-import window as w
+import app_window as w
 import screens as sc
 
 if(__name__ == "__main__"):
