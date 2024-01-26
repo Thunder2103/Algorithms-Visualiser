@@ -138,17 +138,29 @@ class SharedLayout():
         self.__algorithmInfoFrame.grid(row = 1, column = 1, pady = (2,0), padx = (2,0)) 
         self.__algorithmInfoFrame.pack_propagate(False) 
 
-    def getWindow(self): return self.__window
-    def getFont(self): return self.__FONT
-    def getBarWidth(self): return self.__barWidth
-    def setBarWidth(self, val): self.__barWidth = val 
-    def getMinBarWidth(self): return self.__minBarWidth
-    def getMaxBarWidth(self): return self.__maxBarWidth
-    def getBarDistance(self): return self.__barDist
-    def getMinPadding(self): return self.__minPadding
-    def setMinPadding(self, val): self.__minPadding = val
-    def getMaxPadding(self): return self.__maxPadding
-    def getOptionsWidgetFrame(self): return self.__optionsWidgetsFrame
-    def getArrayCanvas(self): return self.__arrayCanvas
+    # Returns window the screen is displayed in
+    def getWindow(self) -> tk.Tk: return self.__window
+    # Returns font used for all text
+    def getFont(self) -> str: return self.__FONT 
+    # Returns current width of the bars
+    def getBarWidth(self) -> int: return self.__barWidth
+    # Sets size of each bar
+    def setBarWidth(self, val : int) -> None: self.__barWidth = val 
+    # Gets smallest size the bars can be
+    def getMinBarWidth(self) -> int: return self.__minBarWidth 
+    # Gets largest size bars can be
+    def getMaxBarWidth(self) -> int: return self.__maxBarWidth 
+    # Gets distance between each bar
+    def getBarDistance(self) -> int: return self.__barDist 
+    # Gets minimum padding between canvas bounds and first/last bar
+    def getMinPadding(self) -> int: return self.__minPadding
+    # Sets minimum padding between canvas bounds and first/last bar
+    def setMinPadding(self, val : int) -> None: self.__minPadding = val
+    # Gets maximum padding between canvas bounds and first/last bar
+    def getMaxPadding(self) -> int: return self.__maxPadding
+    # Gets widget options are displayed in
+    def getOptionsWidgetFrame(self) -> tk.Frame: return self.__optionsWidgetsFrame 
+    # Gets canvas array is displayed in
+    def getArrayCanvas(self) -> tk.Canvas: return self.__arrayCanvas
  
 # Listen to Under You by Foo Fighters
