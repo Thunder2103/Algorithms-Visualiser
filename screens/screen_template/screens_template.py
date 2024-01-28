@@ -37,33 +37,33 @@ class SharedLayout():
         canvasFrameHeight = contentFrameHeight - homeButtonFrameHeight - borderSize
 
         # Border frame gives appearence of a border between different frames
-        borderFrame = self.createBorderFrame(contentFrame, contentFrameWidth, contentFrameHeight)
+        borderFrame = self.__createBorderFrame(contentFrame, contentFrameWidth, contentFrameHeight)
         # Frame to store the options users can interact with 
         # The size of the frame is calculated using the fixed size of the home frame
-        optionsFrame = self.createOptionsFrame(borderFrame, optionsHomeWidth, contentFrameHeight - homeButtonFrameHeight - borderSize)
+        optionsFrame = self.__createOptionsFrame(borderFrame, optionsHomeWidth, contentFrameHeight - homeButtonFrameHeight - borderSize)
         # Frame to store button to redirect user back to Introduction Screen
         # This frame should always be fixed in height
-        homeButtonFrame = self.createHomeButtonFrame(borderFrame, optionsHomeWidth, homeButtonFrameHeight)
+        homeButtonFrame = self.__createHomeButtonFrame(borderFrame, optionsHomeWidth, homeButtonFrameHeight)
         # Updates sizes of frames
         self.__window.update()
 
         # This is the frame where the actual option widgets are stored
-        self.createOptionWidget(optionsFrame, optionsHomeWidth - padding, optionsFrame.winfo_height())
+        self.__createOptionWidget(optionsFrame, optionsHomeWidth - padding, optionsFrame.winfo_height())
         # Creates a home button so user can navigate back to the intro screen
-        self.createHomeButton(homeButtonFrame)
+        self.__createHomeButton(homeButtonFrame)
         # This frame stores the canvas that displays array
-        canvasFrame = self.createCanvasFrame(borderFrame, canvasFrameWidth, canvasFrameHeight)
+        canvasFrame = self.__createCanvasFrame(borderFrame, canvasFrameWidth, canvasFrameHeight)
         # Updates widths
         self.__window.update()  
         # Creates canvas to display the array 
-        self.createArrayCanvas(canvasFrame, canvasFrame.winfo_width(), canvasFrame.winfo_height())
+        self.__createArrayCanvas(canvasFrame, canvasFrame.winfo_width(), canvasFrame.winfo_height())
         # This frame will be where information on the algorithm will be displayed 
-        self.createAlgorithmIntoFrame(borderFrame, algorithmInfoFrameWidth, 50)
+        self.__createAlgorithmIntoFrame(borderFrame, algorithmInfoFrameWidth, 50)
         # Updates widths
         self.__window.update()  
 
     # Creates frame to display the border
-    def createBorderFrame(self, root : tk.Frame, frameWidth : int, frameHeight : int) -> tk.Frame:
+    def __createBorderFrame(self, root : tk.Frame, frameWidth : int, frameHeight : int) -> tk.Frame:
         # Border frame gives appearence of a border between different frames
         borderFrame = tk.Frame(root, bg = "black", width = frameWidth, height = frameHeight)
         borderFrame.pack()
@@ -71,7 +71,7 @@ class SharedLayout():
         return borderFrame     
 
     # Creates frame to display the options
-    def createOptionsFrame(self, root : tk.Frame, frameWidth : int, frameHeight : int) -> tk.Frame:
+    def __createOptionsFrame(self, root : tk.Frame, frameWidth : int, frameHeight : int) -> tk.Frame:
         # Frame to store the options users can interact with 
         # The size of the frame is calculated using the fixed size of the home frame
         optionsFrame = tk.Frame(root, width = frameWidth,\
@@ -81,7 +81,7 @@ class SharedLayout():
         return optionsFrame
 
     # Creates frame to display the home button
-    def createHomeButtonFrame(self, root : tk.Frame, frameWidth : int, frameHeight : int) -> tk.Frame:
+    def __createHomeButtonFrame(self, root : tk.Frame, frameWidth : int, frameHeight : int) -> tk.Frame:
         # Frame to store button to redirect user back to Introduction Screen
         # This frame should always be fixed in height
         homeButtonFrame = tk.Frame(root, width = frameWidth, height = frameHeight, bg = "white")
@@ -90,7 +90,7 @@ class SharedLayout():
         return homeButtonFrame 
     
     # Creates widget to store options, prevents formatting from breaking on different devices 
-    def createOptionWidget(self, root : tk.Frame, frameWidth : int, frameHeight : int) -> None:
+    def __createOptionWidget(self, root : tk.Frame, frameWidth : int, frameHeight : int) -> None:
         # This is the frame where the actual option widgets are stored
         # This is needed or otherwise the formatting breaks for different devices
         self.__optionsWidgetsFrame = tk.Frame(root, bg = "white", width = frameWidth,\
@@ -99,14 +99,14 @@ class SharedLayout():
         self.__optionsWidgetsFrame.pack_propagate(False)
     
     # Creates the button to let the user navigate back to the main menu
-    def createHomeButton(self, root : tk.Frame) -> None: 
+    def __createHomeButton(self, root : tk.Frame) -> None: 
         # Creates and places button in the centre of the frame
         tk.Button(root, text = "Home.", font = (self.__FONT, 12), width = 7, height = 1, borderwidth = 2, relief = "solid",\
              command = lambda: [self.__window.removeScreen(), self.__window.loadScreen(self.__introScreen)])\
                 .place(relx = 0.5, rely = 0.5, anchor = "center") 
     
     # Creates the frame to store the canvas
-    def createCanvasFrame(self, root : tk.Frame, frameWidth : int, frameHeight : int) -> tk.Frame:
+    def __createCanvasFrame(self, root : tk.Frame, frameWidth : int, frameHeight : int) -> tk.Frame:
         # This frame stores the canvas that displays array
         canvasFrame = tk.Frame(root, width = frameWidth, height = frameHeight, bg = "white")
         canvasFrame.grid(row = 0, column = 1, padx = (2,0)) 
@@ -114,14 +114,14 @@ class SharedLayout():
         return canvasFrame
     
     # Creates canvas to display the array
-    def createArrayCanvas(self, root : tk.Frame, canvasWidth : int, canvasHeight : int) -> None:
+    def __createArrayCanvas(self, root : tk.Frame, canvasWidth : int, canvasHeight : int) -> None:
          # This canvas will be where the array is displayed.    
         self.__arrayCanvas = tk.Canvas(root, width = canvasWidth, height = canvasHeight, bg = "white") 
         self.__arrayCanvas.pack()
         self.__arrayCanvas.pack_propagate(False)
     
     # Creates frame to store the algorithm information
-    def createAlgorithmIntoFrame(self, root : tk.Frame, frameWidth : int, frameHeight : int) -> None:
+    def __createAlgorithmIntoFrame(self, root : tk.Frame, frameWidth : int, frameHeight : int) -> None:
         # This frame will be where information on the algorithm will be displayed 
         self.__algorithmInfoFrame = tk.Frame(root, width = frameWidth, height = frameHeight, bg = "white")
         self.__algorithmInfoFrame.grid(row = 1, column = 1, pady = (2,0), padx = (2,0)) 
