@@ -31,7 +31,10 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
             2: ["Target: Not in array", self.targetOut]
         }
 
-        self.__controller = sc.SearchController(self)
+        # Handles logic of the GUI and handling the array
+        self.__model = sc.SearchModel()
+        self.__controller = sc.SearchController(self, self.__model)
+
         # Creating and displaying options
         self.createOptions() 
 
@@ -119,14 +122,14 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
     # Guarantees target is in the array
     def targetIn(self) -> int: 
        # Randomly chooses index from array and returns integers at that index
-       return self.__controller.getArray()[random.randint(0, len(self.__controller.getArray()) - 1)] 
+       return self.__model.getArray()[random.randint(0, len(self.__model.getArray()) - 1)] 
 
     # Guarantees target is not in arrat
     def targetOut(self) -> int: 
         # Chooses a number between the range of arrays smallest value - 20 and arrays largest value + 20
-        target = random.randint(min(self.__controller.getArray()) - 20, max(self.__controller.getArray()) + 20)
+        target = random.randint(min(self.__model.getArray()) - 20, max(self.__model.getArray()) + 20)
         # If generated number in array recall function
-        if target in self.__controller.getArray(): self.targetOut()
+        if target in self.__model.getArray(): self.targetOut()
         # If generated number not in array then just return value
         else: return target
         
@@ -147,7 +150,7 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
 
     # Returns array
     def getArray(self) -> list:
-        return self.__controller.getArray()
+        return self.__model.getArray()
 
     # Returns target
     def getTarget(self) -> int:
