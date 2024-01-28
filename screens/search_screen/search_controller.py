@@ -143,4 +143,4 @@ class SearchController():
           
     def getMaxBars(self): return self.__maxBars
 
-  
+    

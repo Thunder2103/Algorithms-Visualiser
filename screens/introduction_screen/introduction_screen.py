@@ -18,18 +18,18 @@ class IntroductionScreen(sc.Screen):
     def initScreen(self) -> None:
         # Get content Frame to store all widgets
         self.__contentFrame = self.__window.getContentFrame()
-        self.createTitle()
-        self.createIntroParagraph()
-        self.createNavigationButtons()
+        self.__createTitle()
+        self.__createIntroParagraph()
+        self.__createNavigationButtons()
 
     # Creates the title displaying the projects name
-    def createTitle(self) -> None:
+    def __createTitle(self) -> None:
         # Header label
         tk.Label(self.__contentFrame, text = "Welcome to Algorithms Anonymous.", font = (self.__FONT, 18, "underline"), bg = "white")\
             .pack(pady = 10) 
 
     # Create introduction paragraph
-    def createIntroParagraph(self) -> None:
+    def __createIntroParagraph(self) -> None:
         # The introductory text is kept as a string 
         # as it makes it easier to change (and makes code easier to read)
         introText = "This program visualises different algorithms in a user friendly way. \n\
@@ -40,7 +40,7 @@ class IntroductionScreen(sc.Screen):
             .pack(pady = 5) 
     
     # Creates buttons that allow users to navigate the rest of the project
-    def createNavigationButtons(self) -> None:
+    def __createNavigationButtons(self) -> None:
         # Adds a frame for the buttons widgets 
         # Adding this frame makes positioning the buttons much easier
         buttonsFrame = tk.Frame(self.__contentFrame, bg = "white")
