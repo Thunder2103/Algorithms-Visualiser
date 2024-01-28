@@ -15,18 +15,7 @@ class SharedLayout():
         self.__introScreen = introScreen
         # Font every widget uses 
         self.__FONT = "Arial"
-        # Current size of bars
-        self.__barWidth = 15
-        # Smallest bars can be 
-        self.__minBarWidth = 2
-        # Largest bar can be 
-        self.__maxBarWidth = 15
-        # Distance between each bar 
-        self.__barDist = 2
-        # Maximum and minimum distance between displayed array and edge of canvas
-        self.__minPadding = 5
-        self.__maxPadding = 20
-
+   
     def createTemplate(self) -> None:
         # Get content Frame to store all widgets
         contentFrame = self.__window.getContentFrame()
@@ -142,23 +131,6 @@ class SharedLayout():
     def getWindow(self) -> tk.Tk: return self.__window
     # Returns font used for all text
     def getFont(self) -> str: return self.__FONT 
-    # Returns current width of the bars
-    def getBarWidth(self) -> int: return self.__barWidth
-    # Sets size of each bar
-    def setBarWidth(self, val : int) -> None: self.__barWidth = val 
-    # Gets smallest size the bars can be
-    def getMinBarWidth(self) -> int: return self.__minBarWidth 
-    # Gets largest size bars can be
-    def getMaxBarWidth(self) -> int: return self.__maxBarWidth 
-    # Gets distance between each bar
-    def getBarDistance(self) -> int: return self.__barDist 
-    # Gets minimum padding between canvas bounds and first/last bar
-    def getMinPadding(self) -> int: return self.__minPadding
-    # Sets minimum padding between canvas bounds and first/last bar
-    def setMinPadding(self, val : int) -> None: self.__minPadding = val
-    # Gets maximum padding between canvas bounds and first/last bar
-    def getMaxPadding(self) -> int: return self.__maxPadding
-    # Gets widget options are displayed in
     def getOptionsWidgetFrame(self) -> tk.Frame: return self.__optionsWidgetsFrame 
     # Gets canvas array is displayed in
     def getArrayCanvas(self) -> tk.Canvas: return self.__arrayCanvas

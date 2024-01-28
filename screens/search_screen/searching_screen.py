@@ -31,25 +31,9 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
             2: ["Target: Not in array", self.targetOut]
         }
 
-        # Returns the height of the canvas - maximum number of pixels an element can possibly have
-        self.__maximumPixels = self.calculateMaximumPixels()
-        
-        # Calculates spacing between canvas border and displayed array 
-        # Is also used to calculate the largest possible size of the array
-        self.setMinPadding(self.calculateBestPadding())
-
+        self.__controller = sc.SearchController(self)
         # Creating and displaying options
         self.createOptions() 
-
-        self.__array = []
-
-        # Lower bound 
-        self.__randomLow = 100
-        # Highest value that can appear in array
-        self.__randomHigh = 5000
-
-        # Calculate upper and lower array bounds
-        self.calculateArrayBounds()
 
     # This functions handles creating and displaying the options the user is presented with
     def createOptions(self) -> None: 
@@ -83,8 +67,8 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
     
     # Creates a slider that allows users to alter an arrays size
     def createArrayAdjuster(self) -> None:
-        self.__arraySizeSlider = tk.Scale(self.getOptionsWidgetFrame(), from_ = 1, to_ = self.__maxBars, length = self.getOptionsWidgetFrame().winfo_width(),\
-            orient = "horizontal", bg = "white", highlightbackground = "white", command = self.adjustArray)
+        self.__arraySizeSlider = tk.Scale(self.getOptionsWidgetFrame(), from_ = 1, to_ = self.__controller.getMaxBars(), length = self.getOptionsWidgetFrame().winfo_width(),\
+            orient = "horizontal", bg = "white", highlightbackground = "white", command = self.__controller.adjustArray)
         self.__arraySizeSlider.pack(pady = (10, 0))
 
     # Creates a slider that lets sers decide if the target is in the array, not in the array or randomly generated
@@ -118,126 +102,6 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
     def intToText(self, value : str) -> None:
         self.__targetSlider.config(label = self.__numbersToText[int(value)][0]) 
                
-    # Adjusts size of bars so amount of elements can fit on screen and stay in the canvas' centre
-    def adjustArray(self, value : str) -> None:
-        # If the value given from the scrollbar is less than the arrays size
-        # Delete elements from the array and check if bar size can increase
-        if(int(value) < len(self.__array)): 
-            self.deleteElements(int(value))
-            self.increaseBarSize()
-        # Otherwise add elements to the array and check is bar size needs to decrease
-        else: 
-            self.addElements(int(value))
-            self.decreaseBarSize()
-        # If the array size is less than the maximum number of bars. 
-        # Calculate padding 
-        if(len(self.__array) != self.__maxBars): self.__padding = self.calculatePadding()
-        # If the array size is now at maximum size, 
-        # padding is the value calulated by the calculateBestPadding() method
-        else: self.__padding = self.getMinPadding()
-        
-        # The amount each elements is stretched along the y-axis 
-        # Means the elements are scaled with the largest element
-        self.yStretch = self.__maximumPixels / max(self.__array)
-        # Draw the actual array with all the adjustments made
-        # Since there is no algorithm active, all bars are drawn as black
-        self.displayArray("Black")
-        
-    # Iterates through array, drawing each bar
-    # The function has two default arguements -> currentIndex and altColour both initialised to None
-    def displayArray(self, defaultColour, currentIndex = None, altColour = None) -> None:
-            # Clear displayed array on screen
-            self.clearDisplayedArray()
-            for x, y in enumerate(self.__array):
-                # Calculate where each bar is placed on screen
-                # Bottom left co-ord
-                x1 = x * self.getBarDistance() + x * self.getBarWidth() + self.__padding
-                # Top left coord
-                y1 = self.getArrayCanvas().winfo_height() - (y * self.yStretch)  
-                # Bottom right coord
-                x2 = x * self.getBarDistance() + x * self.getBarWidth() + self.getBarWidth() + self.__padding
-                # Top right coord
-                y2 = self.getArrayCanvas().winfo_height() 
-                # Chooses correct colour for bar to be filled in with
-                if x == currentIndex: self.getArrayCanvas().create_rectangle(x1, y1, x2, y2, fill = altColour) 
-                else: self.getArrayCanvas().create_rectangle(x1, y1, x2, y2, fill = defaultColour) 
-            # Updates screen so bars can be seen onscreen
-            self.getWindow().update()
-      
-    # Wipes everything off the canvas
-    def clearDisplayedArray(self) -> None:
-        self.getArrayCanvas().delete("all")
-
-    # Adds amount of elements corresponding to the value
-    def addElements(self, value):
-        for _ in range(len(self.__array), value):
-            # Choose random number inbetween upper and lower bounds
-            self.__array.append(random.randint(self.__lowerBound, self.__upperBound)) 
-    
-    # Deletes number of elements corresponding to the value
-    def deleteElements(self, value) -> None:
-        for _ in range(len(self.__array), value, -1):
-            self.__array.pop()
-
-    # Determines if bars need to shrink in size as array grows
-    def decreaseBarSize(self) -> None:
-        for i in range(self.getBarWidth(), self.getMinBarWidth(), -1):
-            if(len(self.__array) < round(self.calculateMaxBars(i, self.getMaxPadding()))):
-                self.setBarWidth(i)
-                return
-        self.setBarWidth(self.getMinBarWidth())
-            
-    # Determines if bars needs to increase in size as array shrinks
-    def increaseBarSize(self) -> None:
-        for i in range(self.getBarWidth() + 1, self.getMaxBarWidth() + 1):
-             if(len(self.__array) < round(self.calculateMaxBars(i, self.getMaxPadding()))):
-                self.setBarWidth(i)
-          
-    # Calculate upper and lower bounds of the array
-    def calculateArrayBounds(self) -> None:
-        # Calculate maximum value the array can have by:
-        # Choosing an arbitrary number between randomLow and randomHigh and doubling it 
-        self.__upperBound = random.randint(self.__randomLow, self.__randomHigh) * 2 
-        
-        # Long explanation time...
-        # Lower is the absolute minimum value that can appear on screen 
-        # Bars are only visible if the top right coorindate is less than or equal to the value of maximumPixels - 0.5 
-        # So lower can be calculated be rearranging the y1 coord equation to solve for y
-        # 0.5 was rounded up to 1 because it looks nicer
-        self.__lowerBound = round((self.getArrayCanvas().winfo_height() - self.__maximumPixels + 1) / (self.__maximumPixels / self.__upperBound))  
-    
-        # Draw the first element on screen
-        self.adjustArray('1')
-    
-    # Largest number that can be displayed on screen
-    def calculateMaximumPixels(self) -> int:
-        # Two is taken from the canvas' height because the canvas widget has a border where no pixels are drawn   
-        return self.getArrayCanvas().winfo_height() - 2
-    
-    # Finds the best distance between the displayed array and the edges of canvas, 
-    # to maximise the number of elements and centre the array as best as possible
-    def calculateBestPadding(self) -> int:
-        for i in range(self.getMinPadding(), self.getMaxPadding()):
-            # Calculates how many bars can be displayed on the screen 
-            bars = self.calculateMaxBars(self.getMinBarWidth(), i)  
-            # If the number of bars is a whole number
-            if((bars).is_integer()):  
-                # Maximum size the array can be
-                self.__maxBars = int(bars)
-                # Function terminates - returning the best padding (i)
-                return i
-        # If no whole number can be found, just use the max padding (the array being off centre is less noticeable) 
-        self.__maxBars = round(self.calculateMaxBars(self.getMinBarWidth(), self.getMaxPadding()))
-        return self.getMaxPadding()
-       
-    # Calculates maximum number of bars that can be displayed given the padding
-    def calculateMaxBars(self, barWidth, padding) -> int:
-        return ((self.getArrayCanvas().winfo_width()) - (padding * 2)) / (barWidth + self.getBarDistance())
-
-    # Calculates the padding to centre the array of a given size
-    def calculatePadding(self) -> int:
-        return ((self.getArrayCanvas().winfo_width() - (len(self.__array) * (self.getBarDistance() + self.getBarWidth()))) // 2) + self.getBarDistance() 
-
     # Gets options user has selected from the slider (an intger used as the dictionary key)
     # and calls the paired function stored in the dictionary 
     # Each function returns an integer -> the target
@@ -255,14 +119,14 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
     # Guarantees target is in the array
     def targetIn(self) -> int: 
        # Randomly chooses index from array and returns integers at that index
-       return self.__array[random.randint(0, len(self.__array) - 1)] 
+       return self.__controller.getArray()[random.randint(0, len(self.__controller.getArray()) - 1)] 
 
     # Guarantees target is not in arrat
     def targetOut(self) -> int: 
         # Chooses a number between the range of arrays smallest value - 20 and arrays largest value + 20
-        target = random.randint(min(self.__array) - 20, max(self.__array) + 20)
+        target = random.randint(min(self.__controller.getArray()) - 20, max(self.__controller.getArray()) + 20)
         # If generated number in array recall function
-        if target in self.__array: self.targetOut()
+        if target in self.__controller.getArray(): self.targetOut()
         # If generated number not in array then just return value
         else: return target
         
@@ -283,7 +147,7 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
 
     # Returns array
     def getArray(self) -> list:
-        return self.__array
+        return self.__controller.getArray()
 
     # Returns target
     def getTarget(self) -> int:
@@ -292,3 +156,6 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
     # Returns number of seconds to delay each iteration of algorithm
     def getDelay(self) -> int:
         return self.__numbersToSpeed[self.__speedSlider.get()][1]
+    
+    def displayArray(self, defaultColour, index = None, currentIndex = None): 
+        self.__controller.displayArray(defaultColour, index, currentIndex)
