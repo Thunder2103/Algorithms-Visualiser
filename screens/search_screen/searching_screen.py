@@ -36,18 +36,18 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
         self.__controller = sc.SearchController(self, self.__model)
 
         # Creating and displaying options
-        self.createOptions() 
+        self.__createOptions() 
 
     # This functions handles creating and displaying the options the user is presented with
-    def createOptions(self) -> None: 
-        self.createAlgorithmOptions()               
-        self.createSpeedAdjuster()
-        self.createArrayAdjuster()
-        self.createTargetAdjuster()
-        self.createStopSolveButtons()
+    def __createOptions(self) -> None: 
+        self.__createAlgorithmOptions()               
+        self.__createSpeedAdjuster()
+        self.__createArrayAdjuster()
+        self.__createTargetAdjuster()
+        self.__createStopSolveButtons()
 
     # Creates a combo box which displays all algorithms 
-    def createAlgorithmOptions(self) -> None:
+    def __createAlgorithmOptions(self) -> None:
         #combo box, allows the user to choose what algorithm they want
         self.__algorithmOptions = ttk.Combobox(self.getOptionsWidgetFrame(), textvariable = tk.StringVar(), state = "readonly", font = (self.getFont(), 12),\
              width = self.getOptionsWidgetFrame().winfo_width())
@@ -58,7 +58,7 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
         self.__algorithmOptions.pack(pady = (10,0)) 
     
     # Creates a slider that allows users to adjust an algorithms speed
-    def createSpeedAdjuster(self) -> None:
+    def __createSpeedAdjuster(self) -> None:
         # Creates a slider that goes 0 to 1 then 2
         # It has three options correlating to the three speeds; slow, medium, fast 
         # Every time the sliders value is changed the intToSpeed() method is called
@@ -69,13 +69,13 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
         self.__speedSlider.config(label = "Slow")  
     
     # Creates a slider that allows users to alter an arrays size
-    def createArrayAdjuster(self) -> None:
+    def __createArrayAdjuster(self) -> None:
         self.__arraySizeSlider = tk.Scale(self.getOptionsWidgetFrame(), from_ = 1, to_ = self.__controller.getMaxBars(), length = self.getOptionsWidgetFrame().winfo_width(),\
             orient = "horizontal", bg = "white", highlightbackground = "white", command = self.__controller.adjustArray)
         self.__arraySizeSlider.pack(pady = (10, 0))
 
     # Creates a slider that lets sers decide if the target is in the array, not in the array or randomly generated
-    def createTargetAdjuster(self) -> None:
+    def __createTargetAdjuster(self) -> None:
         # Creates a slider that goes from 0 to 1 to 2
         # The three values correlate to the three possible target options
         # The target can guranteed to be in the array, guaranteed to not be in the array or randomly selected
@@ -86,7 +86,7 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
         self.__targetSlider.config(label = "Target: Random") 
     
     # Creates buttons that lets user execute algorithms or stop them
-    def createStopSolveButtons(self) -> None:
+    def __createStopSolveButtons(self) -> None:
         # Frame to store stop and solve buttons in a grid layout
         stopSolveFrame = tk.Frame(self.getOptionsWidgetFrame(), bg = "white")
         stopSolveFrame.pack(side = "bottom", pady = (0,5))
@@ -111,7 +111,7 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
     def generateTarget(self) -> int:
         return self.__numbersToText[self.__targetSlider.get()][1]()
     
-    # Makes sure that target generated has (almost) equal chance to be in the arry or not 
+    # Makes sure that target generated has (almost) equal chance to be in the array or not 
     def targetRandom(self) -> int: 
         # Chooses either 1 or 0 
         # If 1 is chosen then call function to gurantee target is in array
