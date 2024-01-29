@@ -31,12 +31,13 @@ class SearchController():
             bars = self.__calculateMaxBars(self.__model.getMinBarWidth(), i)  
             # If the number of bars is a whole number
             if((bars).is_integer()):  
-                # Maximum size the array can be
-                self.__maxBars = int(bars)
+                # Maximum size the array can be 
+                self.__model.setMaxBars(int(bars))
                 # Function terminates - returning the best padding (i)
                 return i
         # If no whole number can be found, just use the max padding (the array being off centre is less noticeable) 
-        self.__maxBars = round(self.__calculateMaxBars(self.__model.getMinBarWidth(), self.__model.getMaxPadding()))
+        maxBars = round(self.__calculateMaxBars(self.__model.getMinBarWidth(), self.__model.getMaxPadding())) 
+        self.__model.setMaxBars(maxBars)
         return self.__model.getMaxPadding()
 
     # Calculates maximum number of bars that can be displayed given the padding
@@ -61,7 +62,7 @@ class SearchController():
             self.__decreaseBarSize()
         # If the array size is less than the maximum number of bars. 
         # Calculate padding 
-        if(len(self.__model.getArray()) != self.__maxBars): self.__padding = self.__calculatePadding()
+        if(len(self.__model.getArray()) != self.__model.getMaxBars()): self.__padding = self.__calculatePadding()
         # If the array size is now at maximum size, 
         # padding is the value calulated by the calculateBestPadding() method
         else: self.__padding = self.__model.getMinPadding()
@@ -140,7 +141,5 @@ class SearchController():
         self.__model.setLowerBound(lowerBound)
         # Draw the first element on screen
         self.adjustArray('1')
-          
-    def getMaxBars(self): return self.__maxBars
 
 # Listen to Sure Enough by The Door Cinema Club     

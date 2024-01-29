@@ -22,6 +22,8 @@ class SearchModel():
         self.__lowerBound = None
         # Highest value that can actually appear in the array
         self.__higherBound = None
+        # Maximum number of bars that can be drawn, ie the maximum size of the array
+        self.__maxBars = None 
         # Array containing all the data 
         self.__array = []
     
@@ -57,7 +59,11 @@ class SearchModel():
     # Gets the highest value that can appear in the array
     def getHigherBound(self) -> int: return self.__higherBound
     # Set the highest value that can appear in the array to the value passed
-    def setHigherBound(self, value : int) -> None: self.__higherBound = value
+    def setHigherBound(self, value : int) -> None: self.__higherBound = value  
+    # Get maximum bars that can be drawn on screen
+    def getMaxBars(self) -> int: return self.__maxBars 
+    # Set maximum bars that can be drawn on screen to passed value
+    def setMaxBars(self, value : int) -> None: self.__maxBars = value
 
     def getArray(self) -> list: return self.__array
     def appendArray(self, value : int) -> None: self.__array.append(value)

@@ -70,7 +70,7 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
     
     # Creates a slider that allows users to alter an arrays size
     def __createArrayAdjuster(self) -> None:
-        self.__arraySizeSlider = tk.Scale(self.getOptionsWidgetFrame(), from_ = 1, to_ = self.__controller.getMaxBars(), length = self.getOptionsWidgetFrame().winfo_width(),\
+        self.__arraySizeSlider = tk.Scale(self.getOptionsWidgetFrame(), from_ = 1, to_ = self.__model.getMaxBars(), length = self.getOptionsWidgetFrame().winfo_width(),\
             orient = "horizontal", bg = "white", highlightbackground = "white", command = self.__controller.adjustArray)
         self.__arraySizeSlider.pack(pady = (10, 0))
 
