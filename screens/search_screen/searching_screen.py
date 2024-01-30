@@ -131,10 +131,11 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
     
     # Makes sure that target generated has (almost) equal chance to be in the array or not 
     def targetRandom(self) -> int: 
-        # Chooses either 1 or 0 
-        # If 1 is chosen then call function to gurantee target is in array
-        if random.randint(0 , 1): return self.targetIn()
-        # Else call function to gurantee target not in array
+        # Generates decimal between 0 and 1 
+        # If decimal is less than or equal to 0.5 make the target in the array 
+        # Gives a roughly 50-50 chance for target to be in the array or out thr array
+        if(random.random() <= 0.5): return self.targetIn()
+        # Else call function to generate the target so it is not in the array
         else: return self.targetOut()
     
     # Guarantees target is in the array
@@ -177,7 +178,6 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
     # Returns number of seconds to delay each iteration of algorithm
     def getDelay(self) -> int:
         return self.__speedToDelay[self.__speedSlider.get()]
-        #return self.__numbersToSpeed[self.__speedSlider.get()][1]
     
     def displayArray(self, defaultColour, index = None, currentIndex = None): 
         self.__controller.displayArray(defaultColour, index, currentIndex)
