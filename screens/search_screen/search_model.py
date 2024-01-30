@@ -69,4 +69,4 @@ class SearchModel():
     def appendArray(self, value : int) -> None: self.__array.append(value)
     def popArray(self) -> None: self.__array.pop()
 
-# Listen to creep by Radiohead
+# Listen to Creep by Radiohead

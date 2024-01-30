@@ -1,3 +1,6 @@
+# TO DO: split existing dictionaries up and mvoe them to SearchModel
+# TO DO: Move generate target functions to controller 
+
 # If this isn't at the top the program breaks :/
 # If the file is run as is message this returned and program exits
 if(__name__ == "__main__"):
@@ -18,17 +21,32 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
         # Dictionary pairing numbers to speed
         # This allows the slider to show "Small", "Medium" and "Fast" instead of 0, 1, 2
         self.__numbersToSpeed = {
-            0: ["Slow", 4],
-            1: ["Medium", 2.5],
-            2: ["Fast", 1],
-            3: ["Super Fast", 0.5]
-        }   
+            0: "Slow",
+            1: "Medium",
+            2: "Fast",
+            3: "Super Fast"
+        }  
+
+        # Dictionary pairing the numbers returned by the slider to the delay (in seconds)
+        self.__speedToDelay = {
+            0 : 4, 
+            1 : 2.5, 
+            2 : 1, 
+            3 : 0.5
+        } 
 
         # Dictionary pairing numbers to speed 
+        # This allows the slider to show text rather than just numbers
         self.__numbersToText = {
-            0: ["Target: Random", self.targetRandom], 
-            1: ["Target: In array", self.targetIn],
-            2: ["Target: Not in array", self.targetOut]
+            0: "Target: Random", 
+            1: "Target: In array",
+            2: "Target: Not in array"
+        } 
+
+        self.__generateTargetFunctions = {
+            0 : self.targetRandom, 
+            1 : self.targetIn, 
+            2 : self.targetOut
         }
 
         # Handles logic of the GUI and handling the array
@@ -99,17 +117,17 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
 
     # When the slider has changed value a label is added with the relevant speed
     def intToSpeed(self, value : str) -> None: 
-        self.__speedSlider.config(label = self.__numbersToSpeed[int(value)][0])  
+        self.__speedSlider.config(label = self.__numbersToSpeed[int(value)])  
 
     # When the target slider has changed value a label is added to show the relevant target information
     def intToText(self, value : str) -> None:
-        self.__targetSlider.config(label = self.__numbersToText[int(value)][0]) 
+        self.__targetSlider.config(label = self.__numbersToText[int(value)]) 
                
     # Gets options user has selected from the slider (an intger used as the dictionary key)
     # and calls the paired function stored in the dictionary 
     # Each function returns an integer -> the target
     def generateTarget(self) -> int:
-        return self.__numbersToText[self.__targetSlider.get()][1]()
+        return self.__generateTargetFunctions[self.__targetSlider.get()]()
     
     # Makes sure that target generated has (almost) equal chance to be in the array or not 
     def targetRandom(self) -> int: 
@@ -158,7 +176,8 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
     
     # Returns number of seconds to delay each iteration of algorithm
     def getDelay(self) -> int:
-        return self.__numbersToSpeed[self.__speedSlider.get()][1]
+        return self.__speedToDelay[self.__speedSlider.get()]
+        #return self.__numbersToSpeed[self.__speedSlider.get()][1]
     
     def displayArray(self, defaultColour, index = None, currentIndex = None): 
         self.__controller.displayArray(defaultColour, index, currentIndex)
