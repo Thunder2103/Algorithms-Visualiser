@@ -7,9 +7,10 @@ if(__name__ == "__main__"):
 import random 
 
 class SearchController():
-    def __init__(self, screen, model) -> None:
+    def __init__(self, screen, model, dataModel) -> None:
         self.__screen = screen
         self.__model = model
+        self.__dataModel = dataModel
         # Returns the height of the canvas - maximum number of pixels an element can possibly have
         self.__model.setMaximumPixels(self.__calculateMaximumPixels())
         # Calculates spacing between canvas border and displayed array 
@@ -46,14 +47,14 @@ class SearchController():
 
     # Calculates the padding to centre the array of a given size
     def __calculatePadding(self) -> int:
-        return ((self.__screen.getArrayCanvas().winfo_width() - (len(self.__model.getArray()) * (self.__model.getBarDistance() 
+        return ((self.__screen.getArrayCanvas().winfo_width() - (len(self.__dataModel.getArray()) * (self.__model.getBarDistance() 
                                                                                       + self.__model.getBarWidth()))) // 2) + self.__model.getBarDistance()
     
     # Adjusts size of bars so amount of elements can fit on screen and stay in the canvas' centre
     def adjustArray(self, value : str) -> None:
         # If the value given from the scrollbar is less than the arrays size
         # Delete elements from the array and check if bar size can increase
-        if(int(value) < len(self.__model.getArray())): 
+        if(int(value) < len(self.__dataModel.getArray())): 
             self.__deleteElements(int(value))
             self.__increaseBarSize()
         # Otherwise add elements to the array and check is bar size needs to decrease
@@ -62,24 +63,24 @@ class SearchController():
             self.__decreaseBarSize()
         # If the array size is less than the maximum number of bars. 
         # Calculate padding 
-        if(len(self.__model.getArray()) != self.__model.getMaxBars()): self.__padding = self.__calculatePadding()
+        if(len(self.__dataModel.getArray()) != self.__model.getMaxBars()): self.__padding = self.__calculatePadding()
         # If the array size is now at maximum size, 
         # padding is the value calulated by the calculateBestPadding() method
         else: self.__padding = self.__model.getMinPadding()
         
         # The amount each elements is stretched along the y-axis 
         # Means the elements are scaled with the largest element
-        self.yStretch = self.__model.getMaximumPixels() / max(self.__model.getArray())
+        self.yStretch = self.__model.getMaximumPixels() / max(self.__dataModel.getArray())
         # Draw the actual array with all the adjustments made
         # Since there is no algorithm active, all bars are drawn as black
-        self.displayArray("Black")
+        self.displayArray()
         
     # Iterates through array, drawing each bar
     # The function has two default arguements -> currentIndex and altColour both initialised to None
-    def displayArray(self, defaultColour, currentIndex = None, altColour = None) -> None:
+    def displayArray(self) -> None:
             # Clear displayed array on screen
             self.__clearDisplayedArray()
-            for x, y in enumerate(self.__model.getArray()):
+            for x, y in enumerate(self.__dataModel.getArray()):
                 # Calculate where each bar is placed on screen
                 # Bottom left co-ord
                 x1 = x * self.__model.getBarDistance() + x * self.__model.getBarWidth() + self.__padding
@@ -90,10 +91,10 @@ class SearchController():
                 # Top right coord
                 y2 = self.__screen.getArrayCanvas().winfo_height() 
                 # Chooses correct colour for bar to be filled in with
-                if x == currentIndex: self.__screen.getArrayCanvas().create_rectangle(x1, y1, x2, y2, fill = altColour) 
-                else: self.__screen.getArrayCanvas().create_rectangle(x1, y1, x2, y2, fill = defaultColour) 
+                self.__screen.getArrayCanvas().create_rectangle(x1, y1, x2, y2, fill = self.__dataModel.getBarColour(x)) 
             # Updates screen so bars can be seen onscreen
-            self.__screen.getWindow().update()
+            self.__screen.getWindow().update() 
+            self.__dataModel.resetBarColours()
       
     # Wipes everything off the canvas
     def __clearDisplayedArray(self) -> None:
@@ -101,19 +102,19 @@ class SearchController():
 
     # Adds amount of elements corresponding to the value
     def __addElements(self, value):
-        for _ in range(len(self.__model.getArray()), value):
+        for _ in range(len(self.__dataModel.getArray()), value):
             # Choose random number inbetween upper and lower bounds
-            self.__model.appendArray(random.randint(self.__model.getLowerBound(), self.__model.getHigherBound()))
+            self.__dataModel.appendArray(random.randint(self.__model.getLowerBound(), self.__model.getHigherBound()))
          
     # Deletes number of elements corresponding to the value
     def __deleteElements(self, value) -> None:
-        for _ in range(len(self.__model.getArray()), value, -1):
-            self.__model.popArray()
+        for _ in range(len(self.__dataModel.getArray()), value, -1):
+            self.__dataModel.popArray()
 
     # Determines if bars need to shrink in size as array grows
     def __decreaseBarSize(self) -> None:
         for i in range(self.__model.getBarWidth(), self.__model.getMinBarWidth(), -1):
-            if(len(self.__model.getArray()) < round(self.__calculateMaxBars(i, self.__model.getMaxPadding()))):
+            if(len(self.__dataModel.getArray()) < round(self.__calculateMaxBars(i, self.__model.getMaxPadding()))):
                 self.__model.setBarWidth(i)
                 return 
         self.__model.setBarWidth(self.__model.getMinBarWidth())
@@ -121,7 +122,7 @@ class SearchController():
     # Determines if bars needs to increase in size as array shrinks
     def __increaseBarSize(self) -> None:
         for i in range(self.__model.getBarWidth() + 1, self.__model.getMaxBarWidth() + 1):
-             if(len(self.__model.getArray()) < round(self.__calculateMaxBars(i, self.__model.getMaxPadding()))): 
+             if(len(self.__dataModel.getArray()) < round(self.__calculateMaxBars(i, self.__model.getMaxPadding()))): 
                 self.__model.setBarWidth(i)
   
     # Calculate upper and lower bounds of the array
@@ -141,5 +142,8 @@ class SearchController():
         self.__model.setLowerBound(lowerBound)
         # Draw the first element on screen
         self.adjustArray('1')
+    
+    def setDataModel(self, dataModel):
+        self.__dataModel = dataModel
 
-# Listen to Sure Enough by The Door Cinema Club     
+# Listen to Give Me Novacaine by Greeb Day

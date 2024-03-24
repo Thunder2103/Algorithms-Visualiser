@@ -6,21 +6,17 @@ if(__name__ == "__main__"):
 from abc import ABC, abstractmethod
 import time
 # Abstract class - every algorithm must implement the getName() method
-class Algorithm(ABC):
+class Algorithm(ABC):    
     @abstractmethod
     def getName(self): pass 
 
-    # All Searching Algorithms need the array, the target and the time delay
-    def init(self, Searching):
-        self.array = Searching.getArray()
-        self.target = Searching.getTarget()
-        self.delay = Searching.getDelay()
-    
-    # Sorts given array -> since several algorithms need a sorted array
-    def sortArray(self, Searching):
-        self.array.sort()
-        Searching.displayArray("Black")
-        # Small delay after sorting and displaying array
-        time.sleep(0.5)
-    
+    def getData(self, dataModel):
+        return (dataModel.getArray(), dataModel.getTarget())
+
+    def delay(self, dataModel):
+        i = 0 
+        while(i < dataModel.getDelay()):
+            time.sleep(0.1)
+            i+=0.1
+
 # Listen to American Idiot by Green Day

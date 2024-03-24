@@ -5,3 +5,4 @@ from .introduction_screen import IntroductionScreen
 from .search_screen import SearchScreen
 from .search_screen import SearchController
 from .search_screen import SearchModel
+from .search_screen import SearchDataModel

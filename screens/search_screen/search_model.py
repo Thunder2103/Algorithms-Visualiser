@@ -24,9 +24,7 @@ class SearchModel():
         self.__higherBound = None
         # Maximum number of bars that can be drawn, ie the maximum size of the array
         self.__maxBars = None 
-        # Array containing all the data 
-        self.__array = []
-    
+
     # Returns width of the bars drawn on screen
     def getBarWidth(self) -> int: return self.__barWidth 
     # Sets width of bars drawn on screen to passed value
@@ -64,9 +62,5 @@ class SearchModel():
     def getMaxBars(self) -> int: return self.__maxBars 
     # Set maximum bars that can be drawn on screen to passed value
     def setMaxBars(self, value : int) -> None: self.__maxBars = value
-
-    def getArray(self) -> list: return self.__array
-    def appendArray(self, value : int) -> None: self.__array.append(value)
-    def popArray(self) -> None: self.__array.pop()
 
 # Listen to Creep by Radiohead

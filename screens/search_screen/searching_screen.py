@@ -1,5 +1,5 @@
-# TO DO: split existing dictionaries up and mvoe them to SearchModel
-# TO DO: Move generate target functions to controller 
+# TODO: split existing dictionaries up and move them to SearchModel
+# TODO: Move generate target functions to controller 
 
 # If this isn't at the top the program breaks :/
 # If the file is run as is message this returned and program exits
@@ -8,7 +8,7 @@ if(__name__ == "__main__"):
     exit()
 
 import screens as sc
-import algorithms.handlers as h
+from algorithms.handlers import callAlgorithm, getAlgorithms
 import tkinter as tk 
 from tkinter import ttk
 import random
@@ -51,7 +51,9 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
 
         # Handles logic of the GUI and handling the array
         self.__model = sc.SearchModel()
-        self.__controller = sc.SearchController(self, self.__model)
+        self.__dataModel = sc.SearchDataModel()
+        self.__controller = sc.SearchController(self, self.__model, self.__dataModel)
+        self.__dataModel.addController(self.__controller)
 
         # Creating and displaying options
         self.__createOptions() 
@@ -69,7 +71,7 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
         #combo box, allows the user to choose what algorithm they want
         self.__algorithmOptions = ttk.Combobox(self.getOptionsWidgetFrame(), textvariable = tk.StringVar(), state = "readonly", font = (self.getFont(), 12),\
              width = self.getOptionsWidgetFrame().winfo_width())
-        self.__algorithmOptions['value'] = h.getAlgorithms()
+        self.__algorithmOptions['value'] = getAlgorithms()
         self.__algorithmOptions.set('Select an algorithm.')
         # Removes the blue highlighting when something is selected that annoyed me
         self.__algorithmOptions.bind("<<ComboboxSelected>>", lambda _: self.getOptionsWidgetFrame().focus())
@@ -141,43 +143,35 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
     # Guarantees target is in the array
     def targetIn(self) -> int: 
        # Randomly chooses index from array and returns integers at that index
-       return self.__model.getArray()[random.randint(0, len(self.__model.getArray()) - 1)] 
+       return self.__dataModel.getArray()[random.randint(0, len(self.__dataModel.getArray()) - 1)] 
 
-    # Guarantees target is not in arrat
+    # Guarantees target is not in array
     def targetOut(self) -> int: 
         # Chooses a number between the range of arrays smallest value - 20 and arrays largest value + 20
-        target = random.randint(min(self.__model.getArray()) - 20, max(self.__model.getArray()) + 20)
+        target = random.randint(min(self.__dataModel.getArray()) - 20, max(self.__dataModel.getArray()) + 20)
         # If generated number in array recall function
-        if target in self.__model.getArray(): self.targetOut()
+        if target in self.__dataModel.getArray(): self.targetOut()
         # If generated number not in array then just return value
         else: return target
         
     # Call algorithm user has selected
     def initAlgorithm(self) -> None:
-        # Doesn't do anything is user hasn't chosen an algorithm
+        # Doesn't do anything if user hasn't chosen an algorithm
         if(self.getAlgorithmChoice() == 'Select an algorithm.'): 
             self.__algorithmOptions.config(foreground = "red")
         else:
             # Generates target the algorithm looks for 
-            self.target = self.generateTarget()
+            self.__dataModel.setTarget(self.generateTarget())
+            # Sets the delay 
+            self.__dataModel.setDelay(self.getDelay())
             # Call algorithm -> so this program actually has a use
-            h.callAlgorithm(self, self.getAlgorithmChoice())
+            callAlgorithm(self.__dataModel, self.getAlgorithmChoice())
     
     # Returns algorithm the user has selected 
     def getAlgorithmChoice(self) -> str:
         return self.__algorithmOptions.get()
-
-    # Returns array
-    def getArray(self) -> list:
-        return self.__model.getArray()
-
-    # Returns target
-    def getTarget(self) -> int:
-        return self.target
-    
+  
     # Returns number of seconds to delay each iteration of algorithm
     def getDelay(self) -> int:
         return self.__speedToDelay[self.__speedSlider.get()]
     
-    def displayArray(self, defaultColour, index = None, currentIndex = None): 
-        self.__controller.displayArray(defaultColour, index, currentIndex)

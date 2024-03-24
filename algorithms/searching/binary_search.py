@@ -9,36 +9,44 @@ from ..algorithm import Algorithm
 import time
 
 class BinarySearch(Algorithm):
+    def __init__(self, dataModel):
+        self.__dataModel = dataModel
+
     # Returns algorithms name -> user sees this when selecting algorithm
     def getName(self):
         return "Binary Search" 
     
     # Binary Search algorithm -> see markdown for explanation
-    def binarySearch(self, Searching):
-        # Grabs everything array needs
-        self.init(Searching)
+    def binarySearch(self):
         # Sorts array 
-        self.sortArray(Searching)
+        self.__dataModel.sortArray()
+        self.__dataModel.displayArray()
+        
+        array = self.__dataModel.getArray()
+        target = self.__dataModel.getTarget()
+ 
         # Low and high variables used to adjust mid
         low = 0 
-        high = len(self.array) - 1
+        high = len(array) - 1
         
         while(low <= high):
             # Calculate new mid
             mid = (low + high) // 2
             # If element at mid is equal to the target
-            if self.array[mid] == self.target:
-                Searching.displayArray("Black", mid, "Green")
+            if array[mid] == target:
+                self.__dataModel.setBarColour(mid, "green")
+                self.__dataModel.displayArray()
                 return 1
             # If element at mid is greater than the target
-            elif self.array[mid] > self.target:
+            elif array[mid] > target:
                 # Disreguard upper end of array
                 high = mid - 1
             # If element is less than the target
             # Disreguard lower end of the array
             else: low = mid + 1
-            Searching.displayArray("Black", mid, "Red")
-            time.sleep(self.delay)
+            self.__dataModel.setBarColour(mid, "red")
+            self.__dataModel.displayArray()
+            self.delay(self.__dataModel) 
         return 0 
     
 # Listen to Welcome to the DCC by Nothing But Thieves

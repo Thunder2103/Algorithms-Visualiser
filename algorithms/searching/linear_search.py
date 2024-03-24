@@ -7,21 +7,24 @@ if(__name__ == "__main__"):
 from ..algorithm import Algorithm
 import time
 class LinearSearch(Algorithm):
+    # Constructor
+    def __init__(self, dataModel):
+        self.__dataModel = dataModel
+
     # Returns algorithms name -> user sees this when selecting algorithm
-    def getName(self):
+    def getName(self) -> str:
         return "Linear Search" 
     
     # Linear Search Algorithm
-    def linearSearch(self, Searching):
-        # Gets everything algorithm needs to run
-        self.init(Searching) 
-        
+    def linearSearch(self) -> int:        
         # Iterate through array one element at a time
-        for index, num in enumerate(self.array):
+        for index, num in enumerate(self.__dataModel.getArray()):
             # If current element is equal to the target
-            if num == self.target:
-                Searching.displayArray("Black", index, "Green")
+            if num == self.__dataModel.getTarget():
+                self.__dataModel.setBarColour(index, "green")
+                self.__dataModel.displayArray()
                 return 1
-            Searching.displayArray("Black", index, "Red")
-            time.sleep(self.delay)       
-        return 0
+            self.__dataModel.setBarColour(index, "red")
+            self.__dataModel.displayArray()
+            self.delay(self.__dataModel)     
+        return -1
