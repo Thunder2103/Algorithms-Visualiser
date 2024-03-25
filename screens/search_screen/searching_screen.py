@@ -12,6 +12,7 @@ from algorithms.handlers import callAlgorithm, getAlgorithms
 import tkinter as tk 
 from tkinter import ttk
 import random
+import threading
 
 class SearchScreen(sc.Screen, sc.SharedLayout):
     def initScreen(self) -> None:
@@ -49,11 +50,16 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
             2 : self.targetOut
         }
 
-        # Handles logic of the GUI and handling the array
+        # Stores data needed for calculating size of the on-screen widgets
         self.__model = sc.SearchModel()
-        self.__dataModel = sc.SearchDataModel()
-        self.__controller = sc.SearchController(self, self.__model, self.__dataModel)
-        self.__dataModel.addController(self.__controller)
+        # Stores data relating to the algorithm 
+        self.__dataModel = sc.SearchDataModel() 
+        # Handles the logic 
+        self.__controller = sc.SearchController(self, self.__model, self.__dataModel) 
+        # Adds reference to the controller 
+        self.__dataModel.addController(self.__controller) 
+        # Thread algorithm runs in
+        self.__algorithmThread = None
 
         # Creating and displaying options
         self.__createOptions() 
@@ -165,7 +171,8 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
             # Sets the delay 
             self.__dataModel.setDelay(self.getDelay())
             # Call algorithm -> so this program actually has a use
-            callAlgorithm(self.__dataModel, self.getAlgorithmChoice())
+            self.__algorithmThread = threading.Thread(target=callAlgorithm, args=(self.__dataModel, self.getAlgorithmChoice(),))
+            self.__algorithmThread.start()
     
     # Returns algorithm the user has selected 
     def getAlgorithmChoice(self) -> str:
@@ -174,4 +181,6 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
     # Returns number of seconds to delay each iteration of algorithm
     def getDelay(self) -> int:
         return self.__speedToDelay[self.__speedSlider.get()]
+
+# Listen to Whatsername by Green Day
     

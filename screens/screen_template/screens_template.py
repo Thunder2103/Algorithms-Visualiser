@@ -128,7 +128,7 @@ class SharedLayout():
         self.__algorithmInfoFrame.pack_propagate(False) 
 
     # Returns window the screen is displayed in
-    def getWindow(self) -> tk.Tk: return self.__window
+    def getWindow(self) -> object: return self.__window
     # Returns font used for all text
     def getFont(self) -> str: return self.__FONT 
     def getOptionsWidgetFrame(self) -> tk.Frame: return self.__optionsWidgetsFrame 

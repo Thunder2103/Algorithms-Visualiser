@@ -11,9 +11,6 @@ class Algorithm(ABC):
     def getName(self): pass 
 
     def delay(self, dataModel):
-        i = 0 
-        while(i < dataModel.getDelay()):
-            time.sleep(0.1)
-            i+=0.1
+        time.sleep(dataModel.getDelay())
 
 # Listen to American Idiot by Green Day

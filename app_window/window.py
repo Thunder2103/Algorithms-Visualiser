@@ -69,16 +69,24 @@ class Window():
         for widget in self.__contentFrame.winfo_children():
             widget.destroy()
 
+    # Refreshes the screen, so any changes can be displayed
     def update(self) -> None:
         self.__window.update() 
+    
+    # Schedule the passed function to be executed after the passed amount of time
+    def scheduleFunctionExecution(self, function, delay):
+        self.__window.after(int(delay), function)
 
+    # Returns the frame widgets are displayed in
     def getContentFrame(self) -> tk.Frame:
         return self.__contentFrame
-        
+    
+    # Returns the content frames height
     def getContentFrameHeight(self) -> int:
         return self.__contentFrameHeight 
 
+    # Returns the content frames width
     def getContentFrameWidth(self) -> int:
         return self.__contentFrameWidth 
     
-# Listen to Dilema by Green Day
+# Listen to Dilemma by Green Day

@@ -19,6 +19,6 @@ def callAlgorithm(dataModel, algorithm : str) -> None:
     # Constructs name of function that needs to be called to run algorithm 
     algorithmFunction = algorithmClass[0].lower() + algorithmClass[1:]
     # Calls algorithm function 
-    getattr(algorithmInstance, algorithmFunction)() 
+    getattr(algorithmInstance, algorithmFunction)()  
 
 # Listen to What's my age again by Blink-182

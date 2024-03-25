@@ -9,5 +9,5 @@ if(__name__ == "__main__"):
 else:
     print("This file has no functions to import")
 
-# Subscribe to Computerphile 
 # Listen to Walk by foo fighters  
+# Seriously listen to it, it means a lot to me

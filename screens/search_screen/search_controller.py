@@ -92,9 +92,9 @@ class SearchController():
                 y2 = self.__screen.getArrayCanvas().winfo_height() 
                 # Chooses correct colour for bar to be filled in with
                 self.__screen.getArrayCanvas().create_rectangle(x1, y1, x2, y2, fill = self.__dataModel.getBarColour(x)) 
+            self.__dataModel.resetBarColours()
             # Updates screen so bars can be seen onscreen
             self.__screen.getWindow().update() 
-            self.__dataModel.resetBarColours()
       
     # Wipes everything off the canvas
     def __clearDisplayedArray(self) -> None:
@@ -143,7 +143,13 @@ class SearchController():
         # Draw the first element on screen
         self.adjustArray('1')
     
+    # Sets the dataModel attribute to passed value
     def setDataModel(self, dataModel):
         self.__dataModel = dataModel
+    
+    # Schedule function to redraw array after a certain amount of time 
+    # Prevents the canvas flickering as updating is done by the main GUI thread
+    def scheduleArrayUpdate(self, delay):
+        self.__screen.getWindow().scheduleFunctionExecution(self.displayArray, delay)
 
-# Listen to Give Me Novacaine by Greeb Day
+# Listen to Give Me Novacaine by Green Day

@@ -21,7 +21,7 @@ class JumpSearch(Algorithm):
     def jumpSearch(self):
         # Sorts array 
         self.__dataModel.sortArray()
-        self.__dataModel.displayArray()
+        self.__dataModel.updateArrayOnScreen(instant=True)
         
         array = self.__dataModel.getArray()
         target = self.__dataModel.getTarget()
@@ -32,14 +32,14 @@ class JumpSearch(Algorithm):
         step = int(math.sqrt(n))
         # Store index of last jump
         prev = 0
-        # Find block clostest to target -> if it exists
+        # Find block closest to target -> if it exists
         while(array[min(step, n) - 1] < target):
             prev = step
             self.__dataModel.setBarColour(prev, "red")
             if prev >= n: 
-                self.__dataModel.displayArray()
+                self.__dataModel.updateArrayOnScreen()
                 return 0
-            self.__dataModel.displayArray()
+            self.__dataModel.updateArrayOnScreen()
             step += int(math.sqrt(n))
             self.delay(self.__dataModel)  
         
@@ -49,14 +49,14 @@ class JumpSearch(Algorithm):
             self.__dataModel.setBarColour(i, "red")
             # If current elment > target then target not in array
             if array[i] > target:
-                self.__dataModel.displayArray()
+                self.__dataModel.updateArrayOnScreen()
                 return 1 
             # If current element is equal to target
             if array[i] == target:
                 self.__dataModel.setBarColour(i, "green")
-                self.__dataModel.displayArray()
+                self.__dataModel.updateArrayOnScreen()
                 return 1  
-            self.__dataModel.displayArray()
+            self.__dataModel.updateArrayOnScreen()
             self.delay(self.__dataModel)  
         return 0
     

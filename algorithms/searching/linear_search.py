@@ -5,7 +5,6 @@ if(__name__ == "__main__"):
     exit()
 
 from ..algorithm import Algorithm
-import time
 class LinearSearch(Algorithm):
     # Constructor
     def __init__(self, dataModel):
@@ -21,10 +20,13 @@ class LinearSearch(Algorithm):
         for index, num in enumerate(self.__dataModel.getArray()):
             # If current element is equal to the target
             if num == self.__dataModel.getTarget():
-                self.__dataModel.setBarColour(index, "green")
-                self.__dataModel.displayArray()
+                # Set bar to green as target has been found
+                self.__dataModel.setBarColour(index, "green") 
+                self.__dataModel.updateArrayOnScreen()
                 return 1
             self.__dataModel.setBarColour(index, "red")
-            self.__dataModel.displayArray()
+            self.__dataModel.updateArrayOnScreen()
             self.delay(self.__dataModel)     
         return -1
+
+# Listen to Karma Police By Radiohead
