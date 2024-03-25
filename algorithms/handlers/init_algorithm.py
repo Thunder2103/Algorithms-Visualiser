@@ -7,7 +7,7 @@ if(__name__ == "__main__"):
 import importlib
 
 # Creates instance of algorithm  
-def callAlgorithm(Searching, algorithm : str) -> None:
+def callAlgorithm(dataModel, algorithm : str) -> None:
     # Constructs name of module where algorithm class is stored
     fileName = "_".join(algorithm.split(" ")).lower()
     # Imports module
@@ -15,10 +15,10 @@ def callAlgorithm(Searching, algorithm : str) -> None:
     # Constructs name of class so it can be instantiated
     algorithmClass = algorithm.replace(" ", "")
     # Create instance of the relevant class 
-    algorithmInstance = getattr(algorithmModule, algorithmClass)() 
+    algorithmInstance = getattr(algorithmModule, algorithmClass)(dataModel) 
     # Constructs name of function that needs to be called to run algorithm 
     algorithmFunction = algorithmClass[0].lower() + algorithmClass[1:]
     # Calls algorithm function 
-    getattr(algorithmInstance, algorithmFunction)(Searching) 
+    getattr(algorithmInstance, algorithmFunction)() 
 
 # Listen to What's my age again by Blink-182

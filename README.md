@@ -59,54 +59,74 @@ Space Complexity: O(1)
 --- 
 Algorithm Steps:
 
-1. Initialise a variable called step and set it's value to $\sqrt{n}$ (where n is the length of the array)
+1. Initialize a variable called step and set it's value to $\sqrt{n}$ (where n is the length of the array)
 2. Create a variable called prev and set it's value to 0
-3. While step is less than n, set prev to the value of set and increment step by $\sqrt{n}$. <br>
+3. While step is less than n, set prev to the value of step and then increment step by $\sqrt{n}$. <br>
 If prev is greater than or equal to n, return false. Else if the value at index step is greater than target, break loop.   
-4. Starting at index corresponding to prev value
+4. Initialize a loop starting at the value of prev until prev + $\sqrt{n}$  
 5. If the current index is equal to the target, return true
-6. If the current index is greater than the target, retirn false
-7. Repeat steps 5 - 6 until reached index corresponding to prev + $\sqrt{n}$  
+6. If the current index is greater than the target, return false
+7. Else repeat steps 5 - 6 until reached index corresponding to prev + $\sqrt{n}$  
 
 Time Complexity: O($\sqrt{n}$)<br>
 Space Complexity: O(1)
 
 ---
 ## Adding a new Search Algorithm
-To add a new search algorithm, the follwing requirements must be met.
+New search algorithms can be added if they meet these requirements:
 
 | Requirement: | Description: |
 | ------------ | ------------ | 
 | Location     | New algorithm files must be found in the <b>algorithms/searching</b> directory | 
 | File Name    | New files must be named in the following format: <b>algorithm_name_search.py.</b> <br> e.g. binary_search.py, linear_search.py |
 | Class Implementation        | The algorithm must be implemented as a class. | 
-| Class Name   | An algorithm class must be named in the following format: <b>AlgorithmNameSearch.</b> <br> e.g BinarySearch, Linearsearch
-| Inheritance  | Each algorithm class must be a child of the Algorithm class | 
-| Function Implementation | As each new algorithm class must be a child class of the <br>[Algorithm class](#parent-class---algorithm)</b>, they must provide an implementation for the getName() method.  |
-| Function Naming | The function which implements the algorithm must be named in the following format: algorithmNameSearch <br> e.g. binary search would be binarySearch and linear search would be linearSearch |
-| Function Parameters | Each function that implements the new algorithm must include [two manditory parameters](#algorithm-implementation---parameters) |
+| Class Name   | An algorithm class must be named in the following format: <b>AlgorithmNameSearch.</b> <br> e.g BinarySearch, Linearsearch | 
+| Inheritance  | Each algorithm class must be a child of the [Algorithm class](#algorithm-class) | 
+| Constructor | Each new class must implement a constructor. (See [Constructor](#constructor)) |
+| DataModel   | The DataModel class contains useful functions that will be needed (See [DataModel](#datamodel-class)) | 
+| Function Naming | The function which implements the algorithm must be named in the following format: <b>algorithmNameSearch</b> <br> e.g. binarySearch and linearSearch |
+| Function Implementation | Each new algorithm class must provide an implementation for the <b>getName()</b> method. (See [Algorithm class](#algorithm-class))  |
 
 --- 
 
-### Parent Class - Algorithm: 
+### Imports:
+
+```python 
+from ..algorithm import Algorithm 
+```
+<i> Import statement needed to import Algorithm parent class </i>
+
 --- 
-Every new search algorithm must be a child of the Algorithm class. <br>
-The algorithm class contains the abstract methid 'getName()' which each new algorithm class must provide an implementation for. <br>
-The 'getName()' class should return a string which contains the algorithms namme. <br>
-For the BinarySearch class 'getName()' would return "binary search". <br>
-For the LinearSearch class 'getName()' would return "linear search".
+
+### Constructor 
+
+```python 
+def __init__(self, dataModel):
+        self.__dataModel = dataModel
+```
+<i> Constructor required (See [DataModel](#datamodel-class)) </i>
 
 ---
-### Algorithm Implementation - Parameters:
 
---- 
+### Algorithm class: 
 
-The function that actually executes the algorithm needs to take in certain arguments.<br>
+| Function | Parameters | Returns  | Description: |
+| -------- | ---------- | -------- | ------------ |
+| getName()| None       | A String, contains the name of the algorithm being implemented | An abstract method. Every subclass must provide an implementation.
+| delay() | dataModel (An instance of the DataModel class) | None | Pauses the execution of the program using <b> time.sleep().</b> | 
 
-| Argument: | Description: |
-| self     | Allows function to be called and attributes from the Algorithm class to be entered
-| Searching | Searching contains data the algorithm needs to execute such as the array to be searched and target to searched for |
+### DataModel class:
+
+Useful functions needed to interact with the visualizer
+
+| Function | Parameters | Returns  | Description: |
+| -------- | ---------- | -------- | ------------ |
+| getArray() | None     | The array to be processed | Returns the array to be iterated over |
+| getTarget() | None    | The target to be searched for | Returns the target to be searched for |
+| displayArray() | None | None | Redraws the array on screen | 
+| setBarColour() | index (int) : Position to have the colour changed. <br> colour (str) : The new colour | None | Changes the colour of the bar at the specified index | 
 
 ---
+
 
 
