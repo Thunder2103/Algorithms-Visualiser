@@ -10,9 +10,6 @@ class Algorithm(ABC):
     @abstractmethod
     def getName(self): pass 
 
-    def getData(self, dataModel):
-        return (dataModel.getArray(), dataModel.getTarget())
-
     def delay(self, dataModel):
         i = 0 
         while(i < dataModel.getDelay()):

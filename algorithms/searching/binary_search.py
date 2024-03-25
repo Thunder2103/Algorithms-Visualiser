@@ -6,7 +6,6 @@ if(__name__ == "__main__"):
 
 
 from ..algorithm import Algorithm
-import time
 
 class BinarySearch(Algorithm):
     def __init__(self, dataModel):
