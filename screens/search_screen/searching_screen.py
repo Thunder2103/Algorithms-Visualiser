@@ -117,11 +117,11 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
         stopSolveFrame = tk.Frame(self.getOptionsWidgetFrame(), bg = "white")
         stopSolveFrame.pack(side = "bottom", pady = (0,5))
         # Allows user to see the algorithm in action
-        tk.Button(stopSolveFrame, text = "Solve.", width = 7, relief = "solid", font = (self.getFont(), 12), command = lambda: self.initAlgorithm())\
-            .grid(row = 0, column = 0, padx = (0,5)) 
+        self.__solveButton = tk.Button(stopSolveFrame, text = "Solve.", width = 7, relief = "solid", font = (self.getFont(), 12), command = lambda: self.initAlgorithm())
+        self.__solveButton.grid(row = 0, column = 0, padx = (0,5)) 
         # Allows user to stop algorithm whilst it's running - button is initially disabled
-        tk.Button(stopSolveFrame, text = "Stop.", width = 7, relief = "solid", font = (self.getFont(), 12), state = "disabled", command = lambda : print("Hello"))\
-            .grid(row = 0, column = 1)  
+        self.__stopButton = tk.Button(stopSolveFrame, text = "Stop.", width = 7, relief = "solid", font = (self.getFont(), 12), state = "disabled", command = lambda : self.stopAlgorithm())
+        self.__stopButton.grid(row = 0, column = 1)  
 
     # When the slider has changed value a label is added with the relevant speed
     def intToSpeed(self, value : str) -> None: 
@@ -141,7 +141,7 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
     def targetRandom(self) -> int: 
         # Generates decimal between 0 and 1 
         # If decimal is less than or equal to 0.5 make the target in the array 
-        # Gives a roughly 50-50 chance for target to be in the array or out thr array
+        # Gives a roughly 50-50 chance for target to be in the array or out the array
         if(random.random() <= 0.5): return self.targetIn()
         # Else call function to generate the target so it is not in the array
         else: return self.targetOut()
@@ -166,13 +166,23 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
         if(self.getAlgorithmChoice() == 'Select an algorithm.'): 
             self.__algorithmOptions.config(foreground = "red")
         else:
+            self.__enableStopButton()
+            self.__disableSolveButton()
+            # Sets flag indicating the algorithm needs to halt to false
+            if(self.__dataModel.isStopped()): self.__dataModel.clearStopFlag()
             # Generates target the algorithm looks for 
             self.__dataModel.setTarget(self.generateTarget())
             # Sets the delay 
             self.__dataModel.setDelay(self.getDelay())
             # Call algorithm -> so this program actually has a use
-            self.__algorithmThread = threading.Thread(target=callAlgorithm, args=(self.__dataModel, self.getAlgorithmChoice(),))
+            self.__algorithmThread = threading.Thread(target=callAlgorithm, args=(self.__dataModel, self.getAlgorithmChoice(), 
+                                                                                  self.__disableStopButton, self.__enableSolveButton))
             self.__algorithmThread.start()
+    
+    def stopAlgorithm(self):
+        self.__dataModel.setStopFlag()
+        self.__enableSolveButton()
+        self.__disableStopButton()
     
     # Returns algorithm the user has selected 
     def getAlgorithmChoice(self) -> str:
@@ -181,6 +191,22 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
     # Returns number of seconds to delay each iteration of algorithm
     def getDelay(self) -> int:
         return self.__speedToDelay[self.__speedSlider.get()]
+
+    # Enables button to stop algorithm
+    def __enableStopButton(self):
+        self.__stopButton.config(state="active")
+    
+    # Disables button to stop algorithm
+    def __disableStopButton(self):
+        self.__stopButton.config(state="disabled") 
+    
+    # Enables button to start algorithm execution
+    def __enableSolveButton(self):
+        self.__solveButton.config(state="active") 
+    
+    # Disables button to start algorithm execution
+    def __disableSolveButton(self):
+        self.__solveButton.config(state="disabled")
 
 # Listen to Whatsername by Green Day
     

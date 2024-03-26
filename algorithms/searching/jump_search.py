@@ -21,7 +21,7 @@ class JumpSearch(Algorithm):
     def jumpSearch(self):
         # Sorts array 
         self.__dataModel.sortArray()
-        self.__dataModel.updateArrayOnScreen(instant=True)
+        self.__dataModel.updateArrayOnScreen()
         
         array = self.__dataModel.getArray()
         target = self.__dataModel.getTarget()

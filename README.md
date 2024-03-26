@@ -83,7 +83,7 @@ New search algorithms can be added if they meet these requirements:
 | Class Name   | An algorithm class must be named in the following format: <b>AlgorithmNameSearch.</b> <br> e.g BinarySearch, Linearsearch | 
 | Inheritance  | Each algorithm class must be a child of the [Algorithm class](#algorithm-class) | 
 | Constructor | Each new class must implement a constructor. (See [Constructor](#constructor)) |
-| DataModel   | The DataModel class contains useful functions that will be needed (See [DataModel](#datamodel-class)) | 
+| DataModel helper functions   | The DataModel class contains useful functions that will be needed (See [DataModel](#datamodel-class)) | 
 | Function Naming | The function which implements the algorithm must be named in the following format: <b>algorithmNameSearch</b> <br> e.g. binarySearch and linearSearch |
 | Function Implementation | Each new algorithm class must provide an implementation for the <b>getName()</b> method. (See [Algorithm class](#algorithm-class))  |
 
@@ -123,7 +123,7 @@ Useful functions needed to interact with the visualizer
 | -------- | ---------- | -------- | ------------ |
 | getArray() | None     | The array to be processed | Returns the array to be iterated over |
 | getTarget() | None    | The target to be searched for | Returns the target to be searched for |
-| displayArray() | None | None | Redraws the array on screen | 
+| updateArrayOnScreen() | None | None | Redraws the array on screen | 
 | setBarColour() | index (int) : Position to have the colour changed. <br> colour (str) : The new colour | None | Changes the colour of the bar at the specified index | 
 
 ---

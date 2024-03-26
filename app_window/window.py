@@ -74,6 +74,7 @@ class Window():
         self.__window.update() 
     
     # Schedule the passed function to be executed after the passed amount of time
+    # Assumes function has no parameters
     def scheduleFunctionExecution(self, function, delay):
         self.__window.after(int(delay), function)
 

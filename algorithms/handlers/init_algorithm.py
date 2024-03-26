@@ -5,9 +5,11 @@ if(__name__ == "__main__"):
     exit()
 
 import importlib
+from typing import Callable
 
 # Creates instance of algorithm  
-def callAlgorithm(dataModel, algorithm : str) -> None:
+def callAlgorithm(dataModel, algorithm : str, disableStopButton : Callable[[], None], 
+                  enableSolveButton : Callable[[], None]) -> None:
     # Constructs name of module where algorithm class is stored
     fileName = "_".join(algorithm.split(" ")).lower()
     # Imports module
@@ -20,5 +22,9 @@ def callAlgorithm(dataModel, algorithm : str) -> None:
     algorithmFunction = algorithmClass[0].lower() + algorithmClass[1:]
     # Calls algorithm function 
     getattr(algorithmInstance, algorithmFunction)()  
+    # I generally dislike passing functions as parameters but this seems like a streamlined way 
+    # to disable the stop button and enable the solve button when the algorithm is finished
+    disableStopButton() 
+    enableSolveButton()
 
 # Listen to What's my age again by Blink-182

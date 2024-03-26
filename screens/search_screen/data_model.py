@@ -1,4 +1,5 @@
 import random
+import threading
 
 # This class contains solely the data and functions algorithms need to run 
 # This is kept seperate from the SearchModel class to add more abstraction
@@ -10,6 +11,7 @@ class SearchDataModel():
         self.__barColours = []
         self.__target = None
         self.__delay = None 
+        self.__algorithmRunning = threading.Event()
  
     # Sets controller attribute to value passed
     def addController(self, controller):
@@ -39,10 +41,8 @@ class SearchDataModel():
         random.shuffle(self.__array)
 
     # Updates the screen so changes to the array are shown
-    def updateArrayOnScreen(self, instant = False):
-        if(instant):
-            self.__controller.scheduleArrayUpdate(0)
-        else: self.__controller.scheduleArrayUpdate(self.__delay) 
+    def updateArrayOnScreen(self):
+        self.__controller.scheduleArrayUpdate(self.__delay) 
     
     # Gets the colour of the bar the index passed
     def getBarColour(self, index : int) -> str:
@@ -72,6 +72,15 @@ class SearchDataModel():
     
     # Sets the element being looked for to the passed value
     def setTarget(self, value : int) -> None:
-        self.__target = value  
+        self.__target = value   
+    
+    def setStopFlag(self):
+        self.__algorithmRunning.set()
+    
+    def clearStopFlag(self):
+        self.__algorithmRunning.clear()
+    
+    def isStopped(self) -> bool:
+        return True if self.__algorithmRunning.is_set() else False
 
 # Listen to Everlong By Foo Fighters

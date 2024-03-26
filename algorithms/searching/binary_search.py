@@ -19,7 +19,7 @@ class BinarySearch(Algorithm):
     def binarySearch(self):
         # Sorts array 
         self.__dataModel.sortArray()
-        self.__dataModel.updateArrayOnScreen(instant=True)
+        self.__dataModel.updateArrayOnScreen()
 
         array = self.__dataModel.getArray()
         target = self.__dataModel.getTarget()
