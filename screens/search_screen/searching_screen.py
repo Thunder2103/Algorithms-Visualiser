@@ -18,6 +18,7 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
     def initScreen(self) -> None:
         # Creates basic layout of the screen
         self.createTemplate()
+        # Override home button function
         self.__overrideHomeButtonCommand()
 
         # Dictionary pairing numbers to speed
@@ -180,15 +181,23 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
             # Call algorithm -> so this program actually has a use
             self.__algorithmThread = threading.Thread(target=callAlgorithm, args=(self.__dataModel, self.__getAlgorithmChoice(), 
                                                                                   self.__stopToSolve, self.__disablePauseResumeButton))
+            # Start Thread
             self.__algorithmThread.start()
     
+    # Forces current running algorithm thread to terminate (safely)
     def __stopAlgorithm(self):
-        self.__dataModel.setStopFlag()  
+        # Sets to falg to True -> this is what tells the thread/s to stop
+        self.__dataModel.setStopFlag()   
+        # If the algorithm has been paused
         if(self.__dataModel.isPaused()):
-            self.__resumeAlgorithm() 
-        else:
-            self.__resumeToPause()
-        self.__disablePauseResumeButton()
+            # Tell algorithm to resume, so it can stop...
+            self.__resumeAlgorithm()  
+        # Otherwise makes sure pause/resume button has the correct text/function
+        else: 
+            self.__resumeToPause() 
+        # Disables pause/resume button
+        self.__disablePauseResumeButton() 
+        # Set stop button back to solve 
         self.__stopToSolve()
     
     # Returns algorithm the user has selected 
@@ -207,18 +216,20 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
     def __stopToSolve(self):
         self.__solveStopButton.config(text="Solve.", command=self.__initAlgorithm) 
     
+    # Changes pause button text and function it calls when it's pressed
     def __pauseToResume(self): 
-         self.__pauseResumeButton.config(text="Resume", command=self.__resumeAlgorithm) 
-        
+         self.__pauseResumeButton.config(text="Resume.", command=self.__resumeAlgorithm) 
+
+    # Changes resume button text and function it calls when it's pressed    
     def __resumeToPause(self):
-        self.__pauseResumeButton.config(text="Pause", command=self.__pauseAlgorithm)
+        self.__pauseResumeButton.config(text="Pause.", command=self.__pauseAlgorithm)
         
-    # Changes pause button text and function it calls when pressed
+    # Holds the lock, pausing the algorithm Thread
     def __pauseAlgorithm(self):
         self.__dataModel.acquireLock() 
         self.__pauseToResume()
        
-    # Changes resume button text and function is calls when pressed
+    # Releases the lock, letting the algorithm thread run again
     def __resumeAlgorithm(self): 
         self.__dataModel.releaseLock()
         self.__resumeToPause()
@@ -231,6 +242,7 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
     def __disablePauseResumeButton(self):
         self.__pauseResumeButton.config(state="disabled") 
     
+    # Changes the function of the home buttton
     def __overrideHomeButtonCommand(self):
         self.getHomeButton().config(command=self.__loadHomeScreen) 
     

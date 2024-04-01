@@ -75,21 +75,27 @@ class SearchDataModel():
     def setTarget(self, value : int) -> None:
         self.__target = value   
     
+    # Sets the stop flag, used to tell algorithm threads to stop
     def setStopFlag(self):
         self.__algorithmRunning.set()
     
+    # Sets stop flag back to false
     def clearStopFlag(self):
         self.__algorithmRunning.clear()
     
+    # Returns True if algorithm thread needs to stop, else false
     def isStopped(self) -> bool:
         return True if self.__algorithmRunning.is_set() else False
 
+    # Threads call this to hold the lock
     def acquireLock(self):
         self.__algorithmPauseLock.acquire() 
     
+    # Threads call this to release the lock
     def releaseLock(self):
         self.__algorithmPauseLock.release() 
     
+    # Checks if the algorithm thread is paused or not 
     def isPaused(self): 
         return self.__algorithmPauseLock.locked()
 
