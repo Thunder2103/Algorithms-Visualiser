@@ -101,9 +101,9 @@ class SharedLayout():
     # Creates the button to let the user navigate back to the main menu
     def __createHomeButton(self, root : tk.Frame) -> None: 
         # Creates and places button in the centre of the frame
-        tk.Button(root, text = "Home.", font = (self.__FONT, 12), width = 7, height = 1, borderwidth = 2, relief = "solid",\
-             command = lambda: [self.__window.removeScreen(), self.__window.loadScreen(self.__introScreen)])\
-                .place(relx = 0.5, rely = 0.5, anchor = "center") 
+        self.__homeButton = tk.Button(root, text = "Home.", font = (self.__FONT, 12), width = 7, height = 1, borderwidth = 2, 
+                                      relief = "solid", command = self.loadHomeScreen)
+        self.__homeButton.place(relx = 0.5, rely = 0.5, anchor = "center") 
     
     # Creates the frame to store the canvas
     def __createCanvasFrame(self, root : tk.Frame, frameWidth : int, frameHeight : int) -> tk.Frame:
@@ -136,6 +136,15 @@ class SharedLayout():
     def getOptionsWidgetFrame(self) -> tk.Frame: return self.__optionsWidgetsFrame 
     
     # Gets canvas array is displayed in
-    def getArrayCanvas(self) -> tk.Canvas: return self.__arrayCanvas
+    def getArrayCanvas(self) -> tk.Canvas: return self.__arrayCanvas 
+
+    # Loads the home screen 
+    def loadHomeScreen(self) -> None:
+        self.__window.removeScreen()
+        self.__window.loadScreen(self.__introScreen) 
+    
+    def getHomeButton(self) -> tk.Button:
+        return self.__homeButton
+
  
 # Listen to Under You by Foo Fighters

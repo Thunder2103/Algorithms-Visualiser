@@ -18,6 +18,7 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
     def initScreen(self) -> None:
         # Creates basic layout of the screen
         self.createTemplate()
+        self.__overrideHomeButtonCommand()
 
         # Dictionary pairing numbers to speed
         # This allows the slider to show "Small", "Medium" and "Fast" instead of 0, 1, 2
@@ -228,7 +229,22 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
     
     # Disables the button to pause/resume algorithm
     def __disablePauseResumeButton(self):
-        self.__pauseResumeButton.config(state="disabled")
+        self.__pauseResumeButton.config(state="disabled") 
+    
+    def __overrideHomeButtonCommand(self):
+        self.getHomeButton().config(command=self.__loadHomeScreen) 
+    
+    # Ensures any algorithm threads are terminated before moving to the homescreen
+    def __loadHomeScreen(self): 
+        # If a thread exists and it is still running
+        if(self.__algorithmThread and self.__algorithmThread.is_alive()): 
+            # Tell the thread to stop
+            self.__stopAlgorithm() 
+            # Loop until thread has stopped
+            while(self.__algorithmThread.is_alive()): continue 
+        # Load home screen
+        self.loadHomeScreen()
+
 
 # Listen to Whatsername by Green Day
     
