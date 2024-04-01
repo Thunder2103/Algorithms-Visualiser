@@ -149,7 +149,6 @@ class SearchController():
     
     # Schedule function to redraw array after a certain amount of time 
     # Prevents the canvas flickering as updating is done by the main GUI thread
-    def scheduleArrayUpdate(self, delay):
-        self.__screen.getWindow().scheduleFunctionExecution(self.displayArray, delay)
-
+    def scheduleArrayUpdate(self):
+        self.__screen.getWindow().scheduleFunctionExecution(self.displayArray, 0)
 # Listen to Give Me Novacaine by Green Day

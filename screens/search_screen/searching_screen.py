@@ -114,14 +114,14 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
     # Creates buttons that lets user execute algorithms or stop them
     def __createStopSolveButtons(self) -> None:
         # Frame to store stop and solve buttons in a grid layout
-        stopSolveFrame = tk.Frame(self.getOptionsWidgetFrame(), bg = "white")
-        stopSolveFrame.pack(side = "bottom", pady = (0,5))
+        algorithmToggleFrame = tk.Frame(self.getOptionsWidgetFrame(), bg = "white")
+        algorithmToggleFrame.pack(side = "bottom", pady = (0,5))
         # Allows user to see the algorithm in action
-        self.__solveButton = tk.Button(stopSolveFrame, text = "Solve.", width = 7, relief = "solid", font = (self.getFont(), 12), command = lambda: self.initAlgorithm())
-        self.__solveButton.grid(row = 0, column = 0, padx = (0,5)) 
+        self.__solveStopButton = tk.Button(algorithmToggleFrame, text = "Solve.", width = 7, relief = "solid", font = (self.getFont(), 12), command = lambda: self.initAlgorithm())
+        self.__solveStopButton.grid(row = 0, column = 0, padx = (0,5)) 
         # Allows user to stop algorithm whilst it's running - button is initially disabled
-        self.__stopButton = tk.Button(stopSolveFrame, text = "Stop.", width = 7, relief = "solid", font = (self.getFont(), 12), state = "disabled", command = lambda : self.stopAlgorithm())
-        self.__stopButton.grid(row = 0, column = 1)  
+        self.__pauseResumeButton = tk.Button(algorithmToggleFrame, text = "Pause.", width = 7, relief = "solid", font = (self.getFont(), 12), state = "disabled", command = lambda : self.stopAlgorithm())
+        self.__pauseResumeButton.grid(row = 0, column = 1)  
 
     # When the slider has changed value a label is added with the relevant speed
     def intToSpeed(self, value : str) -> None: 
@@ -166,8 +166,7 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
         if(self.getAlgorithmChoice() == 'Select an algorithm.'): 
             self.__algorithmOptions.config(foreground = "red")
         else:
-            self.__enableStopButton()
-            self.__disableSolveButton()
+            self.__solveToStop()
             # Sets flag indicating the algorithm needs to halt to false
             if(self.__dataModel.isStopped()): self.__dataModel.clearStopFlag()
             # Generates target the algorithm looks for 
@@ -176,13 +175,12 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
             self.__dataModel.setDelay(self.getDelay())
             # Call algorithm -> so this program actually has a use
             self.__algorithmThread = threading.Thread(target=callAlgorithm, args=(self.__dataModel, self.getAlgorithmChoice(), 
-                                                                                  self.__disableStopButton, self.__enableSolveButton))
+                                                                                  self.__stopToSolve))
             self.__algorithmThread.start()
     
     def stopAlgorithm(self):
         self.__dataModel.setStopFlag()
-        self.__enableSolveButton()
-        self.__disableStopButton()
+        self.__stopToSolve()
     
     # Returns algorithm the user has selected 
     def getAlgorithmChoice(self) -> str:
@@ -192,21 +190,11 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
     def getDelay(self) -> int:
         return self.__speedToDelay[self.__speedSlider.get()]
 
-    # Enables button to stop algorithm
-    def __enableStopButton(self):
-        self.__stopButton.config(state="active")
+    def __solveToStop(self):
+        self.__solveStopButton.config(text="Stop.", command=self.stopAlgorithm)
     
-    # Disables button to stop algorithm
-    def __disableStopButton(self):
-        self.__stopButton.config(state="disabled") 
+    def __stopToSolve(self):
+        self.__solveStopButton.config(text="Solve.", command=self.initAlgorithm)
     
-    # Enables button to start algorithm execution
-    def __enableSolveButton(self):
-        self.__solveButton.config(state="active") 
-    
-    # Disables button to start algorithm execution
-    def __disableSolveButton(self):
-        self.__solveButton.config(state="disabled")
-
 # Listen to Whatsername by Green Day
     

@@ -9,7 +9,7 @@ from ..algorithm import Algorithm
 
 class BinarySearch(Algorithm):
     def __init__(self, dataModel):
-        self.__dataModel = dataModel
+        super().__init__(dataModel)
 
     # Returns algorithms name -> user sees this when selecting algorithm
     def getName(self):
@@ -18,28 +18,24 @@ class BinarySearch(Algorithm):
     # Binary Search algorithm -> see markdown for explanation
     def binarySearch(self):
         # Sorts array 
-        self.__dataModel.sortArray()
-        self.__dataModel.updateArrayOnScreen()
+        self.sortArray()
 
-        array = self.__dataModel.getArray()
-        target = self.__dataModel.getTarget()
+        array = self.getArray()
+        target = self.getTarget()
+
  
         # Low and high variables used to adjust mid
         low = 0 
         high = len(array) - 1
-        
-        # Colour the middle-most element red
-        self.__dataModel.setBarColour((low + high) // 2, "red")
-        self.__dataModel.updateArrayOnScreen()
-        self.delay(self.__dataModel)
-        
+               
         while(low <= high):
             # Calculate new mid
             mid = (low + high) // 2
+            self.changeBarColour(mid, "red")
             # If element at mid is equal to the target
             if array[mid] == target:
-                self.__dataModel.setBarColour(mid, "green")
-                self.__dataModel.updateArrayOnScreen()
+                self.changeBarColour(mid, "green")
+                self.updateArrayOnScreen()
                 return 1
             # If element at mid is greater than the target
             elif array[mid] > target:
@@ -48,9 +44,8 @@ class BinarySearch(Algorithm):
             # If element is less than the target
             # Disreguard lower end of the array
             else: low = mid + 1
-            self.__dataModel.setBarColour(mid, "red")
-            self.__dataModel.updateArrayOnScreen()
-            self.delay(self.__dataModel) 
+            self.updateArrayOnScreen()
+            self.delay() 
         return 0 
     
 # Listen to Welcome to the DCC by Nothing But Thieves

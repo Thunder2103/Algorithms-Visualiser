@@ -12,6 +12,7 @@ class SearchDataModel():
         self.__target = None
         self.__delay = None 
         self.__algorithmRunning = threading.Event()
+        self.__algorithmPauseLock = threading.Lock()
  
     # Sets controller attribute to value passed
     def addController(self, controller):
@@ -42,7 +43,7 @@ class SearchDataModel():
 
     # Updates the screen so changes to the array are shown
     def updateArrayOnScreen(self):
-        self.__controller.scheduleArrayUpdate(self.__delay) 
+        self.__controller.scheduleArrayUpdate() 
     
     # Gets the colour of the bar the index passed
     def getBarColour(self, index : int) -> str:
@@ -82,5 +83,11 @@ class SearchDataModel():
     
     def isStopped(self) -> bool:
         return True if self.__algorithmRunning.is_set() else False
+
+    def acquireLock(self):
+        self.__algorithmPauseLock.acquire()
+    
+    def releaseLock(self):
+        self.__algorithmPauseLock.release()
 
 # Listen to Everlong By Foo Fighters

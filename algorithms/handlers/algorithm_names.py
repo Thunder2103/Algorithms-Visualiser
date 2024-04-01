@@ -84,12 +84,12 @@ def getAlgorithmNames(modules : list) -> tuple:
         # Attempts to create an instance of given class
         # An error is thrown if the constructor is incorrect or if there is no implementation for abstract methods
         try:
-            algorithmInstance = getattr(algorithmModule, algorithmClasses[0])(None) 
+            algorithmInstance = getattr(algorithmModule, algorithmClasses[0])("Foo Fighters #1") 
         except Exception as error: 
             errorWrapper(f"{algorithmClasses[0]}: {error}")
             continue
         
-        # Gets classes the algoritm instance has inherited from
+        # Gets classes the algorithm instance has inherited from
         parentClasses = algorithmInstance.__class__.__bases__ 
         # Checks if class has actually inherited the Algorithms class
         if(not Algorithm in parentClasses):
@@ -99,10 +99,13 @@ def getAlgorithmNames(modules : list) -> tuple:
         algorithmFunction = algorithmClasses[0][0].lower() + algorithmClasses[0][1:]
         # List of all functions in given algorithm class
         classFunctions = dir(algorithmInstance) 
-        
-        # All algorithms are required to have a specific attribute
-        if not hasattr(algorithmInstance, f"_{algorithmClasses[0]}__dataModel"): 
-            errorWrapper(f"{module} does not contain a dataModel attribute")
+
+        # Tests that algorithms have implemented the constructor properly 
+        # If the Algorithm classes constructor has not been called then an error is thrown
+        try:
+            algorithmInstance.getDataModel()
+        except Exception as error:
+            errorWrapper(f"{module}: {error}")
             continue
         
         # If required function not in algorithm class -> it can't be called later

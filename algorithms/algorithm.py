@@ -8,17 +8,49 @@ import time
 import sys
 
 # Abstract class - every algorithm must implement the getName() method
-class Algorithm(ABC):    
+class Algorithm(ABC):     
+
+    def __init__(self, dataModel) -> None:
+        self.__dataModel = dataModel
+
     @abstractmethod
     def getName(self): pass 
 
-    def delay(self, dataModel):
-        self.__stopCheck(dataModel)
-        time.sleep(dataModel.getDelay())
+    def delay(self):
+        interval = self.__dataModel.getDelay() / 10
+        i = 0 
+        while(i < self.__dataModel.getDelay()):
+            self.__stopCheck()
+            time.sleep(interval) 
+            i += interval
     
-    def __stopCheck(self, dataModel):
-        if(dataModel.isStopped()): 
+    def __stopCheck(self):
+        if(self.__dataModel.isStopped()): 
             print("Algorithm Thread has terminated safely")
             sys.exit()
+        
+    def sortArray(self):
+        self.__dataModel.sortArray()
+        self.__dataModel.updateArrayOnScreen()
+        self.delay() 
     
+    def shuffleArray(self):
+        self.__dataModel.shuffleArray()
+        self.__dataModel.updateArrayOnScreen()
+        self.delay(self.__dataModel)  
+    
+    def updateArrayOnScreen(self):
+        self.__dataModel.updateArrayOnScreen() 
+    
+    def getArray(self):
+        return self.__dataModel.getArray()
+    
+    def getTarget(self):
+        return self.__dataModel.getTarget() 
+    
+    def changeBarColour(self, index : int, colour : str):
+        self.__dataModel.setBarColour(index, colour)
+    
+    def getDataModel(self):
+        return self.__dataModel
 # Listen to American Idiot by Green Day

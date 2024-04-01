@@ -6,13 +6,12 @@ if(__name__ == "__main__"):
 
 
 from ..algorithm import Algorithm
-import time
 import math 
 
 class JumpSearch(Algorithm):
     # Constructor
     def __init__(self, dataModel):
-        self.__dataModel = dataModel
+        super().__init__(dataModel)
 
     # Returns algorithms name -> user sees this when selecting algorithm
     def getName(self):
@@ -20,11 +19,10 @@ class JumpSearch(Algorithm):
 
     def jumpSearch(self):
         # Sorts array 
-        self.__dataModel.sortArray()
-        self.__dataModel.updateArrayOnScreen()
+        self.sortArray()
         
-        array = self.__dataModel.getArray()
-        target = self.__dataModel.getTarget()
+        array = self.getArray()
+        target = self.getTarget()
     
         # length of array
         n = len(array)
@@ -35,29 +33,28 @@ class JumpSearch(Algorithm):
         # Find block closest to target -> if it exists
         while(array[min(step, n) - 1] < target):
             prev = step
-            self.__dataModel.setBarColour(prev, "red")
+            self.changeBarColour(prev, "red")
+            self.updateArrayOnScreen()
             if prev >= n: 
-                self.__dataModel.updateArrayOnScreen()
                 return 0
-            self.__dataModel.updateArrayOnScreen()
             step += int(math.sqrt(n))
-            self.delay(self.__dataModel)  
+            self.delay()  
         
         # Linear search to find target
         # Start at index of last jump and stops at index of next jump 
         for i in range(prev, prev + int(math.sqrt(n))):
-            self.__dataModel.setBarColour(i, "red")
+            self.changeBarColour(i, "red")
             # If current elment > target then target not in array
             if array[i] > target:
-                self.__dataModel.updateArrayOnScreen()
+                self.updateArrayOnScreen()
                 return 1 
             # If current element is equal to target
             if array[i] == target:
-                self.__dataModel.setBarColour(i, "green")
-                self.__dataModel.updateArrayOnScreen()
+                self.changeBarColour(i, "green")
+                self.updateArrayOnScreen()
                 return 1  
-            self.__dataModel.updateArrayOnScreen()
-            self.delay(self.__dataModel)  
+            self.updateArrayOnScreen()
+            self.delay()  
         return 0
     
 # Listen to Waiting For The End by Linkin Park
