@@ -12,11 +12,14 @@ from algorithms.handlers import callAlgorithm, getAlgorithms
 import tkinter as tk 
 from tkinter import ttk
 import random
+import threading
 
 class SearchScreen(sc.Screen, sc.SharedLayout):
     def initScreen(self) -> None:
         # Creates basic layout of the screen
         self.createTemplate()
+        # Override home button function
+        self.__overrideHomeButtonCommand()
 
         # Dictionary pairing numbers to speed
         # This allows the slider to show "Small", "Medium" and "Fast" instead of 0, 1, 2
@@ -49,11 +52,16 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
             2 : self.targetOut
         }
 
-        # Handles logic of the GUI and handling the array
+        # Stores data needed for calculating size of the on-screen widgets
         self.__model = sc.SearchModel()
-        self.__dataModel = sc.SearchDataModel()
-        self.__controller = sc.SearchController(self, self.__model, self.__dataModel)
-        self.__dataModel.addController(self.__controller)
+        # Stores data relating to the algorithm 
+        self.__dataModel = sc.SearchDataModel() 
+        # Handles the logic 
+        self.__controller = sc.SearchController(self, self.__model, self.__dataModel) 
+        # Adds reference to the controller 
+        self.__dataModel.addController(self.__controller) 
+        # Thread algorithm runs in
+        self.__algorithmThread = None
 
         # Creating and displaying options
         self.__createOptions() 
@@ -108,14 +116,16 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
     # Creates buttons that lets user execute algorithms or stop them
     def __createStopSolveButtons(self) -> None:
         # Frame to store stop and solve buttons in a grid layout
-        stopSolveFrame = tk.Frame(self.getOptionsWidgetFrame(), bg = "white")
-        stopSolveFrame.pack(side = "bottom", pady = (0,5))
+        algorithmToggleFrame = tk.Frame(self.getOptionsWidgetFrame(), bg = "white")
+        algorithmToggleFrame.pack(side = "bottom", pady = (0,5))
         # Allows user to see the algorithm in action
-        tk.Button(stopSolveFrame, text = "Solve.", width = 7, relief = "solid", font = (self.getFont(), 12), command = lambda: self.initAlgorithm())\
-            .grid(row = 0, column = 0, padx = (0,5)) 
+        self.__solveStopButton = tk.Button(algorithmToggleFrame, text = "Solve.", width = 7, relief = "solid", 
+                                           font = (self.getFont(), 12), command = lambda: self.__initAlgorithm())
+        self.__solveStopButton.grid(row = 0, column = 0, padx = (0,5)) 
         # Allows user to stop algorithm whilst it's running - button is initially disabled
-        tk.Button(stopSolveFrame, text = "Stop.", width = 7, relief = "solid", font = (self.getFont(), 12), state = "disabled", command = lambda : print("Hello"))\
-            .grid(row = 0, column = 1)  
+        self.__pauseResumeButton = tk.Button(algorithmToggleFrame, text = "Pause.", width = 7, relief = "solid", 
+                                             font = (self.getFont(), 12), state = "disabled", command = lambda : self.__pauseAlgorithm())
+        self.__pauseResumeButton.grid(row = 0, column = 1)  
 
     # When the slider has changed value a label is added with the relevant speed
     def intToSpeed(self, value : str) -> None: 
@@ -135,7 +145,7 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
     def targetRandom(self) -> int: 
         # Generates decimal between 0 and 1 
         # If decimal is less than or equal to 0.5 make the target in the array 
-        # Gives a roughly 50-50 chance for target to be in the array or out thr array
+        # Gives a roughly 50-50 chance for target to be in the array or out the array
         if(random.random() <= 0.5): return self.targetIn()
         # Else call function to generate the target so it is not in the array
         else: return self.targetOut()
@@ -155,23 +165,98 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
         else: return target
         
     # Call algorithm user has selected
-    def initAlgorithm(self) -> None:
+    def __initAlgorithm(self) -> None:
         # Doesn't do anything if user hasn't chosen an algorithm
-        if(self.getAlgorithmChoice() == 'Select an algorithm.'): 
+        if(self.__getAlgorithmChoice() == 'Select an algorithm.'): 
             self.__algorithmOptions.config(foreground = "red")
         else:
+            self.__solveToStop()
+            # Sets flag indicating the algorithm needs to halt to false
+            if(self.__dataModel.isStopped()): self.__dataModel.clearStopFlag()
+            self.__enablePauseResumeButton()
             # Generates target the algorithm looks for 
             self.__dataModel.setTarget(self.generateTarget())
             # Sets the delay 
-            self.__dataModel.setDelay(self.getDelay())
+            self.__dataModel.setDelay(self.__getDelay())
             # Call algorithm -> so this program actually has a use
-            callAlgorithm(self.__dataModel, self.getAlgorithmChoice())
+            self.__algorithmThread = threading.Thread(target=callAlgorithm, args=(self.__dataModel, self.__getAlgorithmChoice(), 
+                                                                                  self.__stopToSolve, self.__disablePauseResumeButton))
+            # Start Thread
+            self.__algorithmThread.start()
+    
+    # Forces current running algorithm thread to terminate (safely)
+    def __stopAlgorithm(self):
+        # Sets to falg to True -> this is what tells the thread/s to stop
+        self.__dataModel.setStopFlag()   
+        # If the algorithm has been paused
+        if(self.__dataModel.isPaused()):
+            # Tell algorithm to resume, so it can stop...
+            self.__resumeAlgorithm()  
+        # Otherwise makes sure pause/resume button has the correct text/function
+        else: 
+            self.__resumeToPause() 
+        # Disables pause/resume button
+        self.__disablePauseResumeButton() 
+        # Set stop button back to solve 
+        self.__stopToSolve()
     
     # Returns algorithm the user has selected 
-    def getAlgorithmChoice(self) -> str:
+    def __getAlgorithmChoice(self) -> str:
         return self.__algorithmOptions.get()
   
     # Returns number of seconds to delay each iteration of algorithm
-    def getDelay(self) -> int:
+    def __getDelay(self) -> int:
         return self.__speedToDelay[self.__speedSlider.get()]
+
+    # Changes solve button text and function it calls when it's pressed
+    def __solveToStop(self):
+        self.__solveStopButton.config(text="Stop.", command=self.__stopAlgorithm)
+    
+    # Changes stop button text and function it calls when it's pressed
+    def __stopToSolve(self):
+        self.__solveStopButton.config(text="Solve.", command=self.__initAlgorithm) 
+    
+    # Changes pause button text and function it calls when it's pressed
+    def __pauseToResume(self): 
+         self.__pauseResumeButton.config(text="Resume.", command=self.__resumeAlgorithm) 
+
+    # Changes resume button text and function it calls when it's pressed    
+    def __resumeToPause(self):
+        self.__pauseResumeButton.config(text="Pause.", command=self.__pauseAlgorithm)
+        
+    # Holds the lock, pausing the algorithm Thread
+    def __pauseAlgorithm(self):
+        self.__dataModel.acquireLock() 
+        self.__pauseToResume()
+       
+    # Releases the lock, letting the algorithm thread run again
+    def __resumeAlgorithm(self): 
+        self.__dataModel.releaseLock()
+        self.__resumeToPause()
+    
+    # Enables the button to pause/resume algorithm
+    def __enablePauseResumeButton(self):
+        self.__pauseResumeButton.config(state="active")
+    
+    # Disables the button to pause/resume algorithm
+    def __disablePauseResumeButton(self):
+        self.__pauseResumeButton.config(state="disabled") 
+    
+    # Changes the function of the home buttton
+    def __overrideHomeButtonCommand(self):
+        self.getHomeButton().config(command=self.__loadHomeScreen) 
+    
+    # Ensures any algorithm threads are terminated before moving to the homescreen
+    def __loadHomeScreen(self): 
+        # If a thread exists and it is still running
+        if(self.__algorithmThread and self.__algorithmThread.is_alive()): 
+            # Tell the thread to stop
+            self.__stopAlgorithm() 
+            # Loop until thread has stopped
+            while(self.__algorithmThread.is_alive()): continue 
+        # Load home screen
+        self.loadHomeScreen()
+
+
+# Listen to Whatsername by Green Day
     

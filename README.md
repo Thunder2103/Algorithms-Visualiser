@@ -81,11 +81,12 @@ New search algorithms can be added if they meet these requirements:
 | File Name    | New files must be named in the following format: <b>algorithm_name_search.py.</b> <br> e.g. binary_search.py, linear_search.py |
 | Class Implementation        | The algorithm must be implemented as a class. | 
 | Class Name   | An algorithm class must be named in the following format: <b>AlgorithmNameSearch.</b> <br> e.g BinarySearch, Linearsearch | 
-| Inheritance  | Each algorithm class must be a child of the [Algorithm class](#algorithm-class) | 
+| Inheritance  | Each algorithm class must be a child of the [Algorithm class](#algorithm-class). <br> The Algorithm class must be imported (See [imports](#Imports).) | 
 | Constructor | Each new class must implement a constructor. (See [Constructor](#constructor)) |
-| DataModel   | The DataModel class contains useful functions that will be needed (See [DataModel](#datamodel-class)) | 
+| DataModel helper functions   | The DataModel class contains useful functions that will be needed (See [DataModel](#datamodel-class)) | 
 | Function Naming | The function which implements the algorithm must be named in the following format: <b>algorithmNameSearch</b> <br> e.g. binarySearch and linearSearch |
 | Function Implementation | Each new algorithm class must provide an implementation for the <b>getName()</b> method. (See [Algorithm class](#algorithm-class))  |
+| Return value/s          | Each algorithm doesn't strictly need to return anything. <br> As a convention, 1 for success or -1 for failure should be returned | 
 
 --- 
 
@@ -102,7 +103,7 @@ from ..algorithm import Algorithm
 
 ```python 
 def __init__(self, dataModel):
-        self.__dataModel = dataModel
+        super().__init__(dataModel)
 ```
 <i> Constructor required (See [DataModel](#datamodel-class)) </i>
 
@@ -110,21 +111,34 @@ def __init__(self, dataModel):
 
 ### Algorithm class: 
 
+The algorithm class is a wrapper for some of the [DataModel](#datamodel-class) class functions. <br>
+These functions are needed to interact with the visualizer properly. <br>
+The methods in DataModel can still be called directly (not recommended).
+
 | Function | Parameters | Returns  | Description: |
 | -------- | ---------- | -------- | ------------ |
-| getName()| None       | A String, contains the name of the algorithm being implemented | An abstract method. Every subclass must provide an implementation.
-| delay() | dataModel (An instance of the DataModel class) | None | Pauses the execution of the program using <b> time.sleep().</b> | 
+| getName()| None       | A String, contains the name of the algorithm being implemented | An abstract method. Every subclass must provide an implementation. | 
+| getArray() | None     | The array to be processed | Returns the array to be iterated over. (See [DataModel](#datamodel-class)). |
+| getTarget() | None    | The target to be searched for | Returns the target to be searched for. (See [DataModel](#datamodel-class)). |
+| updateArrayOnScreen() | None     | None | Refreshes the screen to display any changes to the array. (See [DataModel](#datamodel-class)). |  
+| changeBarColour() | index (int) : Position to have the colour changed. <br> colour (str) : The new colour | None | Changes the colour of the bar at the specified index. (See [DataModel](#datamodel-class)). | 
+| sortArray() | None    | None     | Sorts the array and refreshes the screen to display it. (See [DataModel](#datamodel-class)).| 
+| shuffleArray() | None | None     | Randomly shuffles the array and refreshes the screen to display it. (See [DataModel](#datamodel-class)). | 
+| delay() | None        | None     | Pauses the execution of the program using <b> time.sleep().</b> |
 
 ### DataModel class:
 
-Useful functions needed to interact with the visualizer
+Useful functions, most are wrapped by the [Algorithm](#algorithm-class) class. <br>
+The functions can still be called directly, if an attribute containing the DataModel class is created (not recommended). 
 
 | Function | Parameters | Returns  | Description: |
 | -------- | ---------- | -------- | ------------ |
 | getArray() | None     | The array to be processed | Returns the array to be iterated over |
 | getTarget() | None    | The target to be searched for | Returns the target to be searched for |
-| displayArray() | None | None | Redraws the array on screen | 
+| updateArrayOnScreen() | None | None | Redraws the array on screen | 
 | setBarColour() | index (int) : Position to have the colour changed. <br> colour (str) : The new colour | None | Changes the colour of the bar at the specified index | 
+| sortArray()    | None | None | Sorts the array and refreshes the screen to display it. |
+| shuffleArray() | None | None | Randomly shuffles the array and refreshes the screen to display it. | 
 
 ---
 
