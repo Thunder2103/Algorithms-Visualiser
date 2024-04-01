@@ -85,9 +85,12 @@ class SearchDataModel():
         return True if self.__algorithmRunning.is_set() else False
 
     def acquireLock(self):
-        self.__algorithmPauseLock.acquire()
+        self.__algorithmPauseLock.acquire() 
     
     def releaseLock(self):
-        self.__algorithmPauseLock.release()
+        self.__algorithmPauseLock.release() 
+    
+    def isPaused(self): 
+        return self.__algorithmPauseLock.locked()
 
 # Listen to Everlong By Foo Fighters

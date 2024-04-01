@@ -4,7 +4,6 @@ if(__name__ == "__main__"):
     print("This is file shouldn't be run on it's own. \nIt should be imported only.")
     exit()
 
-
 from ..algorithm import Algorithm
 
 class BinarySearch(Algorithm):
@@ -46,6 +45,6 @@ class BinarySearch(Algorithm):
             else: low = mid + 1
             self.updateArrayOnScreen()
             self.delay() 
-        return 0 
+        return -1 
     
 # Listen to Welcome to the DCC by Nothing But Thieves

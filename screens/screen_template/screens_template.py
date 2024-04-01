@@ -129,9 +129,12 @@ class SharedLayout():
 
     # Returns window the screen is displayed in
     def getWindow(self) -> object: return self.__window
+    
     # Returns font used for all text
     def getFont(self) -> str: return self.__FONT 
+    
     def getOptionsWidgetFrame(self) -> tk.Frame: return self.__optionsWidgetsFrame 
+    
     # Gets canvas array is displayed in
     def getArrayCanvas(self) -> tk.Canvas: return self.__arrayCanvas
  

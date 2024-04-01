@@ -117,10 +117,12 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
         algorithmToggleFrame = tk.Frame(self.getOptionsWidgetFrame(), bg = "white")
         algorithmToggleFrame.pack(side = "bottom", pady = (0,5))
         # Allows user to see the algorithm in action
-        self.__solveStopButton = tk.Button(algorithmToggleFrame, text = "Solve.", width = 7, relief = "solid", font = (self.getFont(), 12), command = lambda: self.initAlgorithm())
+        self.__solveStopButton = tk.Button(algorithmToggleFrame, text = "Solve.", width = 7, relief = "solid", 
+                                           font = (self.getFont(), 12), command = lambda: self.__initAlgorithm())
         self.__solveStopButton.grid(row = 0, column = 0, padx = (0,5)) 
         # Allows user to stop algorithm whilst it's running - button is initially disabled
-        self.__pauseResumeButton = tk.Button(algorithmToggleFrame, text = "Pause.", width = 7, relief = "solid", font = (self.getFont(), 12), state = "disabled", command = lambda : self.stopAlgorithm())
+        self.__pauseResumeButton = tk.Button(algorithmToggleFrame, text = "Pause.", width = 7, relief = "solid", 
+                                             font = (self.getFont(), 12), state = "disabled", command = lambda : self.__pauseAlgorithm())
         self.__pauseResumeButton.grid(row = 0, column = 1)  
 
     # When the slider has changed value a label is added with the relevant speed
@@ -161,40 +163,72 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
         else: return target
         
     # Call algorithm user has selected
-    def initAlgorithm(self) -> None:
+    def __initAlgorithm(self) -> None:
         # Doesn't do anything if user hasn't chosen an algorithm
-        if(self.getAlgorithmChoice() == 'Select an algorithm.'): 
+        if(self.__getAlgorithmChoice() == 'Select an algorithm.'): 
             self.__algorithmOptions.config(foreground = "red")
         else:
             self.__solveToStop()
             # Sets flag indicating the algorithm needs to halt to false
             if(self.__dataModel.isStopped()): self.__dataModel.clearStopFlag()
+            self.__enablePauseResumeButton()
             # Generates target the algorithm looks for 
             self.__dataModel.setTarget(self.generateTarget())
             # Sets the delay 
-            self.__dataModel.setDelay(self.getDelay())
+            self.__dataModel.setDelay(self.__getDelay())
             # Call algorithm -> so this program actually has a use
-            self.__algorithmThread = threading.Thread(target=callAlgorithm, args=(self.__dataModel, self.getAlgorithmChoice(), 
-                                                                                  self.__stopToSolve))
+            self.__algorithmThread = threading.Thread(target=callAlgorithm, args=(self.__dataModel, self.__getAlgorithmChoice(), 
+                                                                                  self.__stopToSolve, self.__disablePauseResumeButton))
             self.__algorithmThread.start()
     
-    def stopAlgorithm(self):
-        self.__dataModel.setStopFlag()
+    def __stopAlgorithm(self):
+        self.__dataModel.setStopFlag()  
+        if(self.__dataModel.isPaused()):
+            self.__resumeAlgorithm() 
+        else:
+            self.__resumeToPause()
+        self.__disablePauseResumeButton()
         self.__stopToSolve()
     
     # Returns algorithm the user has selected 
-    def getAlgorithmChoice(self) -> str:
+    def __getAlgorithmChoice(self) -> str:
         return self.__algorithmOptions.get()
   
     # Returns number of seconds to delay each iteration of algorithm
-    def getDelay(self) -> int:
+    def __getDelay(self) -> int:
         return self.__speedToDelay[self.__speedSlider.get()]
 
+    # Changes solve button text and function it calls when it's pressed
     def __solveToStop(self):
-        self.__solveStopButton.config(text="Stop.", command=self.stopAlgorithm)
+        self.__solveStopButton.config(text="Stop.", command=self.__stopAlgorithm)
     
+    # Changes stop button text and function it calls when it's pressed
     def __stopToSolve(self):
-        self.__solveStopButton.config(text="Solve.", command=self.initAlgorithm)
+        self.__solveStopButton.config(text="Solve.", command=self.__initAlgorithm) 
     
+    def __pauseToResume(self): 
+         self.__pauseResumeButton.config(text="Resume", command=self.__resumeAlgorithm) 
+        
+    def __resumeToPause(self):
+        self.__pauseResumeButton.config(text="Pause", command=self.__pauseAlgorithm)
+        
+    # Changes pause button text and function it calls when pressed
+    def __pauseAlgorithm(self):
+        self.__dataModel.acquireLock() 
+        self.__pauseToResume()
+       
+    # Changes resume button text and function is calls when pressed
+    def __resumeAlgorithm(self): 
+        self.__dataModel.releaseLock()
+        self.__resumeToPause()
+    
+    # Enables the button to pause/resume algorithm
+    def __enablePauseResumeButton(self):
+        self.__pauseResumeButton.config(state="active")
+    
+    # Disables the button to pause/resume algorithm
+    def __disablePauseResumeButton(self):
+        self.__pauseResumeButton.config(state="disabled")
+
 # Listen to Whatsername by Green Day
     

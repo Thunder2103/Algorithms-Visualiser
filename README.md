@@ -86,6 +86,7 @@ New search algorithms can be added if they meet these requirements:
 | DataModel helper functions   | The DataModel class contains useful functions that will be needed (See [DataModel](#datamodel-class)) | 
 | Function Naming | The function which implements the algorithm must be named in the following format: <b>algorithmNameSearch</b> <br> e.g. binarySearch and linearSearch |
 | Function Implementation | Each new algorithm class must provide an implementation for the <b>getName()</b> method. (See [Algorithm class](#algorithm-class))  |
+| Return value/s          | Each algorithm doesn't strictly need to return anything. <br> As a convention, 1 for success or -1 for failure should be returned | 
 
 --- 
 

@@ -55,6 +55,6 @@ class JumpSearch(Algorithm):
                 return 1  
             self.updateArrayOnScreen()
             self.delay()  
-        return 0
+        return -1
     
 # Listen to Waiting For The End by Linkin Park

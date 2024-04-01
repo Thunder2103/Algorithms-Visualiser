@@ -21,6 +21,8 @@ class Algorithm(ABC):
         i = 0 
         while(i < self.__dataModel.getDelay()):
             self.__stopCheck()
+            self.__dataModel.acquireLock()
+            self.__dataModel.releaseLock()
             time.sleep(interval) 
             i += interval
     
