@@ -15,7 +15,8 @@ class LinearSearch(Algorithm):
         return "Linear Search" 
     
     # Linear Search Algorithm
-    def linearSearch(self) -> int:        
+    def linearSearch(self) -> int:   
+        self.shuffleArray()     
         # Iterate through array one element at a time
         for index, num in enumerate(self.getArray()):
             # If current element is equal to the target

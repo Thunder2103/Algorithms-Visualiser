@@ -20,6 +20,7 @@ The links in the table direct to a information about the algorithm and its imple
 | [Linear Search](#linear-search) |
 | [Binary Search](#binary-search) | 
 | [Jump Search](#jump-search) | 
+| [Tenary Search](#tenary-search) | 
 
 ---
 ### Linear Search:
@@ -69,6 +70,25 @@ If prev is greater than or equal to n, return false. Else if the value at index 
 7. Else repeat steps 5 - 6 until reached index corresponding to prev + $\sqrt{n}$  
 
 Time Complexity: O($\sqrt{n}$)<br>
+Space Complexity: O(1)
+
+### Tenary Search 
+--- 
+Algorithm Steps: 
+
+1. Intialise a variable called left with a value of 0
+2. Intialise a variable called right that is equal to the length of the array minus one
+3. While left is less than or equal to right 
+4. Initialise a varible called mid1 and set it to, left + (right - left) // 3 
+5. Initialise a varible called mid2 and set it to, right - (right - left) // 3 
+6. If the value at index mid1 or mid2 is equal to the target, return True 
+7. If the value at index mid1 is less than the target, set right to mid1 - 1 
+8. If the value at index mid2 is greater than the target, set left to mid2 + 1
+9. Else, set left to mid1 + 1 and set right to mid2 - 1 
+10. Repeat steps 3 - 9
+11. If the loop terminates, return False 
+
+Time Complexity: O(log<sub>3</sub>n) <br>
 Space Complexity: O(1)
 
 ---

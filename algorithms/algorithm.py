@@ -51,7 +51,7 @@ class Algorithm(ABC):
     def shuffleArray(self):
         self.__dataModel.shuffleArray()
         self.__dataModel.updateArrayOnScreen()
-        self.delay(self.__dataModel)  
+        self.delay()  
     
     # Refreshes screen to display any changes to the array
     def updateArrayOnScreen(self):
