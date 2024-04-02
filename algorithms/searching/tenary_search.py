@@ -19,28 +19,37 @@ class TenarySearch(Algorithm):
         array = self.getArray()
         target = self.getTarget() 
 
+        # Left and right variables, used to adjust mid1 and mid2
         left = 0 
         right = len(array) - 1
 
-        while(left <= right): 
+        # loop while left variable is less than or equal to the right variable 
+        while(left <= right):  
+            # Calculate mid1 and mid2 values
             mid1 = left + (right - left) // 3 
-            mid2 = right - (right - left) // 3 
+            mid2 = right - (right - left) // 3  
+            # Sets bar colours
             self.changeBarColour(mid1, "red")
             self.changeBarColour(mid2, "red")
 
+            # If value at mid1 is the target
             if(array[mid1] == target): 
                 self.changeBarColour(mid1, "green") 
                 self.changeBarColour(mid2, "black") 
                 self.updateArrayOnScreen()
                 return 1 
+            # If value at mid2 is the target
             if(array[mid2] == target): 
                 self.changeBarColour(mid1, "black") 
                 self.changeBarColour(mid2, "green") 
                 self.updateArrayOnScreen()
                 return 1  
 
+            # If target is less than value at mid1, adjust right variable
             if(target < array[mid1]): right = mid1 - 1 
-            elif(target > array[mid2]): left = mid2 + 1 
+            # If target is greater than value at mid2, adjust left variable
+            elif(target > array[mid2]): left = mid2 + 1  
+            # If target is somewhere inbetween mid1 and mid2, adjust left and right variables 
             else: 
                 left = mid1 + 1 
                 right = mid2 - 1 

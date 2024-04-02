@@ -28,10 +28,10 @@ The links in the table direct to a information about the algorithm and its imple
 Algorithm Steps:<br>
 1. Starting at the beginning of the array 
 2. Compare current value to the target
-3. If the value is equal to the target then return true
+3. If the value is equal to the target then return 1
 4. If the value is not equal to the target then go to the next element
 5. Repeat steps 2 - 4 until the end of array is reached
-6. If the end of the array has been reached and target has not been found, return false
+6. If the end of the array has been reached and target has not been found, return 0
 
 Time Complexity: O(n)<br>
 Space Complexity: O(1)
@@ -45,11 +45,11 @@ Algorithm steps:
 2. Intialise a variable called high that is equal to the length of the array minus one
 3. While low is less than or equal to high 
 4. Initialise a varible called mid and set it to, (low + high) // 2
-5. If the value at index mid is equal to the target, return True
+5. If the value at index mid is equal to the target, return 1
 6. If the value at index mid is greater than the target, set low to mid plus one
 7. If the value at index mid is less than the target, set high to mid minus one 
 8. Repeat steps 3 - 7 until low is greater than high
-9. If the loop terminates, return False
+9. If the loop terminates, return 0
 
 Time complexity: O(log n)<br>
 Space Complexity: O(1)
@@ -65,8 +65,8 @@ Algorithm Steps:
 3. While step is less than n, set prev to the value of step and then increment step by $\sqrt{n}$. <br>
 If prev is greater than or equal to n, return false. Else if the value at index step is greater than target, break loop.   
 4. Initialize a loop starting at the value of prev until prev + $\sqrt{n}$  
-5. If the current index is equal to the target, return true
-6. If the current index is greater than the target, return false
+5. If the current index is equal to the target, return 1
+6. If the current index is greater than the target, return 0
 7. Else repeat steps 5 - 6 until reached index corresponding to prev + $\sqrt{n}$  
 
 Time Complexity: O($\sqrt{n}$)<br>
@@ -81,14 +81,35 @@ Algorithm Steps:
 3. While left is less than or equal to right 
 4. Initialise a varible called mid1 and set it to, left + (right - left) // 3 
 5. Initialise a varible called mid2 and set it to, right - (right - left) // 3 
-6. If the value at index mid1 or mid2 is equal to the target, return True 
+6. If the value at index mid1 or mid2 is equal to the target, return 1 
 7. If the value at index mid1 is less than the target, set right to mid1 - 1 
 8. If the value at index mid2 is greater than the target, set left to mid2 + 1
 9. Else, set left to mid1 + 1 and set right to mid2 - 1 
 10. Repeat steps 3 - 9
-11. If the loop terminates, return False 
+11. If the loop terminates, return 0 
 
 Time Complexity: O(log<sub>3</sub>n) <br>
+Space Complexity: O(1) 
+
+### Fibonacci Search 
+--- 
+Algorithm Steps: 
+
+1. Calculate the largest Fibonacci number greater than or equal to the size of the array, store it in a variable called fibN
+2. Calculate the Fibonacci number before fibN, store it in a variable called fibNMin1 
+3. Calculate the Fibonacci number before fibNMin1, store it in a variable called fibNMin2  
+4. Initialise a variable called offset, set it to -1 
+5. Initialise a variable called n, set it to the length of the array
+6. While fibN is greater than 1 
+7. Initialise a variable called index and set it to min(offset + fibNMin2, n - 1)
+8. If the element at index is less than the target, move all the Fibonacci numbers, two Fibonacci numbers down. set offset to be equal to index 
+9. Else if the element at index is greater than the target, move all the Fibonacci numbers, one Fibonacci number down  
+10. Else, the target has been found, return 1 
+11. Repeat steps 6 to 10 
+12. If fibMin1 is greater than 0 and the last element in the array is the target, return 1 
+13. Else, return 0
+
+Time complexity: O(log n) <br>
 Space Complexity: O(1)
 
 ---
