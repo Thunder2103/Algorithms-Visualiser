@@ -21,6 +21,7 @@ The links in the table direct to a information about the algorithm and its imple
 | [Binary Search](#binary-search) | 
 | [Jump Search](#jump-search) | 
 | [Tenary Search](#tenary-search) | 
+| [Fibonacci Search](#fibonacci-search) | 
 
 ---
 ### Linear Search:
