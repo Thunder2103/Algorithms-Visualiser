@@ -1,20 +1,13 @@
-# TO DO:
-# a logo would be cool but idk where it would be placed (do last, get it working then make it look nice)
-# adds button to display a list of algorithms(?) 
-# Add layout adapting for different widths and heights -> update_idletasks()
-
-from view import *
-from screens import *
+from app_window import Window
+from screens import IntroductionScreen
 
 if(__name__ == "__main__"):
-    view = View(750, 500) 
-    view.create()
-    view.addScreen(Introduction(view))
-    view.show() 
+    window = Window(750, 500) 
+    window.create()
+    window.loadScreen(IntroductionScreen(window))
+    window.show() 
 else:
     print("This file has no functions to import")
 
-# Subscribe to Computerphile 
 # Listen to Walk by foo fighters  
-
-
+# Seriously listen to it, it means a lot to me
