@@ -1,4 +1,3 @@
-# TODO: split existing dictionaries up and move them to SearchModel
 # TODO: Move generate target functions to controller 
 
 # If this isn't at the top the program breaks :/
@@ -72,6 +71,7 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
         self.__createSpeedAdjuster()
         self.__createArrayAdjuster()
         self.__createTargetAdjuster()
+        self.__createSortShuffleButtons()
         self.__createStopSolveButtons()
 
     # Creates a combo box which displays all algorithms 
@@ -112,6 +112,15 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
         self.__targetSlider.pack(pady = (10, 0))
         # Initially the slider is set at 0, which is the target being randomly selected
         self.__targetSlider.config(label = "Target: Random") 
+    
+    def __createSortShuffleButtons(self): 
+        self.__arraySortShuffleFrame = tk.Frame(self.getOptionsWidgetFrame(), bg = "white") 
+        self.__arraySortShuffleFrame.pack(pady=(10, 0)) 
+
+        self.__sortButton = tk.Button(self.__arraySortShuffleFrame, text="Sort.", width = 7, relief = "solid", font = (self.getFont(), 12), command=self.__sortArray)
+        self.__sortButton.grid(row = 0, column = 0, padx = (0,5)) 
+        self.__shuffleButton = tk.Button(self.__arraySortShuffleFrame, text="Shuffle.", width = 7, relief = "solid", font = (self.getFont(), 12), command=self.__shuffleArray)
+        self.__shuffleButton.grid(row = 0, column = 1, padx = (0,5)) 
     
     # Creates buttons that lets user execute algorithms or stop them
     def __createStopSolveButtons(self) -> None:
@@ -173,14 +182,14 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
             self.__solveToStop()
             # Sets flag indicating the algorithm needs to halt to false
             if(self.__dataModel.isStopped()): self.__dataModel.clearStopFlag()
-            self.__enablePauseResumeButton()
+            self.__widgetsAlgorithmStarts()
             # Generates target the algorithm looks for 
             self.__dataModel.setTarget(self.generateTarget())
             # Sets the delay 
             self.__dataModel.setDelay(self.__getDelay())
             # Call algorithm -> so this program actually has a use
             self.__algorithmThread = threading.Thread(target=callAlgorithm, args=(self.__dataModel, self.__getAlgorithmChoice(), 
-                                                                                  self.__stopToSolve, self.__disablePauseResumeButton))
+                                                                                  self.__widgetsAlgorithmStops))
             # Start Thread
             self.__algorithmThread.start()
     
@@ -195,10 +204,7 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
         # Otherwise makes sure pause/resume button has the correct text/function
         else: 
             self.__resumeToPause() 
-        # Disables pause/resume button
-        self.__disablePauseResumeButton() 
-        # Set stop button back to solve 
-        self.__stopToSolve()
+        self.__widgetsAlgorithmStops()
     
     # Returns algorithm the user has selected 
     def __getAlgorithmChoice(self) -> str:
@@ -255,7 +261,58 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
             # Loop until thread has stopped
             while(self.__algorithmThread.is_alive()): continue 
         # Load home screen
-        self.loadHomeScreen()
+        self.loadHomeScreen() 
+    
+    # Sorts and displays the array
+    def __sortArray(self):
+        self.__dataModel.sortArray()
+        self.__controller.displayArray() 
+    
+    # Enables the button to sort the array
+    def __enableSortButton(self):
+        self.__sortButton.config(state="active")
+    
+    # Disables the button to sort the array
+    def __disableSortButton(self):
+        self.__sortButton.config(state="disabled")
+    
+    # Shuffles and displays the array
+    def __shuffleArray(self):
+        self.__dataModel.shuffleArray()
+        self.__controller.displayArray()  
+    
+    # Enables the button to shuffle the array
+    def __enableShuffleButton(self):
+        self.__shuffleButton.config(state="active")
+    
+    # Disables the button to shuffle the array
+    def __disableShuffleButton(self):
+        self.__shuffleButton.config(state="disabled")
+    
+    # Enables the slider to change the array size
+    def __enableArraySizeSlider(self):
+        self.__arraySizeSlider.config(state="active")
+    
+    # Disables the slider to change the array size
+    def __disableArraySizeSlider(self):
+        self.__arraySizeSlider.config(state = "disabled")
+    
+    # Enables/Disables widgets when algorithms runs
+    def __widgetsAlgorithmStarts(self):
+        self.__disableArraySizeSlider()
+        self.__disableSortButton()
+        self.__disableShuffleButton() 
+        self.__solveToStop()
+        self.__enablePauseResumeButton()
+    
+    # Enables/Disables widgets when algorithms stops
+    def __widgetsAlgorithmStops(self):
+        self.__enableArraySizeSlider()
+        self.__enableSortButton()
+        self.__enableShuffleButton()  
+        self.__stopToSolve()
+        self.__disablePauseResumeButton()
+
 
 
 # Listen to Whatsername by Green Day
