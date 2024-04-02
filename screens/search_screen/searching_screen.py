@@ -313,7 +313,4 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
         self.__stopToSolve()
         self.__disablePauseResumeButton()
 
-
-
-# Listen to Whatsername by Green Day
-    
+# Listen to Whatsername by Green Day    

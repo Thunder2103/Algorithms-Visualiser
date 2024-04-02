@@ -110,10 +110,26 @@ Algorithm Steps:
 12. If fibMin1 is greater than 0 and the last element in the array is the target, return 1 
 13. Else, return 0
 
-Time complexity: O(log n) <br>
+Time Complexity: O(log n) <br>
+Space Complexity: O(1)
+
+### Exponential Search 
+--- 
+Algorithm Steps:
+
+1. If the first element in the array is the target, return 1 
+2. Initialise a variable called i, set it to 1 
+3. Initialise a variable called n, set it to the length of the array 
+4. While i is less than n and the element at index i is less than or equal to the target 
+5. Double the value of i 
+6. Repeat Steps 5 - 6 
+7. Perform a [binary search](#binary-search), the left pointer is the value i // 2 and right pointer is the value min(i, n - 1) 
+
+Time Complexity: O(log n) <br>
 Space Complexity: O(1)
 
 ---
+
 ## Adding a new Search Algorithm
 New search algorithms can be added if they meet these requirements:
 

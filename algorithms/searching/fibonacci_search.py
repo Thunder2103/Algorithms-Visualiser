@@ -74,3 +74,5 @@ class FibonacciSearch(Algorithm):
             fibNMin1 = fibN 
             fibN = fibNMin2 + fibNMin1 
         return (fibNMin2, fibNMin1, fibN)
+
+# Listen to Ain't No Rest For The Wicked By Cage The Elephant
