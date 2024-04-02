@@ -45,7 +45,7 @@ Algorithm steps:
 1. Intialise a variable called low with a value of 0
 2. Intialise a variable called high that is equal to the length of the array minus one
 3. While low is less than or equal to high 
-4. Initialise a varible called mid and set it to, (low + high) // 2
+4. Initialise a varible called mid, it's value is calculated by [the formula](#mid-formula)
 5. If the value at index mid is equal to the target, return 1
 6. If the value at index mid is greater than the target, set low to mid plus one
 7. If the value at index mid is less than the target, set high to mid minus one 
@@ -54,6 +54,10 @@ Algorithm steps:
 
 Time complexity: O(log n)<br>
 Space Complexity: O(1)
+
+#### mid formula: 
+
+$mid = {(low+high) \div 2}$
 
 ---
 
@@ -80,8 +84,8 @@ Algorithm Steps:
 1. Intialise a variable called left with a value of 0
 2. Intialise a variable called right that is equal to the length of the array minus one
 3. While left is less than or equal to right 
-4. Initialise a varible called mid1 and set it to, left + (right - left) // 3 
-5. Initialise a varible called mid2 and set it to, right - (right - left) // 3 
+4. Initialise a varible called mid1, calculate it's value using [the formula](#mid1-formula)
+5. Initialise a varible called mid2, calculate it's value using [the formula](#mid2-formula) 
 6. If the value at index mid1 or mid2 is equal to the target, return 1 
 7. If the value at index mid1 is less than the target, set right to mid1 - 1 
 8. If the value at index mid2 is greater than the target, set left to mid2 + 1
@@ -91,6 +95,15 @@ Algorithm Steps:
 
 Time Complexity: O(log<sub>3</sub>n) <br>
 Space Complexity: O(1) 
+
+#### mid1 formula:
+
+$mid1 = {left + (right - left) \div 3}$
+
+#### mid2 formula: 
+
+$mid2 = {right - (right - left) \div 3}$
+
 
 ### Fibonacci Search 
 --- 
@@ -102,7 +115,7 @@ Algorithm Steps:
 4. Initialise a variable called offset, set it to -1 
 5. Initialise a variable called n, set it to the length of the array
 6. While fibN is greater than 1 
-7. Initialise a variable called index and set it to min(offset + fibNMin2, n - 1)
+7. Initialise a variable called index, it's value is given by [the formula](#index-formula)
 8. If the element at index is less than the target, move all the Fibonacci numbers, two Fibonacci numbers down. set offset to be equal to index 
 9. Else if the element at index is greater than the target, move all the Fibonacci numbers, one Fibonacci number down  
 10. Else, the target has been found, return 1 
@@ -111,7 +124,11 @@ Algorithm Steps:
 13. Else, return 0
 
 Time Complexity: O(log n) <br>
-Space Complexity: O(1)
+Space Complexity: O(1) 
+
+#### index formula:
+
+$index = {\min(offset + fibNMin2, n - 1)}$
 
 ### Exponential Search 
 --- 
@@ -123,10 +140,39 @@ Algorithm Steps:
 4. While i is less than n and the element at index i is less than or equal to the target 
 5. Double the value of i 
 6. Repeat Steps 5 - 6 
-7. Perform a [binary search](#binary-search), the left pointer is the value i // 2 and right pointer is the value min(i, n - 1) 
+7. Perform a [binary search](#binary-search), the initialise values for [low](#initial-low-value) and [high](#initial-high-value) are given below
 
 Time Complexity: O(log n) <br>
-Space Complexity: O(1)
+Space Complexity: O(1) 
+
+#### Starting low value:
+
+$low = i \div 2$ 
+
+#### Starting high value:
+
+$high = \min(i, n - 1)$ 
+
+### Interpolation Search 
+---
+Algorithm Steps:
+
+1. Initialise a variable called low and set it to 0 
+2. Initialise a variable called high and set it to the length of the array - 1 
+3. While low is less than or equal to high AND target is greater than or equal to the value at index low AND target is less than or equal to the value at index high
+4. Initialise a value called pos and calculate it's value using [the formula](#pos-formula)
+5. If the value at index pos is equal to the target, return 1 
+6. If the value at index pos is greater than the target, set high to pos - 1 
+7. If the value at index pos is less than the target, set low to pos + 1 
+8. Repeat steps 3 - 7 
+9. If the loop terminates and the target is not found, return 0
+
+Time Complexity: O(log (log n)) <br>
+Space Complexity: O(1) 
+
+#### pos formula:
+
+$$pos = {low+{(target-array[low])\times(high - low)\over(array[high]-array[low])}}$$
 
 ---
 
