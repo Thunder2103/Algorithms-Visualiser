@@ -45,14 +45,21 @@ class Algorithm(ABC):
     def sortArray(self):
         self.__dataModel.sortArray()
         self.__dataModel.updateArrayOnScreen()
-        self.delay() 
+        self.__minimalDelay()
     
     # Shuffle and display array on screen
     def shuffleArray(self):
         self.__dataModel.shuffleArray()
-        self.__dataModel.updateArrayOnScreen()
-        self.delay()  
+        self.__dataModel.updateArrayOnScreen() 
+        self.__minimalDelay()
     
+    # Freezes algorithm for a brief period -> 0.5 seconds
+    def __minimalDelay(self):
+        tmpDelay = self.__dataModel.getDelay()
+        self.__dataModel.setDelay(0.5)
+        self.delay()   
+        self.__dataModel.setDelay(tmpDelay)
+
     # Refreshes screen to display any changes to the array
     def updateArrayOnScreen(self):
         self.__dataModel.updateArrayOnScreen() 
