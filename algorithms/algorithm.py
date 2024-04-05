@@ -17,9 +17,10 @@ class Algorithm(ABC):
     def getName(self): pass 
 
     def delay(self):
-        interval = self.__dataModel.getDelay() / 10
+        delay = self.__dataModel.getDelay()
+        interval = delay / 10
         i = 0 
-        while(i < self.__dataModel.getDelay()):
+        while(i < delay):
             self.__stopCheck() 
             # Checks if the GUI thread is holding the pause lock
             if(self.__dataModel.isPaused()): self.__pauseAlgorithm()

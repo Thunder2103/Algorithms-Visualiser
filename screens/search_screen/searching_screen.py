@@ -64,6 +64,8 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
 
         # Creating and displaying options
         self.__createOptions() 
+        # Sets the default delay
+        self.__dataModel.setDelay(self.__getDelay())
 
     # This functions handles creating and displaying the options the user is presented with
     def __createOptions(self) -> None: 
@@ -89,9 +91,9 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
     def __createSpeedAdjuster(self) -> None:
         # Creates a slider that goes 0 to 1 then 2
         # It has three options correlating to the three speeds; slow, medium, fast 
-        # Every time the sliders value is changed the intToSpeed() method is called
+        # Every time the sliders value is changed the setDelay() method is called
         self.__speedSlider = tk.Scale(self.getOptionsWidgetFrame(), from_ = 0, to_ = 3, length = self.getOptionsWidgetFrame().winfo_width(),\
-                                orient = "horizontal", showvalue = False, bg =  "white", highlightbackground = "white", command = self.intToSpeed)
+                                orient = "horizontal", showvalue = False, bg =  "white", highlightbackground = "white", command = self.__setDelay)
         self.__speedSlider.pack(pady = (10, 0))  
         # Initially the slider is set at 0, which is the Slow speed
         self.__speedSlider.config(label = "Slow")  
@@ -136,11 +138,13 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
                                              font = (self.getFont(), 12), state = "disabled", command = lambda : self.__pauseAlgorithm())
         self.__pauseResumeButton.grid(row = 0, column = 1)  
 
-    # When the slider has changed value a label is added with the relevant speed
-    def intToSpeed(self, value : str) -> None: 
+    # When the slider has changed value a label is added with the relevant speed 
+    # The dleay is also changed in the DataModel Object
+    def __setDelay(self, value : str) -> None: 
         self.__speedSlider.config(label = self.__numbersToSpeed[int(value)])  
+        self.__dataModel.setDelay(self.__getDelay())
 
-    # When the target slider has changed value a label is added to show the relevant target information
+    # When the target slider has changed value a label is added to show the relevant target information 
     def intToText(self, value : str) -> None:
         self.__targetSlider.config(label = self.__numbersToText[int(value)]) 
                
@@ -185,8 +189,6 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
             self.__widgetsAlgorithmStarts()
             # Generates target the algorithm looks for 
             self.__dataModel.setTarget(self.generateTarget())
-            # Sets the delay 
-            self.__dataModel.setDelay(self.__getDelay())
             # Call algorithm -> so this program actually has a use
             self.__algorithmThread = threading.Thread(target=callAlgorithm, args=(self.__dataModel, self.__getAlgorithmChoice(), 
                                                                                   self.__widgetsAlgorithmStops))
