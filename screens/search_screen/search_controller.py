@@ -151,4 +151,5 @@ class SearchController():
     # Prevents the canvas flickering as updating is done by the main GUI thread
     def scheduleArrayUpdate(self):
         self.__screen.getWindow().scheduleFunctionExecution(self.displayArray, 0)
+        
 # Listen to Give Me Novacaine by Green Day

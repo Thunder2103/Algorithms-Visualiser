@@ -13,6 +13,7 @@ class SearchDataModel():
         self.__delay = None 
         self.__algorithmRunning = threading.Event()
         self.__algorithmPauseLock = threading.Lock()
+        self.__delayLock = threading.Lock()
  
     # Sets controller attribute to value passed
     def addController(self, controller):
@@ -60,12 +61,17 @@ class SearchDataModel():
         self.__barColours = ["black" for _ in range(len(self.__array))] 
     
     # Gets the delay (time algorithm is paused for)
-    def getDelay(self) -> int: 
-        return self.__delay
+    def getDelay(self) -> int:
+        self.__delayLock.acquire()  
+        delay = self.__delay
+        self.__delayLock.release()
+        return delay
     
     # Sets the delay to the passed integer
     def setDelay(self, value : int) -> None:
-        self.__delay = value 
+        self.__delayLock.acquire()
+        self.__delay = value  
+        self.__delayLock.release()
     
     # Returns the target (the element being looked for)
     def getTarget(self) -> int: 

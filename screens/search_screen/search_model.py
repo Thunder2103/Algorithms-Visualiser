@@ -24,6 +24,8 @@ class SearchModel():
         self.__higherBound = None
         # Maximum number of bars that can be drawn, ie the maximum size of the array
         self.__maxBars = None 
+        self.__minDelay = 0.5
+        self.__maxDelay = 4
 
     # Returns width of the bars drawn on screen
     def getBarWidth(self) -> int: return self.__barWidth 
@@ -61,6 +63,11 @@ class SearchModel():
     # Get maximum bars that can be drawn on screen
     def getMaxBars(self) -> int: return self.__maxBars 
     # Set maximum bars that can be drawn on screen to passed value
-    def setMaxBars(self, value : int) -> None: self.__maxBars = value
+    def setMaxBars(self, value : int) -> None: self.__maxBars = value 
+    # Get the minimum delay
+    def getMinDelay(self): return self.__minDelay 
+    # Get the maximum delay 
+    def getMaxDelay(self): return self.__maxDelay
+
 
 # Listen to Creep by Radiohead
