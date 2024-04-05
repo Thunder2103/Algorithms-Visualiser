@@ -56,8 +56,8 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
         self.__createAlgorithmOptions()               
         self.__createSpeedAdjuster()
         self.__createArrayAdjuster()
-        self.__createTargetAdjuster()
         self.__createSortShuffleButtons()
+        self.__createTargetAdjuster()
         self.__createStopSolveButtons()
 
     # Creates a combo box which displays all algorithms 
@@ -104,7 +104,7 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
     
     def __createSortShuffleButtons(self): 
         self.__arraySortShuffleFrame = tk.Frame(self.getOptionsWidgetFrame(), bg = "white") 
-        self.__arraySortShuffleFrame.pack(pady=(10, 0)) 
+        self.__arraySortShuffleFrame.pack(pady=(20, 0)) 
 
         self.__sortButton = tk.Button(self.__arraySortShuffleFrame, text="Sort.", width = 7, relief = "solid", font = (self.getFont(), 12), command=self.__sortArray)
         self.__sortButton.grid(row = 0, column = 0, padx = (0,5)) 
