@@ -16,16 +16,18 @@ class Algorithm(ABC):
     @abstractmethod
     def getName(self): pass 
 
-    def delay(self):
-        delay = self.__dataModel.getDelay()
-        interval = delay / 10
+    def __haltAlgorithm(self, delay, interval):
         i = 0 
         while(i < delay):
             self.__stopCheck() 
             # Checks if the GUI thread is holding the pause lock
             if(self.__dataModel.isPaused()): self.__pauseAlgorithm()
             time.sleep(interval) 
-            i += interval
+            i += interval  
+
+    def delay(self):
+        delay = self.__dataModel.getDelay()
+        self.__haltAlgorithm(delay, delay / 10)
     
     # Used to check is the algorithm needs to halt
     def __stopCheck(self): 
@@ -46,20 +48,15 @@ class Algorithm(ABC):
     def sortArray(self):
         self.__dataModel.sortArray()
         self.__dataModel.updateArrayOnScreen()
-        self.__minimalDelay()
+        # Pauses algorithm for short amount of time 
+        self.__haltAlgorithm(0.5, 0.1)
     
     # Shuffle and display array on screen
     def shuffleArray(self):
         self.__dataModel.shuffleArray()
         self.__dataModel.updateArrayOnScreen() 
-        self.__minimalDelay()
-    
-    # Freezes algorithm for a brief period -> 0.5 seconds
-    def __minimalDelay(self):
-        tmpDelay = self.__dataModel.getDelay()
-        self.__dataModel.setDelay(0.5)
-        self.delay()   
-        self.__dataModel.setDelay(tmpDelay)
+        # Pauses algorithm for short amount of time 
+        self.__haltAlgorithm(0.5, 0.1)
 
     # Refreshes screen to display any changes to the array
     def updateArrayOnScreen(self):

@@ -20,23 +20,6 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
         # Override home button function
         self.__overrideHomeButtonCommand()
 
-        # Dictionary pairing numbers to speed
-        # This allows the slider to show "Small", "Medium" and "Fast" instead of 0, 1, 2
-        self.__numbersToSpeed = {
-            0: "Slow",
-            1: "Medium",
-            2: "Fast",
-            3: "Super Fast"
-        }  
-
-        # Dictionary pairing the numbers returned by the slider to the delay (in seconds)
-        self.__speedToDelay = {
-            0 : 4, 
-            1 : 2.5, 
-            2 : 1, 
-            3 : 0.5
-        } 
-
         # Dictionary pairing numbers to speed 
         # This allows the slider to show text rather than just numbers
         self.__numbersToText = {
@@ -45,6 +28,7 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
             2: "Target: Not in array"
         } 
 
+        # Dictionary pairing an integer to a function
         self.__generateTargetFunctions = {
             0 : self.targetRandom, 
             1 : self.targetIn, 
@@ -65,7 +49,7 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
         # Creating and displaying options
         self.__createOptions() 
         # Sets the default delay
-        self.__dataModel.setDelay(self.__getDelay())
+        self.__setDelay()
 
     # This functions handles creating and displaying the options the user is presented with
     def __createOptions(self) -> None: 
@@ -92,11 +76,14 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
         # Creates a slider that goes 0 to 1 then 2
         # It has three options correlating to the three speeds; slow, medium, fast 
         # Every time the sliders value is changed the setDelay() method is called
-        self.__speedSlider = tk.Scale(self.getOptionsWidgetFrame(), from_ = 0, to_ = 3, length = self.getOptionsWidgetFrame().winfo_width(),\
-                                orient = "horizontal", showvalue = False, bg =  "white", highlightbackground = "white", command = self.__setDelay)
+        self.__speedSlider = tk.Scale(self.getOptionsWidgetFrame(), from_ = self.__model.getMaxDelay(), to_ = self.__model.getMinDelay(), resolution=0.1, 
+                                      length = self.getOptionsWidgetFrame().winfo_width(), orient = "horizontal", showvalue = False, 
+                                      bg =  "white", highlightbackground = "white", command = self.__updateDelay)
         self.__speedSlider.pack(pady = (10, 0))  
+        self.__speedSlider.set(self.__model.getMaxDelay())
+        self.__speedSlider.bind("<ButtonRelease-1>", lambda _ : self.__setDelay())
         # Initially the slider is set at 0, which is the Slow speed
-        self.__speedSlider.config(label = "Slow")  
+        #self.__speedSlider.config(label = f"Slow: {self.__speedSlider.get()} seconds")  
     
     # Creates a slider that allows users to alter an arrays size
     def __createArrayAdjuster(self) -> None:
@@ -139,10 +126,10 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
         self.__pauseResumeButton.grid(row = 0, column = 1)  
 
     # When the slider has changed value a label is added with the relevant speed 
-    # The dleay is also changed in the DataModel Object
-    def __setDelay(self, value : str) -> None: 
-        self.__speedSlider.config(label = self.__numbersToSpeed[int(value)])  
-        self.__dataModel.setDelay(self.__getDelay())
+    # The delay is also changed in the DataModel Object
+    def __updateDelay(self, value : str) -> None: 
+        self.__speedSlider.config(label = f"Delay: {value} Seconds")  
+        #self.__dataModel.setDelay(self.__getDelay())
 
     # When the target slider has changed value a label is added to show the relevant target information 
     def intToText(self, value : str) -> None:
@@ -178,7 +165,7 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
         else: return target
         
     # Call algorithm user has selected
-    def __initAlgorithm(self) -> None:
+    def __initAlgorithm(self) -> None: 
         # Doesn't do anything if user hasn't chosen an algorithm
         if(self.__getAlgorithmChoice() == 'Select an algorithm.'): 
             self.__algorithmOptions.config(foreground = "red")
@@ -210,12 +197,11 @@ class SearchScreen(sc.Screen, sc.SharedLayout):
     
     # Returns algorithm the user has selected 
     def __getAlgorithmChoice(self) -> str:
-        return self.__algorithmOptions.get()
+        return self.__algorithmOptions.get() 
+    
+    def __setDelay(self): 
+        self.__dataModel.setDelay(self.__speedSlider.get()) 
   
-    # Returns number of seconds to delay each iteration of algorithm
-    def __getDelay(self) -> int:
-        return self.__speedToDelay[self.__speedSlider.get()]
-
     # Changes solve button text and function it calls when it's pressed
     def __solveToStop(self):
         self.__solveStopButton.config(text="Stop.", command=self.__stopAlgorithm)
