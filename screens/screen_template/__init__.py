@@ -1,1 +1,1 @@
-from .screens_template import SharedLayout
+from .screens_template import ScreenTemplate
