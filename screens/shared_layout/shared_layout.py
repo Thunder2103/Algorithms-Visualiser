@@ -55,11 +55,13 @@ class SharedLayout(sc.ScreenTemplate):
         #combo box, allows the user to choose what algorithm they want
         self.__algorithmOptions = ttk.Combobox(self.getOptionsWidgetFrame(), textvariable = tk.StringVar(), state = "readonly", font = (self.getFont(), 12),\
              width = self.getOptionsWidgetFrame().winfo_width())
-        self.__algorithmOptions['value'] = getAlgorithms()
         self.__algorithmOptions.set('Select an algorithm.')
         # Removes the blue highlighting when something is selected that annoyed me
         self.__algorithmOptions.bind("<<ComboboxSelected>>", lambda _: self.getOptionsWidgetFrame().focus())
         self.__algorithmOptions.pack(pady = (10,0)) 
+    
+    def loadAlgorithmOptions(self, algorithmsType : str):
+        self.__algorithmOptions['value'] = getAlgorithms(algorithmsType)
     
     # Creates a slider that allows users to adjust an algorithms speed
     def __createSpeedAdjuster(self) -> None:
@@ -270,6 +272,7 @@ class SharedLayout(sc.ScreenTemplate):
         self.__stopToSolve()
         self.__disablePauseResumeButton() 
     
+    # Returns the data model class
     def getDataModel(self):
         return self.__dataModel
     
