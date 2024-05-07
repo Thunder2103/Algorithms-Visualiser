@@ -3,13 +3,14 @@ import threading
 
 # This class contains solely the data and functions algorithms need to run 
 # This is kept seperate from the SearchModel class to add more abstraction
-class SearchDataModel():
+class SharedDataModel():
     # Constructor
     def __init__(self):
         self.__controller = None
         self.__array =  []
         self.__barColours = []
         self.__target = None
+        self.__targetSetting = 0
         self.__delay = None 
         self.__algorithmRunning = threading.Event()
         self.__algorithmPauseLock = threading.Lock()
@@ -104,5 +105,33 @@ class SearchDataModel():
     # Checks if the algorithm thread is paused or not 
     def isPaused(self): 
         return self.__algorithmPauseLock.locked()
+    
+     # Returns the size of the array
+    def getArraySize(self) -> int:
+        return len(self.__array)
+
+    # Returns the smallest element in the array
+    def getSmallestElement(self) -> int:
+        return min(self.__array)
+    
+    # Returns the largest element in the array 
+    def getLargestElement(self) -> int:
+        return max(self.__array)
+
+    # Returns element at the specified index 
+    def getElementAtIndex(self, index : int) -> int:
+        return self.__array[index]
+
+    # Returns true if passed value is in the array, else false
+    def isElementInArray(self, value : int) -> bool: 
+        return value in self.__array
+    
+    # Updateas the target setting to the passed value
+    def setTargetSetting(self, value : int) -> None:
+        self.__targetSetting = value
+    
+    # Returns the current value of the target setting 
+    def getTargetSetting(self) -> int:
+        return self.__targetSetting
 
 # Listen to Everlong By Foo Fighters

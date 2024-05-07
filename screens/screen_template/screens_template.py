@@ -8,7 +8,7 @@ import tkinter as tk
 
 # All screens that visualise the algorithms have the same fundamental layout
 # This class delegates the reponsiblity of creating the basic layout
-class SharedLayout():
+class ScreenTemplate():
     def __init__(self, window, introScreen) -> None:
         # Stores reference to Window object
         self.__window = window  
