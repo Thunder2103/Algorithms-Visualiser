@@ -15,5 +15,6 @@ class BubbleSort(Algorithm):
         return "Bubble Sort" 
     
     # Bubble Sort Algorithm
-    def bubbleSort(self) -> int:   
+    def bubbleSort(self) -> int: 
+        print("Bubble sort can be called")  
         return -1

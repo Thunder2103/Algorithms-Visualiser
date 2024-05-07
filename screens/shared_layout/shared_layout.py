@@ -148,7 +148,7 @@ class SharedLayout(sc.ScreenTemplate):
             # Generates the target based on the setting (Only applicable when searching)
             self.__controller.generateTarget(self.__dataModel.getTargetSetting())
             # Call algorithm -> so this program actually has a use
-            self.__algorithmThread = threading.Thread(target=callAlgorithm, args=(self.__dataModel, self.__getAlgorithmChoice(), 
+            self.__algorithmThread = threading.Thread(target=callAlgorithm, args=(self.__dataModel, self.__getAlgorithmChoice(), self.__getAlgorithmType(), 
                                                                                   self.__widgetsAlgorithmStops))
             # Start Thread
             self.__algorithmThread.start()
@@ -168,7 +168,10 @@ class SharedLayout(sc.ScreenTemplate):
     
     # Returns algorithm the user has selected 
     def __getAlgorithmChoice(self) -> str:
-        return self.__algorithmOptions.get() 
+        return self.__algorithmOptions.get()  
+    
+    def __getAlgorithmType(self) -> str: 
+        return self.__algorithmOptions.get().split(" ")[1].lower()
     
     def __setDelay(self): 
         self.__dataModel.setDelay(self.__speedSlider.get()) 
