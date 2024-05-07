@@ -7,12 +7,12 @@ Written in python by Thomas Gibson.
 | -------------------------------------------------------------- |
 |   [1. Searching Algorithms](#searching-algorithms)             |  
 |   [2. Adding a new Search Algorithm](#adding-a-new-search-algorithm) |
-
+|   [3. Adding a new Sorting Algorithm](#adding-a-new-sorting-algorithm) |
 ---
 
 ## Searching Algorithms:  
---- 
-Below is a table containing the algorithms this project visualises. <br>
+
+Below is a table containing the searching algorithms this project visualises. <br>
 The links in the table direct to a information about the algorithm and its implementation steps. 
 
 | Algorithm |
@@ -173,6 +173,40 @@ Space Complexity: O(1)
 #### pos formula:
 
 $$pos = {low+{(target-array[low])\times(high - low)\over(array[high]-array[low])}}$$
+
+---
+
+## Sorting Algorithms:
+
+Below is a table containing the sorting algorithms this project visualises. <br>
+The links in the table direct to a information about the algorithm and its implementation steps. 
+
+| Algorithm |
+| --------- |
+| [Bubble Sort](#bubble-sort) |
+
+
+### Bubble Sort:
+--- 
+Algorithm steps: 
+
+1. Loop through the array from left to right
+2. At the beginning of each iteration set a boolean flag to False 
+3. In a nested loop, traverse from the beginning of the array to the end of the unsorted array using [this formula](#index-of-last-sorted-element-formula)
+4. Compare the current element to the element adjacent to it 
+5. If the current element is greater than the adjacent elment, swap them and set the boolean flag to True 
+6. When the nested loop has terminated check the value of the boolean flag 
+7. If the boolean flag is True, continue for another iteration 
+8. If the boolean flag is False, the array is sorted and the algorithm should terminate. 
+
+Time Complexity: O(n<sup>2</sup>) <br>
+Space Complexity: O(1)
+
+#### End of unsorted array formula: 
+
+$$ Index\:of\:last\:unsorted\:element = length\:of\:array - index\:of\:current\:element\: - 1$$
+
+
 
 ---
 
