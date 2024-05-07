@@ -205,9 +205,10 @@ Space Complexity: O(1)
 
 #### End of unsorted array formula: 
 
-$$ Index\:of\:last\:unsorted\:element = length\:of\:array - index\:of\:current\:element\: - 1$$
+$$ index = n - i - 1$$
 
-
+n -> length of the array <br>
+i -> index of current element 
 
 ---
 
