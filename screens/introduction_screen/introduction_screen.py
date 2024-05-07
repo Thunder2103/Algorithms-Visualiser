@@ -50,10 +50,13 @@ class IntroductionScreen(sc.Screen):
             .pack(pady = (25, 0))  
         # Navigate to array searching screen
         tk.Button(buttonsFrame, text = "Array Searching",  font = (self.__FONT, 12), height = 2, width = 15, relief = "solid", \
-                command = lambda : [self.__window.removeScreen(), self.__window.loadScreen(sc.SearchScreen(self.__window, self))]).pack(side = "left", pady = 15, padx = (100, 0)) 
+                command = lambda : [self.__window.removeScreen(), self.__window.loadScreen(sc.SearchScreen(self.__window, self))])\
+                    .pack(side = "left", pady = 15, padx = (100, 0)) 
+       
         # Navigate to array sorting screen
-        tk.Button(buttonsFrame, text = "Array Sorting",  font = (self.__FONT, 12), height = 2, width = 15, relief = "solid",)\
-            .pack(side = "left", padx = 100) 
+        tk.Button(buttonsFrame, text = "Array Sorting",  font = (self.__FONT, 12), height = 2, width = 15, relief = "solid", 
+                  command = lambda : [self.__window.removeScreen(), self.__window.loadScreen(sc.SortScreen(self.__window, self))])\
+                    .pack(side = "left", padx = 100) 
         tk.Label(self.__contentFrame, text = "Created by Thomas Gibson", bg = "white", justify = "left")\
             .pack(side = "bottom", anchor = "w", pady = 5, padx = 5) 
         

@@ -8,11 +8,11 @@ import importlib
 from typing import Callable
 
 # Creates instance of algorithm  
-def callAlgorithm(dataModel, algorithm : str, widgetsAlgorithmStops : Callable[[], None]) -> None:
+def callAlgorithm(dataModel, algorithm : str, algorithmType : str, widgetsAlgorithmStops : Callable[[], None]) -> None:
     # Constructs name of module where algorithm class is stored
     fileName = "_".join(algorithm.split(" ")).lower()
     # Imports module
-    algorithmModule = importlib.import_module("algorithms.searching." + fileName)
+    algorithmModule = importlib.import_module(f"algorithms.{algorithmType.lower()}ing." + fileName)
     # Constructs name of class so it can be instantiated
     algorithmClass = algorithm.replace(" ", "")
     # Create instance of the relevant class 

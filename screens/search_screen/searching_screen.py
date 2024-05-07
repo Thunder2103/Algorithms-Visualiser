@@ -1,5 +1,3 @@
-# TODO: Move generate target functions to controller 
-
 # If this isn't at the top the program breaks :/
 # If the file is run as is message this returned and program exits
 if(__name__ == "__main__"):
@@ -15,6 +13,7 @@ from .search_model import SearchModel
 class SearchScreen(sc.Screen, sc.SharedLayout):    
     def initScreen(self) -> None:
         self.createBaseLayout()
+        self.loadAlgorithmOptions("search")
     
         # Controller and Model classes
         self.__searchModel = SearchModel()

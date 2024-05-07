@@ -16,29 +16,31 @@ from ..algorithm import Algorithm
 # Also enforces some standards
 
 # Makes sure only files containing the algorithms are selected  
-# Provided files containing algorithms follow the naming convention -> (name)_search.py
-def filterFileNames(file : str) -> bool:
-    return True if file[-9:] == "search.py" else False 
+# Provided files containing algorithms follow the naming convention -> (name)_(algorithm type).py
+def filterFileNames(file : str, algorithmType : str) -> bool:
+    return True if file.split("_")[1] == f"{algorithmType}.py" else False 
 
 # Checks that relevant files follow inheritance and naming convenvtions 
 # Checks if any class name has words "Algorithm" or "Search" in them
-def filterClassNames(className : str) -> bool:
-    return True if "Search" in className or "Algorithm" in className else False
+def filterClassNames(className : str, classType : str) -> bool:
+    return True if classType in className or "Algorithm" in className else False
 
 # Returns the name of each algorithm that has been written
 # Provided the naming conventions have been followed
-def getAlgorithms() -> tuple:
+def getAlgorithms(algorithmsType : str) -> tuple: 
+    # Converts passed string to lower case
+    algorithmsType = algorithmsType.lower()
     # Get the name of each algorithm module
-    moduleNames = getModuleNames()
+    moduleNames = getModuleNames(algorithmsType) 
     # Returns a list of the every algorithms name
-    return getAlgorithmNames(moduleNames)
+    return getAlgorithmNames(moduleNames, algorithmsType)
 
 # Gets modules names in this package 
-def getModuleNames() -> list:
-    path = "./algorithms/searching"
+def getModuleNames(algorithmsType : str) -> list:
+    path = f"./algorithms/{algorithmsType}ing"
     # Gets every file in the given directory
-    # and filters out files that don't contain the algorithms
-    algorithmFiles = filter(filterFileNames, os.listdir(path)) 
+    # and filters out files that don't follow the specified naming convention
+    algorithmFiles = filter(lambda file : filterFileNames(file, algorithmsType), os.listdir(path)) 
     # removes the .py file extension - leaving only the module names
     return [module.removesuffix(".py") for module in algorithmFiles]
 
@@ -47,24 +49,26 @@ def errorWrapper(errorMessage : str) -> None:
 
 # Returns a tuple containing every algorithms name 
 # So the names can be seen in the drop down menu
-def getAlgorithmNames(modules : list) -> tuple:
+def getAlgorithmNames(modules : list, algorithmsType : str) -> tuple:
     algorithmNames = []
+    # Class type is the algorithm type with the first letter capitalized 
+    classType = algorithmsType.capitalize()
     # Imports relevant modules and gets relevant classes
     for module in modules:
-        
+
         # Imports module
         try:
-            algorithmModule = importlib.import_module("algorithms.searching." + module)
+            algorithmModule = importlib.import_module(f"algorithms.{algorithmsType}ing." + module)
         # Incase there is an error importing the module
         except Exception as error:
-            errorWrapper(f"Could not import algorithms.searching.{module}")
+            errorWrapper(f"Could not import algorithms.{algorithmsType}ing.{module}")
             continue
        
         # This just creates a list of all classes in the imported module 
         # I love one line list comprehensions (Thx Haskell)
         moduleClasses = [name for name, _ in inspect.getmembers(algorithmModule)] 
-        # filters out any classes that aren't needed (classes without the words "Algorithm" or "Search")
-        algorithmClasses = list((filter(filterClassNames, moduleClasses)))
+        # filters out any classes that aren't needed (classes that don't meet the naming convnetions or don't subclass the Algorithm class)
+        algorithmClasses = list((filter(lambda algorithmClass: filterClassNames(algorithmClass, classType), moduleClasses)))
         
         # Checks algorithm class has at least imported the Algorithm class
         if "Algorithm" in algorithmClasses: algorithmClasses.remove("Algorithm")
@@ -72,14 +76,16 @@ def getAlgorithmNames(modules : list) -> tuple:
             errorWrapper(f"{module} is not a child of Algorithm class")
             continue
 
-        # If the list is empty then "Search" was not included in the class name
+        # If the list is empty then the algorithms type was not included in the classes name
         if not algorithmClasses: 
-            errorWrapper(f"{module} does not contain 'Search' in class name")
+            errorWrapper(f"{module} does not contain '{classType}' in class name")
             continue
 
-        # Checks if "Search" is at the end of the algorithms class name or not
+        # Checks if the class name ends with the algorithms type 
         # If not then the naming convention has not been followed and the algorithm won't be added
-        if not algorithmClasses[0][-6:] == "Search": continue 
+        if not algorithmClasses[0].endswith(classType): 
+            errorWrapper(f"{module} class name does not end in {classType}")
+            continue 
         
         # Attempts to create an instance of given class
         # An error is thrown if the constructor is incorrect or if there is no implementation for abstract methods
