@@ -68,14 +68,13 @@ class SharedLayout(sc.ScreenTemplate):
         # Creates a slider that goes 0 to 1 then 2
         # It has three options correlating to the three speeds; slow, medium, fast 
         # Every time the sliders value is changed the setDelay() method is called
-        self.__speedSlider = tk.Scale(self.getOptionsWidgetFrame(), from_ = self.__model.getMaxDelay(), to_ = self.__model.getMinDelay(), resolution=0.1, 
+        self.__speedSlider = tk.Scale(self.getOptionsWidgetFrame(), from_ = self.__model.getMaxDelay(), to_ = self.__model.getMinDelay(), resolution=0.01, 
                                       length = self.getOptionsWidgetFrame().winfo_width(), orient = "horizontal", showvalue = False, 
                                       bg =  "white", highlightbackground = "white", command = self.__updateDelay)
         self.__speedSlider.pack(pady = (10, 0))  
         self.__speedSlider.set(self.__model.getMaxDelay())
         self.__speedSlider.bind("<ButtonRelease-1>", lambda _ : self.__setDelay())
         # Initially the slider is set at 0, which is the Slow speed
-        #self.__speedSlider.config(label = f"Slow: {self.__speedSlider.get()} seconds")  
     
     # Creates a slider that allows users to alter an arrays size
     def __createArrayAdjuster(self) -> None:

@@ -74,6 +74,13 @@ class Algorithm(ABC):
     def changeBarColour(self, index : int, colour : str):
         self.__dataModel.setBarColour(index, colour)
     
+    # Swaps elements at the specified index 
+    def swapElements(self, sourceIndex, destinationIndex):
+        self.__dataModel.swapElements(sourceIndex, destinationIndex)
+    
+    def swapBarColours(self, sourceIndex, destinationIndex): 
+        self.__dataModel.swapBarColours(sourceIndex, destinationIndex)
+    
     # Used to check constructor implementation
     def getDataModel(self):
         return self.__dataModel

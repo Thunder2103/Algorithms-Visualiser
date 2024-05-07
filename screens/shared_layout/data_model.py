@@ -47,6 +47,20 @@ class SharedDataModel():
     def updateArrayOnScreen(self):
         self.__controller.scheduleArrayUpdate() 
     
+    # Swaps the elements at the specified indexed
+    def swapElements(self, sourceIndex, destinationIndex): 
+        if(sourceIndex >= len(self.__array) or destinationIndex >= len(self.__array)): 
+            return  
+        self.__array[sourceIndex], self.__array[destinationIndex] =\
+            self.__array[destinationIndex], self.__array[sourceIndex]
+        
+    def swapBarColours(self, sourceIndex, destinationIndex): 
+        if(sourceIndex >= len(self.__barColours) or destinationIndex >= len(self.__array)): 
+            return  
+        self.__barColours[sourceIndex], self.__barColours[destinationIndex] =\
+            self.__barColours[destinationIndex], self.__barColours[sourceIndex]
+
+
     # Gets the colour of the bar the index passed
     def getBarColour(self, index : int) -> str:
         if(index >= len(self.__array)): return "" 
@@ -56,7 +70,7 @@ class SharedDataModel():
     def setBarColour(self, index : int, colour: str) -> None: 
         if(index >= len(self.__array)): return 
         else: self.__barColours[index] = colour
-    
+        
     # Resets all the bars colours to the default (black)
     def resetBarColours(self) -> None: 
         self.__barColours = ["black" for _ in range(len(self.__array))] 

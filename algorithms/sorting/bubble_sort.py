@@ -16,5 +16,17 @@ class BubbleSort(Algorithm):
     
     # Bubble Sort Algorithm
     def bubbleSort(self) -> int: 
-        print("Bubble sort can be called")  
-        return -1
+        array = self.getArray()  
+        n = len(array)
+        for i in range(n): 
+            swapped = False
+            for j in range(0, n - i - 1): 
+                self.changeBarColour(j, "red")
+                if(array[j] > array[j + 1]): 
+                    self.swapElements(j, j + 1)
+                    self.swapBarColours(j, j + 1)
+                    swapped = True
+                self.updateArrayOnScreen() 
+                self.delay()
+            if(not swapped): return 1
+        return 1
