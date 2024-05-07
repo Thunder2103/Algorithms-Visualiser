@@ -3,11 +3,12 @@
 Written in python by Thomas Gibson.
 
 ---
-| Table of contents                                              | 
-| -------------------------------------------------------------- |
-|   [1. Searching Algorithms](#searching-algorithms)             |  
-|   [2. Adding a new Search Algorithm](#adding-a-new-search-algorithm) |
-|   [3. Adding a new Sorting Algorithm](#adding-a-new-sorting-algorithm) |
+| Table of contents                                                      | 
+| ---------------------------------------------------------------------- |
+|   [1. Searching Algorithms](#searching-algorithms)                     |  
+|   [2. Sorting Algorithms](#sorting-algorithms)                         |
+|   [3. Adding a new Search Algorithm](#adding-a-new-search-algorithm)   |
+|   [4. Adding a new Sorting Algorithm](#adding-a-new-sorting-algorithm) |
 ---
 
 ## Searching Algorithms:  
