@@ -30,3 +30,5 @@ class BubbleSort(Algorithm):
                 self.delay()
             if(not swapped): return 1
         return 1
+
+# Listen to Times like these by the Foo Fighters

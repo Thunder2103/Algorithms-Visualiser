@@ -11,6 +11,7 @@ class SharedDataModel():
         self.__barColours = []
         self.__target = None
         self.__targetSetting = 0
+        self.__isAscending = True
         self.__delay = None 
         self.__algorithmRunning = threading.Event()
         self.__algorithmPauseLock = threading.Lock()
@@ -145,12 +146,19 @@ class SharedDataModel():
     def isElementInArray(self, value : int) -> bool: 
         return value in self.__array
     
-    # Updateas the target setting to the passed value
+    # Updates the target setting to the passed value
     def setTargetSetting(self, value : int) -> None:
         self.__targetSetting = value
     
     # Returns the current value of the target setting 
     def getTargetSetting(self) -> int:
         return self.__targetSetting
+    
+    # Toggles the sort setting between and ascending and descending
+    def toggleSortDirection(self):
+        self.__isAscending = not self.__isAscending
+    
+    # Returns if the sorting direction is ascending or descending
+    def isAscending(self) -> bool: return self.__isAscending
 
 # Listen to Everlong By Foo Fighters

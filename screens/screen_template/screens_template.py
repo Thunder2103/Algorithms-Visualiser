@@ -15,6 +15,7 @@ class ScreenTemplate():
         self.__introScreen = introScreen
         # Font every widget uses 
         self.__FONT = "Arial"
+        self.__FONTSIZE = 12
    
     def createTemplate(self) -> None:
         # Get content Frame to store all widgets
@@ -101,7 +102,7 @@ class ScreenTemplate():
     # Creates the button to let the user navigate back to the main menu
     def __createHomeButton(self, root : tk.Frame) -> None: 
         # Creates and places button in the centre of the frame
-        self.__homeButton = tk.Button(root, text = "Home.", font = (self.__FONT, 12), width = 7, height = 1, borderwidth = 2, 
+        self.__homeButton = tk.Button(root, text = "Home.", font = (self.__FONT, self.__FONTSIZE), width = 7, height = 1, borderwidth = 2, 
                                       relief = "solid", command = self.loadHomeScreen)
         self.__homeButton.place(relx = 0.5, rely = 0.5, anchor = "center") 
     
@@ -132,7 +133,11 @@ class ScreenTemplate():
     
     # Returns font used for all text
     def getFont(self) -> str: return self.__FONT 
+
+    # Returns the font size used for most of the text
+    def getFontSize(self) -> int: return self.__FONTSIZE
     
+    # Returns the frame the options are stored in 
     def getOptionsWidgetFrame(self) -> tk.Frame: return self.__optionsWidgetsFrame 
     
     # Gets canvas array is displayed in

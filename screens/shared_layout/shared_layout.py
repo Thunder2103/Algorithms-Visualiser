@@ -53,7 +53,7 @@ class SharedLayout(sc.ScreenTemplate):
     # Creates a combo box which displays all algorithms 
     def __createAlgorithmOptions(self) -> None:
         #combo box, allows the user to choose what algorithm they want
-        self.__algorithmOptions = ttk.Combobox(self.getOptionsWidgetFrame(), textvariable = tk.StringVar(), state = "readonly", font = (self.getFont(), 12),\
+        self.__algorithmOptions = ttk.Combobox(self.getOptionsWidgetFrame(), textvariable = tk.StringVar(), state = "readonly", font = (self.getFont(), self.getFontSize()),\
              width = self.getOptionsWidgetFrame().winfo_width())
         self.__algorithmOptions.set('Select an algorithm.')
         # Removes the blue highlighting when something is selected that annoyed me
@@ -89,10 +89,10 @@ class SharedLayout(sc.ScreenTemplate):
         self.__arraySortShuffleFrame = tk.Frame(self.getOptionsWidgetFrame(), bg = "white") 
         self.__arraySortShuffleFrame.pack(pady=(20, 0)) 
 
-        self.__sortButton = tk.Button(self.__arraySortShuffleFrame, text="Sort.", width = 7, relief = "solid", font = (self.getFont(), 12), command=self.__sortArray)
-        self.__sortButton.grid(row = 0, column = 0, padx = (0,5)) 
-        self.__shuffleButton = tk.Button(self.__arraySortShuffleFrame, text="Shuffle.", width = 7, relief = "solid", font = (self.getFont(), 12), command=self.__shuffleArray)
-        self.__shuffleButton.grid(row = 0, column = 1, padx = (0,5)) 
+        self.__sortButton = tk.Button(self.__arraySortShuffleFrame, text="Sort.", width = 7, relief = "solid", font = (self.getFont(), self.getFontSize()), command=self.__sortArray)
+        self.__sortButton.grid(row = 0, column = 0, padx = (9,5)) 
+        self.__shuffleButton = tk.Button(self.__arraySortShuffleFrame, text="Shuffle.", width = 7, relief = "solid", font = (self.getFont(), self.getFontSize()), command=self.__shuffleArray)
+        self.__shuffleButton.grid(row = 0, column = 1, padx = (3,8)) 
     
     # Creates buttons that lets user execute algorithms or stop them
     def __createStopSolveButtons(self) -> None:
@@ -101,11 +101,11 @@ class SharedLayout(sc.ScreenTemplate):
         algorithmToggleFrame.pack(side = "bottom", pady = (0,5))
         # Allows user to see the algorithm in action
         self.__solveStopButton = tk.Button(algorithmToggleFrame, text = "Solve.", width = 7, relief = "solid", 
-                                           font = (self.getFont(), 12), command = lambda: self.__initAlgorithm())
+                                           font = (self.getFont(), self.getFontSize()), command = lambda: self.__initAlgorithm())
         self.__solveStopButton.grid(row = 0, column = 0, padx = (0,5)) 
         # Allows user to stop algorithm whilst it's running - button is initially disabled
         self.__pauseResumeButton = tk.Button(algorithmToggleFrame, text = "Pause.", width = 7, relief = "solid", 
-                                             font = (self.getFont(), 12), state = "disabled", command = lambda : self.__pauseAlgorithm())
+                                             font = (self.getFont(), self.getFontSize()), state = "disabled", command = lambda : self.__pauseAlgorithm())
         self.__pauseResumeButton.grid(row = 0, column = 1)  
 
     # When the slider has changed value a label is added with the relevant speed 
