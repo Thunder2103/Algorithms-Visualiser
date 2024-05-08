@@ -12,6 +12,7 @@ from .sort_model import SortModel
 class SortScreen(sc.Screen, sc.SharedLayout):    
     def initScreen(self) -> None:
         self.createBaseLayout()
+        self.configSpeedSlider(to_=1, from_=1000,interval=1, milliseconds=True)
         self.loadAlgorithmOptions("sort")
     
         # Controller and Model classes

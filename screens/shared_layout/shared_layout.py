@@ -68,13 +68,16 @@ class SharedLayout(sc.ScreenTemplate):
         # Creates a slider that goes 0 to 1 then 2
         # It has three options correlating to the three speeds; slow, medium, fast 
         # Every time the sliders value is changed the setDelay() method is called
-        self.__speedSlider = tk.Scale(self.getOptionsWidgetFrame(), from_ = self.__model.getMaxDelay(), to_ = self.__model.getMinDelay(), resolution=0.01, 
+        self.__speedSlider = tk.Scale(self.getOptionsWidgetFrame(), from_ = self.__model.getMaxDelay(), to_ = self.__model.getMinDelay(), resolution=0.1, 
                                       length = self.getOptionsWidgetFrame().winfo_width(), orient = "horizontal", showvalue = False, 
                                       bg =  "white", highlightbackground = "white", command = self.__updateDelay)
         self.__speedSlider.pack(pady = (10, 0))  
         self.__speedSlider.set(self.__model.getMaxDelay())
-        self.__speedSlider.bind("<ButtonRelease-1>", lambda _ : self.__setDelay())
-        # Initially the slider is set at 0, which is the Slow speed
+        self.__speedSlider.bind("<ButtonRelease-1>", lambda _ : self.__setDelay()) 
+        # Time units of the delay 
+        self.__sliderUnitsText = "Seconds" 
+        # Used to check if units needs to be converted to seconds when algorithm is run 
+        self.__isMilliSeconds = False
     
     # Creates a slider that allows users to alter an arrays size
     def __createArrayAdjuster(self) -> None:
@@ -108,8 +111,24 @@ class SharedLayout(sc.ScreenTemplate):
     # When the slider has changed value a label is added with the relevant speed 
     # The delay is also changed in the DataModel Object
     def __updateDelay(self, value : str) -> None: 
-        self.__speedSlider.config(label = f"Delay: {value} Seconds")  
-    
+        self.__speedSlider.config(label = f"Delay: {value} {self.__sliderUnitsText}")  
+ 
+    # Changes the to_ and from_ values of the speed slider, also lets the units be changed to millseconds or seconds 
+    def configSpeedSlider(self, to_, from_, interval, milliseconds=False): 
+        if(to_ > from_): to_, from_ = from_, to_
+        if(milliseconds):
+                self.__sliderUnitsText = "Milliseconds" 
+                self.__isMilliSeconds = True
+        else: 
+            self.__sliderUnitsText = "Seconds"    
+            self.__isMilliSeconds = False 
+        
+        self.__speedSlider.config(to_ = to_, from_= from_, resolution = interval)
+        self.__speedSlider.set(from_)
+        self.__updateDelay(str(from_))
+        self.__updateDelay(str(from_))
+
+
     # Makes sure that target generated has (almost) equal chance to be in the array or not 
     def targetRandom(self) -> int: 
         # Generates decimal between 0 and 1 
@@ -172,8 +191,10 @@ class SharedLayout(sc.ScreenTemplate):
     def __getAlgorithmType(self) -> str: 
         return self.__algorithmOptions.get().split(" ")[1].lower()
     
-    def __setDelay(self): 
-        self.__dataModel.setDelay(self.__speedSlider.get()) 
+    def __setDelay(self):  
+        if(self.__isMilliSeconds):  
+            self.__dataModel.setDelay(self.__speedSlider.get() / 1000)
+        else:  self.__dataModel.setDelay(self.__speedSlider.get())
   
     # Changes solve button text and function it calls when it's pressed
     def __solveToStop(self):

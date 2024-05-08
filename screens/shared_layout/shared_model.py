@@ -24,7 +24,8 @@ class SharedModel():
         self.__higherBound = None
         # Maximum number of bars that can be drawn, ie the maximum size of the array
         self.__maxBars = None 
-        self.__minDelay = 0.01
+        # Default minimum and maximum delay for algorithms 
+        self.__minDelay = 0.1
         self.__maxDelay = 4
 
     # Returns width of the bars drawn on screen
