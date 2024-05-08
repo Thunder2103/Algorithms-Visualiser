@@ -210,6 +210,18 @@ $$ index = n - i - 1$$
 n -> length of the array <br>
 i -> index of current element 
 
+
+### Merge Sort
+---
+Algorithm Steps:
+
+1. Divide the array into sub-arrays of size one. (Arrays of size one are considered sorted)
+2. Compare the elements in each of the sub-arrays, inserting them in numerical order into a new sub-array 
+3. Repeat step 2 until all the sub-arrays have been merged leaving only one sorted array 
+
+Time Complexity: O(n log n) <br>
+Space Complexity: O(n)
+
 ---
 
 ## Adding a new Search Algorithm
@@ -278,15 +290,17 @@ The methods in DataModel can still be called directly (not recommended).
 | -------- | ---------- | -------- | ------------ |
 | getName()| None       | A String, contains the name of the algorithm being implemented | An abstract method. Every subclass must provide an implementation. | 
 | getArray() | None     | The array to be processed | Returns the array to be iterated over. (See [DataModel](#datamodel-class)). |
-| getTarget() | None    | The target to be searched for | Returns the target to be searched for. (See [DataModel](#datamodel-class)). |
-| updateArrayOnScreen() | None     | None | Refreshes the screen to display any changes to the array. (See [DataModel](#datamodel-class)). |  
-| changeBarColour() | index (int) : Position to have the colour changed. <br> colour (str) : The new colour | None | Changes the colour of the bar at the specified index. (See [DataModel](#datamodel-class)). | 
+| getElement()     | index (int) : index of the element to be retieved | The value at the specified index, or -1 if the index is out of bounds | Gets the value of the element at the specified index (See [DataModel](#datamodel-class)) | 
+| changeElement()  | index (int) : index of the element to be changed <br> value (int): The new value that the element is being replaced with| None | Changes the value at the specified index to the value passed (See [DataModel](#datamodel-class)) | 
+| swapElements() | sourceIndex (int) : index of an element to be swapped destinationIndex (int): index of an element to be swapped | none | Swaps the elements at the specified indexes. (See [DataModel](#datamodel-class))|
 | sortArray() | None    | None     | Sorts the array and refreshes the screen to display it. (See [DataModel](#datamodel-class)).| 
 | shuffleArray() | None | None     | Randomly shuffles the array and refreshes the screen to display it. (See [DataModel](#datamodel-class)). | 
-| delay() | None        | None     | Pauses the execution of the program using <b> time.sleep().</b> |
-| swapElements() | sourceIndex (int) : index of an element to be swapped destinationIndex (int): index of an element to be swapped | none | Swaps the elements at the specified indexes. (See [DataModel](#datamodel-class))|
+| changeBarColour() | index (int) : Position to have the colour changed. <br> colour (str) : The new colour | None | Changes the colour of the bar at the specified index. (See [DataModel](#datamodel-class)). | 
 | swapbarColours() | sourceIndex (int) : index of a bar colour to be swapped destinationIndex (int): index of a bar colour to be swapped | none | Swaps the bar colours at the specified indexes. (See [DataModel](#datamodel-class))|
- 
+| getTarget() | None    | The target to be searched for | Returns the target to be searched for. (See [DataModel](#datamodel-class)). |
+| updateArrayOnScreen() | None     | None | Refreshes the screen to display any changes to the array. (See [DataModel](#datamodel-class)). |  
+| delay() | None        | None     | Pauses the execution of the program using <b> time.sleep().</b> |
+
 
 ### DataModel class:
 
@@ -296,13 +310,15 @@ The functions can still be called directly, if an attribute containing the DataM
 | Function | Parameters | Returns  | Description: |
 | -------- | ---------- | -------- | ------------ |
 | getArray() | None     | The array to be processed | Returns the array to be iterated over |
-| getTarget() | None    | The target to be searched for | Returns the target to be searched for |
+| getElementAtIndex()     | index (int) : index of the element to be retieved | The value at the specified index, or -1 if the index is out of bounds | Gets the value of the element at the specified index | 
+| changeElement()  | index (int) : index of the element to be changed <br> value (int): The new value that the element is being replaced with| None | Changes the value at the specified index to the value passed | 
+| swapElements() | sourceIndex (int) : index of an element to be swapped destinationIndex (int): index of an element to be swapped | none | Swaps the elements at the specified indexes. |
 | updateArrayOnScreen() | None | None | Redraws the array on screen | 
-| setBarColour() | index (int) : Position to have the colour changed. <br> colour (str) : The new colour | None | Changes the colour of the bar at the specified index | 
 | sortArray()    | None | None | Sorts the array and refreshes the screen to display it. |
 | shuffleArray() | None | None | Randomly shuffles the array and refreshes the screen to display it. | 
-| swapElements() | sourceIndex (int) : index of an element to be swapped destinationIndex (int): index of an element to be swapped | none | Swaps the elements at the specified indexes. |
+| setBarColour() | index (int) : Position to have the colour changed. <br> colour (str) : The new colour | None | Changes the colour of the bar at the specified index | 
 | swapbarColours() | sourceIndex (int) : index of a bar colour to be swapped destinationIndex (int): index of a bar colour to be swapped | none | Swaps the bar colours at the specified indexes. |
+| getTarget() | None    | The target to be searched for | Returns the target to be searched for |
 
 ---
 
