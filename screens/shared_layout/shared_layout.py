@@ -68,7 +68,7 @@ class SharedLayout(sc.ScreenTemplate):
         # Creates a slider that goes 0 to 1 then 2
         # It has three options correlating to the three speeds; slow, medium, fast 
         # Every time the sliders value is changed the setDelay() method is called
-        self.__speedSlider = tk.Scale(self.getOptionsWidgetFrame(), from_ = self.__model.getMaxDelay(), to_ = self.__model.getMinDelay(), resolution=0.1, 
+        self.__speedSlider = tk.Scale(self.getOptionsWidgetFrame(), from_ = self.__model.getMaxDelay(), to_ = self.__model.getMinDelay(), resolution=self.__model.getDefaultResolution(), 
                                       length = self.getOptionsWidgetFrame().winfo_width(), orient = "horizontal", showvalue = False, 
                                       bg =  "white", highlightbackground = "white", command = self.__updateDelay)
         self.__speedSlider.pack(pady = (10, 0))  
@@ -146,7 +146,7 @@ class SharedLayout(sc.ScreenTemplate):
     # Guarantees target is not in array
     def targetOut(self) -> int: 
         # Chooses a number between the range of arrays smallest value - 20 and arrays largest value + 20
-        target = random.randint(min(self.__dataModel.getArray()) - 20, max(self.__dataModel.getArray()) + 20)
+        target = random.randint(min(self.__dataModel.getArray()) - self.__model.getBuffer(), max(self.__dataModel.getArray()) + self.__model.getBuffer())
         # If generated number in array recall function
         if target in self.__dataModel.getArray(): self.targetOut()
         # If generated number not in array then just return value
