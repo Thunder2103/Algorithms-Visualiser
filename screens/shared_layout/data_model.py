@@ -36,30 +36,39 @@ class SharedDataModel():
         self.__barColours.pop()
     
     # Sorts the array
-    def sortArray(self):
+    def sortArray(self) -> None:
         self.__array.sort()
        
     # Shuffles the array
-    def shuffleArray(self):
+    def shuffleArray(self) -> None:
         random.shuffle(self.__array)
 
     # Updates the screen so changes to the array are shown
-    def updateArrayOnScreen(self):
+    def updateArrayOnScreen(self) -> None:
         self.__controller.scheduleArrayUpdate() 
     
     # Swaps the elements at the specified indexed
-    def swapElements(self, sourceIndex, destinationIndex): 
-        if(sourceIndex >= len(self.__array) or destinationIndex >= len(self.__array)): 
+    def swapElements(self, sourceIndex : int, destinationIndex : int) -> None: 
+        if(sourceIndex >= len(self.__array) or destinationIndex >= self.getArraySize()): 
             return  
         self.__array[sourceIndex], self.__array[destinationIndex] =\
             self.__array[destinationIndex], self.__array[sourceIndex]
-        
-    def swapBarColours(self, sourceIndex, destinationIndex): 
-        if(sourceIndex >= len(self.__barColours) or destinationIndex >= len(self.__array)): 
+    
+    # Swaps the colour values of the two indexes specified
+    def swapBarColours(self, sourceIndex : int, destinationIndex : int) -> None: 
+        if(sourceIndex >= len(self.__barColours) or destinationIndex >= self.getArraySize()): 
             return  
         self.__barColours[sourceIndex], self.__barColours[destinationIndex] =\
             self.__barColours[destinationIndex], self.__barColours[sourceIndex]
-
+    
+    # Changes the element at the specified index to the passed value
+    def changeElement(self, index : int, value : int) -> None: 
+        if(index >= self.getArraySize()): return
+        self.__array[index] = value
+    
+    # Returns element at the specified index 
+    def getElementAtIndex(self, index : int) -> int:
+        return self.__array[index]
 
     # Gets the colour of the bar the index passed
     def getBarColour(self, index : int) -> str:
@@ -97,11 +106,11 @@ class SharedDataModel():
         self.__target = value   
     
     # Sets the stop flag, used to tell algorithm threads to stop
-    def setStopFlag(self):
+    def setStopFlag(self) -> None:
         self.__algorithmRunning.set()
     
     # Sets stop flag back to false
-    def clearStopFlag(self):
+    def clearStopFlag(self) -> None:
         self.__algorithmRunning.clear()
     
     # Returns True if algorithm thread needs to stop, else false
@@ -109,15 +118,15 @@ class SharedDataModel():
         return True if self.__algorithmRunning.is_set() else False
 
     # Threads call this to hold the lock
-    def acquireLock(self):
+    def acquireLock(self) -> None:
         self.__algorithmPauseLock.acquire() 
     
     # Threads call this to release the lock
-    def releaseLock(self):
+    def releaseLock(self) -> None:
         self.__algorithmPauseLock.release() 
     
     # Checks if the algorithm thread is paused or not 
-    def isPaused(self): 
+    def isPaused(self) -> bool: 
         return self.__algorithmPauseLock.locked()
     
      # Returns the size of the array
@@ -131,10 +140,6 @@ class SharedDataModel():
     # Returns the largest element in the array 
     def getLargestElement(self) -> int:
         return max(self.__array)
-
-    # Returns element at the specified index 
-    def getElementAtIndex(self, index : int) -> int:
-        return self.__array[index]
 
     # Returns true if passed value is in the array, else false
     def isElementInArray(self, value : int) -> bool: 

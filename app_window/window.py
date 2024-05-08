@@ -75,7 +75,7 @@ class Window():
     
     # Schedule the passed function to be executed after the passed amount of time
     # Assumes function has no parameters
-    def scheduleFunctionExecution(self, function, delay):
+    def scheduleFunctionExecution(self, function, delay : int) -> None:
         self.__window.after(int(delay), function)
 
     # Returns the frame widgets are displayed in

@@ -26,12 +26,11 @@ class MergeSort(Algorithm):
         self.mergeSortHelper(mid+1, rightPtr)
         self.mergeArrays(leftPtr, mid, rightPtr)
 
-    def mergeArrays(self, start, mid, end):
-        array = self.getArray()  
+    def mergeArrays(self, start, mid, end):  
         leftPtr = start 
         rightPtr = mid + 1 
         while(leftPtr <= mid and rightPtr <= end): 
-            if(array[leftPtr] <= array[rightPtr]): 
+            if(self.getElement(leftPtr) <= self.getElement(rightPtr)): 
                 self.changeBarColour(leftPtr, "red")
                 self.updateArrayOnScreen() 
                 self.delay()
@@ -44,7 +43,7 @@ class MergeSort(Algorithm):
             
     def shiftArrayElements(self, leftPtr, rightPtr):  
         array = self.getArray()
-        value = array[rightPtr]
+        value = self.getElement(rightPtr)
         index = rightPtr 
         while(index != leftPtr):  
             self.changeBarColour(index, "red")
@@ -58,5 +57,4 @@ class MergeSort(Algorithm):
         self.updateArrayOnScreen() 
         self.delay()
 
-
-
+# Listen to Wake Me Up When September Ends by Green Day
