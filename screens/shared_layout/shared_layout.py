@@ -37,6 +37,9 @@ class SharedLayout(sc.ScreenTemplate):
         # Thread algorithm runs in
         self.__algorithmThread = None
 
+        # Array containing widgets to be diabled when an algorithm runs and renabled when an algorithm resumes 
+        self.__disableEnableArray = []
+
         # Creating and displaying options
         self.__createOptions() 
         # Sets the default delay
@@ -85,6 +88,7 @@ class SharedLayout(sc.ScreenTemplate):
             orient = "horizontal", bg = "white", highlightbackground = "white", command = self.__controller.adjustArray)
         self.__arraySizeSlider.pack(pady = (10, 0))
 
+    # Creates buttons the allow algorithms to be sorted and shuffled
     def __createSortShuffleButtons(self) -> None: 
         self.__arraySortShuffleFrame = tk.Frame(self.getOptionsWidgetFrame(), bg = "white") 
         self.__arraySortShuffleFrame.pack(pady=(20, 0)) 
@@ -285,6 +289,7 @@ class SharedLayout(sc.ScreenTemplate):
         self.__disableShuffleButton() 
         self.__solveToStop()
         self.__enablePauseResumeButton()
+        self.__disableWidgetsInArray()
     
     # Enables/Disables widgets when algorithms stops
     def __widgetsAlgorithmStops(self) -> None:
@@ -292,7 +297,26 @@ class SharedLayout(sc.ScreenTemplate):
         self.__enableSortButton()
         self.__enableShuffleButton()  
         self.__stopToSolve()
-        self.__disablePauseResumeButton() 
+        self.__disablePauseResumeButton()  
+        self.__enableWidgetsInArray()
+    
+    # Adds widget to array which will be disabled when algorithms are run
+    def addWidgetToArray(self, item) -> None: 
+        self.__disableEnableArray.append(item)
+    
+    # Removes the passed widget from the array
+    def removeWidgetFromArray(self, item) -> None: 
+        self.__disableEnableArray.remove(item)
+
+    # Disables all widgets in the array
+    def __disableWidgetsInArray(self): 
+        for widget in self.__disableEnableArray: 
+            widget.config(state="disabled")
+    
+    # Enables all widgets in the array 
+    def __enableWidgetsInArray(self): 
+        for widget in self.__disableEnableArray: 
+            widget.config(state="active")
     
     # Returns the data model class
     def getDataModel(self) -> SharedDataModel:

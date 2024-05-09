@@ -258,7 +258,7 @@ New sorting algorithms can be added if they meet these requirements:
 | Function Naming | The function which implements the algorithm must be named in the following format: <b>algorithmNameSort</b> <br> e.g. bubbleSort and mergeSort |
 | Function Implementation | Each new algorithm class must provide an implementation for the <b>getName()</b> method. (See [Algorithm class](#algorithm-class))  |
 | Return value/s          | Each algorithm doesn't strictly need to return anything. <br> As a convention, 1 for success or -1 for failure should be returned | 
-| Sorting in Ascending and Descending order | Code does not need to be written in an algorithms implementation  to sort in ascending and <br>descending order. A helper function in the [Algorithm class](#algorithm-class) returns True or False if two elements need to be swapped, another helper function can then be called to make this swap. |  
+| Sorting in Ascending and Descending order | Code does not need to be written in an algorithms implementation to sort in ascending and descending order. A helper function in the [Algorithm class](#algorithm-class) returns True or False if two elements need to be swapped, another helper function can then be called to make this swap. |  
 
 --- 
 
@@ -320,7 +320,7 @@ The functions can still be called directly, if an attribute containing the DataM
 | shuffleArray() | None | None | Randomly shuffles the array and refreshes the screen to display it. | 
 | setBarColour() | index (int) : Position to have the colour changed. <br> colour (str) : The new colour | None | Changes the colour of the bar at the specified index | 
 | swapbarColours() | sourceIndex (int) : index of a bar colour to be swapped destinationIndex (int): index of a bar colour to be swapped | none | Swaps the bar colours at the specified indexes. |
-| isAscending()    | None | Returns True if the sorting direction is in ascending order. <br> Returns False of the sorting direction is in descending order | Returns the boolean value corresponding to the direction of the sort | 
+| isAscending()    | None | Returns True if the sorting direction is in ascending order. <br> Returns False if the sorting direction is in descending order | Returns the boolean value corresponding to the direction of the sort | 
 | getTarget() | None    | The target to be searched for | Returns the target to be searched for |
 
 ---

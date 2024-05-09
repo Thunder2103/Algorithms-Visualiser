@@ -21,6 +21,7 @@ class SortScreen(sc.Screen, sc.SharedLayout):
         self.__createSortOptionButtons()
         self.configSpeedSlider(to_= self.__sortModel.getSliderEnd(), from_=self.__sortModel.getSliderStart(),
                                interval=self.__sortModel.getSlidernterval(), milliseconds=True)
+        self.addWidgetToArray(self.__descendingOption)
     
     # Creates the buttons that lets userr change between sorting by ascending or descending order
     def __createSortOptionButtons(self):
@@ -46,9 +47,13 @@ class SortScreen(sc.Screen, sc.SharedLayout):
         if(isAscending): 
             self.__ascendingOption.config(state="disabled")
             self.__descendingOption.config(state="active")  
+            self.removeWidgetFromArray(self.__ascendingOption)
+            self.addWidgetToArray(self.__descendingOption)
         else:
             self.__ascendingOption.config(state="active")
             self.__descendingOption.config(state="disabled") 
+            self.addWidgetToArray(self.__ascendingOption)
+            self.removeWidgetFromArray(self.__descendingOption)
 
 
 # Wretches and Kings by Linkin Park                 
