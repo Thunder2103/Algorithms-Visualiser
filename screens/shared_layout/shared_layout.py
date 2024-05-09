@@ -126,8 +126,7 @@ class SharedLayout(sc.ScreenTemplate):
         self.__speedSlider.config(to_ = to_, from_= from_, resolution = interval)
         self.__speedSlider.set(from_)
         self.__updateDelay(str(from_))
-        self.__updateDelay(str(from_))
-
+        self.__setDelay()
 
     # Makes sure that target generated has (almost) equal chance to be in the array or not 
     def targetRandom(self) -> int: 
@@ -153,7 +152,7 @@ class SharedLayout(sc.ScreenTemplate):
         else: return target
         
     # Call algorithm user has selected
-    def __initAlgorithm(self) -> None: 
+    def __initAlgorithm(self) -> None:  
         # Doesn't do anything if user hasn't chosen an algorithm
         if(self.__getAlgorithmChoice() == 'Select an algorithm.'): 
             self.__algorithmOptions.config(foreground = "red")

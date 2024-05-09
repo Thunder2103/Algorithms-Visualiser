@@ -90,6 +90,14 @@ class Algorithm(ABC):
     def changeElement(self, index : int, value : int) -> None:
         self.__dataModel.changeElement(index, value)
     
+    # Checks if elements need to be swapped 
+    def isSwapNeeded(self, sourceIndex, destinationIndex): 
+        # If the sorting is in ascending order
+        if(self.__dataModel.isAscending()):
+            return self.getElement(sourceIndex) > self.getElement(destinationIndex) 
+        # If sorting is in descending order 
+        else: return self.getElement(sourceIndex) < self.getElement(destinationIndex) 
+
     # Used to check constructor implementation
     def getDataModel(self):
         return self.__dataModel
