@@ -184,6 +184,13 @@ class SharedController():
         # If generated number in array recall function
         if self.__dataModel.isElementInArray(target): self.__targetOut()
         # If generated number not in array then just return value
-        else: return target
-
+        else: return target  
+    
+    # Cancels any scheduled function calls left by a terminated thread
+    def cancelScheduledProcesses(self):
+        # If there are still processed scheduled from the terminated thread
+            if(self.__screen.getWindow().getNumScheduledFunctions() > 0):  
+                # Stop all processes 
+                self.__screen.getWindow().cancelScheduledFunctions()
+    
 # Listen to Generator by Foo Fighters 

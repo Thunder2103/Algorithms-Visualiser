@@ -16,7 +16,7 @@ class SharedDataModel():
         self.__algorithmRunning = threading.Event()
         self.__algorithmPauseLock = threading.Lock()
         self.__delayLock = threading.Lock()
- 
+
     # Sets controller attribute to value passed
     def addController(self, controller):
         if(self.__controller is None):
@@ -47,7 +47,7 @@ class SharedDataModel():
     # Updates the screen so changes to the array are shown
     def updateArrayOnScreen(self) -> None:
         self.__controller.scheduleArrayUpdate() 
-    
+
     # Swaps the elements at the specified indexed
     def swapElements(self, sourceIndex : int, destinationIndex : int) -> None: 
         if(sourceIndex >= len(self.__array) or destinationIndex >= self.getArraySize()): 
@@ -159,6 +159,6 @@ class SharedDataModel():
         self.__isAscending = not self.__isAscending
     
     # Returns if the sorting direction is ascending or descending
-    def isAscending(self) -> bool: return self.__isAscending
+    def isAscending(self) -> bool: return self.__isAscending 
 
 # Listen to Everlong By Foo Fighters

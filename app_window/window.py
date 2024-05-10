@@ -77,6 +77,13 @@ class Window():
     # Assumes function has no parameters
     def scheduleFunctionExecution(self, function, delay : int) -> None:
         self.__window.after(int(delay), function)
+    
+    def getNumScheduledFunctions(self) -> int:
+        return len(self.__window.tk.call('after', 'info'))
+
+    def cancelScheduledFunctions(self) -> None:
+        for functionID in self.__window.tk.call('after', 'info'): 
+            self.__window.after_cancel(functionID)
 
     # Returns the frame widgets are displayed in
     def getContentFrame(self) -> tk.Frame:

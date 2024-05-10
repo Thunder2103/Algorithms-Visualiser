@@ -18,8 +18,6 @@ class BubbleSort(Algorithm):
     def bubbleSort(self) -> int: 
         array = self.getArray()  
         n = len(array)
-
-
         for i in range(n): 
             swapped = False
             for j in range(0, n - i - 1): 

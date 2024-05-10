@@ -14,6 +14,7 @@ import tkinter as tk
 from tkinter import ttk
 import random
 import threading
+import time 
 
 
 class SharedLayout(sc.ScreenTemplate):
@@ -167,7 +168,7 @@ class SharedLayout(sc.ScreenTemplate):
             if(self.__dataModel.isStopped()): self.__dataModel.clearStopFlag()
             self.__widgetsAlgorithmStarts()
             # Generates the target based on the setting (Only applicable when searching)
-            self.__controller.generateTarget(self.__dataModel.getTargetSetting())
+            self.__controller.generateTarget(self.__dataModel.getTargetSetting()) 
             # Call algorithm -> so this program actually has a use
             self.__algorithmThread = threading.Thread(target=callAlgorithm, args=(self.__dataModel, self.__getAlgorithmChoice(), self.__getAlgorithmType(), 
                                                                                   self.__widgetsAlgorithmStops))
@@ -176,7 +177,7 @@ class SharedLayout(sc.ScreenTemplate):
     
     # Forces current running algorithm thread to terminate (safely)
     def __stopAlgorithm(self) -> None:
-        # Sets to falg to True -> this is what tells the thread/s to stop
+        # Sets to flag to True -> this is what tells the thread/s to stop
         self.__dataModel.setStopFlag()   
         # If the algorithm has been paused
         if(self.__dataModel.isPaused()):
@@ -242,12 +243,10 @@ class SharedLayout(sc.ScreenTemplate):
         # If a thread exists and it is still running
         if(self.__algorithmThread and self.__algorithmThread.is_alive()): 
             # Tell the thread to stop
-            self.__stopAlgorithm() 
-            # Loop until thread has stopped
-            while(self.__algorithmThread.is_alive()): continue 
-        # Load home screen
-        self.loadHomeScreen() 
-    
+            self.__stopAlgorithm()  
+            self.__controller.cancelScheduledProcesses()
+        self.loadHomeScreen()
+
     # Sorts and displays the array
     def __sortArray(self) -> None:
         self.__dataModel.sortArray()
