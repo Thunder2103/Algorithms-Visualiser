@@ -16,9 +16,14 @@ class BogoSort(Algorithm):
     
     # Bogo Sort Algorithm
     def bogoSort(self) -> int: 
-        array = self.getArray()
-        while(sorted(array) != array): 
+        sortedArray = sorted(self.getArray())
+        # Continue until array is sorted
+        while(sortedArray != self.getArray()): 
+            # Randomly shuffle array
             self.shuffleArray(delay=False)
-            self.delay()
+            self.delay() 
+        
+        self.coolEndingAnimation()
+        return 1
 
 # Listen to Times like these by the Foo Fighters

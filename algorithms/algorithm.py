@@ -101,6 +101,19 @@ class Algorithm(ABC):
         # If sorting is in descending order 
         else: return self.getElement(sourceIndex) < self.getElement(destinationIndex) 
 
+    # Plays a cool animation when the array is sorted
+    def coolEndingAnimation(self):
+        for _ in range(3):
+            self.updateArrayOnScreen() 
+            self.__haltAlgorithm(0.5, 0.5) 
+            self.__setAllBarColoursGreen() 
+            self.updateArrayOnScreen() 
+            self.__haltAlgorithm(0.5, 0.5)
+      
+    def __setAllBarColoursGreen(self): 
+        for i in range(len(self.getArray())):
+            self.changeBarColour(i, "green")
+
     # Used to check constructor implementation
     def getDataModel(self):
         return self.__dataModel

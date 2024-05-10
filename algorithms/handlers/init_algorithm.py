@@ -23,6 +23,6 @@ def callAlgorithm(dataModel, algorithm : str, algorithmType : str, widgetsAlgori
     getattr(algorithmInstance, algorithmFunction)()  
     # I generally dislike passing functions as parameters 
     # This disables and enables the appropriate widgets
-    widgetsAlgorithmStops()
+    widgetsAlgorithmStops() 
 
 # Listen to What's my age again by Blink-182

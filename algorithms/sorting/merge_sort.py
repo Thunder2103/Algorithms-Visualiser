@@ -14,26 +14,35 @@ class MergeSort(Algorithm):
     def getName(self) -> str:
         return "Merge Sort" 
     
-    # Merge Sort Algorithm
+    # (In place) Merge Sort Algorithm
     def mergeSort(self) -> int: 
+        # Call function to peform splitting into sub arrays 
         self.mergeSortHelper(0, len(self.getArray()) - 1)
+        self.coolEndingAnimation()
         return 1
     
-    def mergeSortHelper(self, leftPtr, rightPtr):  
+    def mergeSortHelper(self, leftPtr, rightPtr):   
+        # If sub-arrays are of size one, they are considered sorted 
         if(leftPtr >= rightPtr): return  
+        # Calculates middle of sub-array
         mid = (leftPtr + rightPtr) // 2 
+        # Splits sub-array in half into two subarrays
         self.mergeSortHelper(leftPtr, mid)
         self.mergeSortHelper(mid+1, rightPtr)
+        # Merges the sub-arrays by sorting them
         self.mergeArrays(leftPtr, mid, rightPtr)
 
     def mergeArrays(self, start, mid, end):  
         leftPtr = start 
         rightPtr = mid + 1 
+        # Iterate through both arrays
         while(leftPtr <= mid and rightPtr <= end): 
             self.changeBarColour(leftPtr, "red")
             self.updateArrayOnScreen()
-            self.delay()
-            if(self.isSwapNeeded(leftPtr, rightPtr)): 
+            self.delay() 
+            # If elements are out of order 
+            if(self.isSwapNeeded(leftPtr, rightPtr)):  
+                # Shift all elements left 
                 self.shiftArrayElements(leftPtr, rightPtr)
                 leftPtr += 1
                 mid += 1 
@@ -41,14 +50,18 @@ class MergeSort(Algorithm):
             else: 
                 leftPtr += 1 
             
-    def shiftArrayElements(self, leftPtr, rightPtr):  
+    def shiftArrayElements(self, leftPtr, rightPtr):   
+        # Stores value at index rightPtr (as it is overwritten later)
         value = self.getElement(rightPtr)
         index = rightPtr 
-        while(index != leftPtr):  
+        # Iterate until index = leftPtr
+        while(index != leftPtr):   
+            # Shift element at index one place to the left
             self.swapElements(index, index - 1) 
             index -=  1
         
-        self.changeElement(leftPtr, value)
+        # Change element at leftPtr to stored value 
+        self.changeElement(leftPtr, value) 
         self.changeBarColour(rightPtr, "red")
         self.updateArrayOnScreen()
         self.delay()
