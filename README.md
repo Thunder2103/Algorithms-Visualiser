@@ -39,7 +39,7 @@ Time Complexity: O(n)<br>
 Space Complexity: O(1)
 
 ---
-### Binary Search 
+### Binary Search: 
 ---
 Algorithm steps:
 
@@ -61,8 +61,7 @@ Space Complexity: O(1)
 $mid = {(low+high) \div 2}$
 
 ---
-
-### Jump Search 
+### Jump Search: 
 --- 
 Algorithm Steps:
 
@@ -78,7 +77,8 @@ If prev is greater than or equal to n, return false. Else if the value at index 
 Time Complexity: O($\sqrt{n}$)<br>
 Space Complexity: O(1)
 
-### Tenary Search 
+---
+### Tenary Search:
 --- 
 Algorithm Steps: 
 
@@ -105,8 +105,8 @@ $mid1 = {left + (right - left) \div 3}$
 
 $mid2 = {right - (right - left) \div 3}$
 
-
-### Fibonacci Search 
+---
+### Fibonacci Search: 
 --- 
 Algorithm Steps: 
 
@@ -131,7 +131,8 @@ Space Complexity: O(1)
 
 $index = {\min(offset + fibNMin2, n - 1)}$
 
-### Exponential Search 
+---
+### Exponential Search:
 --- 
 Algorithm Steps:
 
@@ -154,7 +155,8 @@ $low = i \div 2$
 
 $high = \min(i, n - 1)$ 
 
-### Interpolation Search 
+---
+### Interpolation Search: 
 ---
 Algorithm Steps:
 
@@ -185,8 +187,11 @@ The links in the table direct to a information about the algorithm and its imple
 | Algorithm |
 | --------- |
 | [Bubble Sort](#bubble-sort) |
+| [Merge Sort](#merge-sort) |
+| [Bogo Sort](#bogo-sort) |
 
 
+---
 ### Bubble Sort:
 --- 
 Algorithm steps: 
@@ -210,8 +215,8 @@ $$ index = n - i - 1$$
 n -> length of the array <br>
 i -> index of current element 
 
-
-### Merge Sort
+---
+### Merge Sort:
 ---
 Algorithm Steps:
 
@@ -223,6 +228,17 @@ Time Complexity: O(n log n) <br>
 Space Complexity: O(n)
 
 ---
+### Bogo Sort:
+---
+
+Algorithm Steps: 
+
+1. Randomly shuffle array 
+2. If array is sorted stop.
+3. If array is not sorted repeat step 1. 
+
+Time Complexity: O((n + 1)!)<br>
+Space Complexity: O(1)
 
 ## Adding a new Search Algorithm
 New search algorithms can be added if they meet these requirements:
@@ -294,8 +310,8 @@ The methods in DataModel can still be called directly (not recommended).
 | getElement()     | index (int) : index of the element to be retieved | The value at the specified index, or -1 if the index is out of bounds | Gets the value of the element at the specified index (See [DataModel](#datamodel-class)) | 
 | changeElement()  | index (int) : index of the element to be changed <br> value (int): The new value that the element is being replaced with| None | Changes the value at the specified index to the value passed (See [DataModel](#datamodel-class)) | 
 | swapElements() | sourceIndex (int) : index of an element to be swapped destinationIndex (int): index of an element to be swapped | none | Swaps the elements at the specified indexes. (See [DataModel](#datamodel-class))|
-| sortArray() | None    | None     | Sorts the array and refreshes the screen to display it. (See [DataModel](#datamodel-class)).| 
-| shuffleArray() | None | None     | Randomly shuffles the array and refreshes the screen to display it. (See [DataModel](#datamodel-class)). | 
+| sortArray() | None    | delay (bool): By default there is a small delay when the array is sorted. Setting this parameter to False removed this delay | Sorts the array and refreshes the screen to display it. (See [DataModel](#datamodel-class)).| 
+| shuffleArray() | None | delay (bool): By default there is a small delay when the array is shuffled. Setting this parameter to False removed this delay | Randomly shuffles the array and refreshes the screen to display it. (See [DataModel](#datamodel-class)). | 
 | changeBarColour() | index (int) : Position to have the colour changed. <br> colour (str) : The new colour | None | Changes the colour of the bar at the specified index. (See [DataModel](#datamodel-class)). | 
 | swapbarColours() | sourceIndex (int) : index of a bar colour to be swapped destinationIndex (int): index of a bar colour to be swapped | none | Swaps the bar colours at the specified indexes. (See [DataModel](#datamodel-class))|
 | isSwapNeeded()   | sourceIndex (int) : index of an element to be checked (int): index of an element to be checked | A boolean value, True if the elements need to be swapped otherwise False is returned | Checks if the elements at the passed indexes need to be swapped. (Works for both sorting in descending and ascending order) | 
