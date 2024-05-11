@@ -102,6 +102,7 @@ class Algorithm(ABC):
         else: return self.getElement(sourceIndex) < self.getElement(destinationIndex) 
 
     # Plays a cool animation when the array is sorted
+    # It alternates between colouring the bars green and black
     def coolEndingAnimation(self):
         for _ in range(3):
             self.updateArrayOnScreen() 
@@ -110,6 +111,7 @@ class Algorithm(ABC):
             self.updateArrayOnScreen() 
             self.__haltAlgorithm(0.5, 0.5)
       
+    # Changes the colour of each bar to green 
     def __setAllBarColoursGreen(self): 
         for i in range(len(self.getArray())):
             self.changeBarColour(i, "green")
