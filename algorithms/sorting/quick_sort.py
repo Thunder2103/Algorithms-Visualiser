@@ -46,7 +46,7 @@ class QuickSort(Algorithm):
             self.updateArrayOnScreen() 
             self.delay()
 
-            # If element is less than or equal to the pivot 
+            # If element is less than/greater than or equal to the pivot 
             if(not self.isSwapNeeded(i, pivotIdx) or self.areElementsEqual(i, pivotIdx)):
                 # Shift elements from pivot to i, one place right
                 self.__shiftRight(pivotIdx, i)
@@ -60,7 +60,7 @@ class QuickSort(Algorithm):
             self.changeBarColour(i, "red")
             self.updateArrayOnScreen() 
             self.delay()
-            # If element is greater than the pivot 
+            # If element is greater/smaller than the pivot 
             if(self.isSwapNeeded(i, pivotIdx) and not self.areElementsEqual(i, pivotIdx)):
                 # Shift elements between i and the pivot one place left
                 self.__shiftLeft(i, pivotIdx)   

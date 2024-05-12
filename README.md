@@ -240,9 +240,6 @@ Algorithm Steps:
 Time Complexity: O((n + 1)!)<br>
 Space Complexity: O(1)
 
-## Adding a new Search Algorithm
-New search algorithms can be added if they meet these requirements:
-
 ---
 ### Quick Sort:
 ---
@@ -268,6 +265,22 @@ Space Complexity: O(1)
 - Get the elements at low, high and (low + high) / 2 
 - Place the element in an array and sort 
 - The pivot is the middle value (element in index 1)
+
+---
+### Selection Sort:
+---
+
+Algorithm Steps: 
+
+1. Iterate through the array
+2. Set a variable called minIdx to the current index
+3. In a nested loop from the current index plus one to the end of the array
+4. Find the index of the smallest element and store it in minIdx 
+5. Shift all elements between the current index and the smallest element index one place right 
+6. Place the smallest element into the current index
+
+Time Complexity: O(n<sup>2</sup>)<br>
+Space Complexity: O(1)
 
 ---
 ## Adding a new Search Algorithm
