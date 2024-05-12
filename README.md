@@ -234,12 +234,42 @@ Space Complexity: O(n)
 Algorithm Steps: 
 
 1. Randomly shuffle array 
-2. If array is sorted stop.
+2. If array is sorted, stop.
 3. If array is not sorted repeat step 1. 
 
 Time Complexity: O((n + 1)!)<br>
 Space Complexity: O(1)
 
+## Adding a new Search Algorithm
+New search algorithms can be added if they meet these requirements:
+
+---
+### Quick Sort:
+---
+
+Algorithm Steps: 
+
+1. Initialise a variable called low and assign it the value 0 
+2. Initialise a variavle called high and assign it the length of the array minus one 
+3. Select pivot using median of three 
+4. All elements less than the pivot must be placed to the left of the pivot
+5. All elements greater than the pivot must be places to the right of the pivot
+6. Two new pivots need to be selected to sort the separate halves of the array 
+7. The first pivot should be in the range, low to index of current pivot - 1
+8. The second pivot should be in the range, index of current pivot + 1 to end
+9. Repeat steps 3 - 8 until low is greater than pivot index - 1 and pivot index + 1 is greater than end 
+
+Time Complexity: O(log n) <br>
+Time Complexity: O(n<sup>2</sup>)  (If the pivot is chosen poorly)<br>
+Space Complexity: O(1) 
+
+#### Median of three
+
+- Get the elements at low, high and (low + high) / 2 
+- Place the element in an array and sort 
+- The pivot is the middle value (element in index 1)
+
+---
 ## Adding a new Search Algorithm
 New search algorithms can be added if they meet these requirements:
 
@@ -309,12 +339,13 @@ The methods in DataModel can still be called directly (not recommended).
 | getArray() | None     | The array to be processed | Returns the array to be iterated over. (See [DataModel](#datamodel-class)). |
 | getElement()     | index (int) : index of the element to be retieved | The value at the specified index, or -1 if the index is out of bounds | Gets the value of the element at the specified index (See [DataModel](#datamodel-class)) | 
 | changeElement()  | index (int) : index of the element to be changed <br> value (int): The new value that the element is being replaced with| None | Changes the value at the specified index to the value passed (See [DataModel](#datamodel-class)) | 
-| swapElements() | sourceIndex (int) : index of an element to be swapped destinationIndex (int): index of an element to be swapped | none | Swaps the elements at the specified indexes. (See [DataModel](#datamodel-class))|
+| swapElements() | sourceIdx (int) : index of an element to be swapped destIdx (int): index of an element to be swapped | none | Swaps the elements at the specified indexes. (See [DataModel](#datamodel-class))|
 | sortArray() | None    | delay (bool): By default there is a small delay when the array is sorted. Setting this parameter to False removed this delay | Sorts the array and refreshes the screen to display it. (See [DataModel](#datamodel-class)).| 
 | shuffleArray() | None | delay (bool): By default there is a small delay when the array is shuffled. Setting this parameter to False removed this delay | Randomly shuffles the array and refreshes the screen to display it. (See [DataModel](#datamodel-class)). | 
 | changeBarColour() | index (int) : Position to have the colour changed. <br> colour (str) : The new colour | None | Changes the colour of the bar at the specified index. (See [DataModel](#datamodel-class)). | 
-| swapbarColours() | sourceIndex (int) : index of a bar colour to be swapped destinationIndex (int): index of a bar colour to be swapped | none | Swaps the bar colours at the specified indexes. (See [DataModel](#datamodel-class))|
-| isSwapNeeded()   | sourceIndex (int) : index of an element to be checked (int): index of an element to be checked | A boolean value, True if the elements need to be swapped otherwise False is returned | Checks if the elements at the passed indexes need to be swapped. (Works for both sorting in descending and ascending order) | 
+| swapbarColours() | sourceIdx (int) : index of a bar colour to be swapped destIdx (int): index of a bar colour to be swapped | none | Swaps the bar colours at the specified indexes. (See [DataModel](#datamodel-class))|
+| isSwapNeeded()   | sourceIdx (int) : index of an element to be checked. destIdx (int): index of an element to be checked | A boolean value, True if the elements need to be swapped otherwise False is returned | Checks if the elements at the passed indexes need to be swapped. (Works for both sorting in descending and ascending order) | 
+| areElementsEqual() | sourceIdx (int) : index of an element to be checked. destIdx (int): index of an element to be checked | A boolean value, True if the elements at the specified index are true, else false | Compared the elements at the specified indexes and returns True if they are equal | 
 | getTarget() | None    | The target to be searched for | Returns the target to be searched for. (See [DataModel](#datamodel-class)). |
 | updateArrayOnScreen() | None     | None | Refreshes the screen to display any changes to the array. (See [DataModel](#datamodel-class)). |  
 | delay() | None        | None     | Pauses the execution of the program using <b> time.sleep().</b> |

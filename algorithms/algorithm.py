@@ -78,12 +78,12 @@ class Algorithm(ABC):
         self.__dataModel.setBarColour(index, colour)
     
     # Swaps elements at the specified index 
-    def swapElements(self, sourceIndex, destinationIndex):
-        self.__dataModel.swapElements(sourceIndex, destinationIndex)
+    def swapElements(self, sourceIdx, destIdx):
+        self.__dataModel.swapElements(sourceIdx, destIdx)
     
     # Swaps the bar colours at the specified indexes
-    def swapBarColours(self, sourceIndex, destinationIndex): 
-        self.__dataModel.swapBarColours(sourceIndex, destinationIndex) 
+    def swapBarColours(self, sourceIdx, destIdx): 
+        self.__dataModel.swapBarColours(sourceIdx, destIdx) 
     
     # Returns the element at the specified index
     def getElement(self, index : int) -> int:
