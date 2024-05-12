@@ -20,10 +20,13 @@ class QuickSort(Algorithm):
         self.__quickSortHelper(0, len(self.getArray()) - 1)
         self.updateArrayOnScreen() 
         self.delay() 
+        self.coolEndingAnimation()
         return 1 
     
+    # Recusive implementation of quick sort 
     def __quickSortHelper(self, start, end):   
         if(start >= end): return
+        # Finds pivot and adjusts elements relative to pivot
         pivotIndex = self.__partition(start, end) 
         self.__quickSortHelper(start, pivotIndex - 1) 
         self.__quickSortHelper(pivotIndex + 1, end)
@@ -32,24 +35,43 @@ class QuickSort(Algorithm):
         # Middle of the array 
         mid = (start + end) // 2
         # Pivot is median of the elements at indexes start, mid, end 
-        pivot, pivotIndex = sorted([(self.getElement(start), start), (self.getElement(mid), mid), (self.getElement(end), end)])[1]    
-        pivotShift = pivotIndex
+        pivot, startPivotIdx = sorted([(self.getElement(start), start), (self.getElement(mid), mid), (self.getElement(end), end)])[1]   
+        # The pivots index can change when elements are moved left/right of it
+        pivotIdx = startPivotIdx
         
         # Iterate through any elements between pivot to end of array
-        for i in range(pivotIndex + 1, end + 1): 
-            if(self.getElement(i) <= pivot):  
-                arr = self.__shiftRight(pivotShift, i)
-                pivotShift += 1
+        for i in range(startPivotIdx + 1, end + 1):  
+            self.changeBarColour(pivotIdx, "orange")
+            self.changeBarColour(i, "red")
+            self.updateArrayOnScreen() 
+            self.delay()
+
+            # If element is less than or equal to the pivot 
+            if(not self.isSwapNeeded(i, pivotIdx) or self.areElementsEqual(i, pivotIdx)):
+                # Shift elements from pivot to i, one place right
+                self.__shiftRight(pivotIdx, i)
+                # Increment pivotIdx to point to new index of the pivot
+                pivotIdx += 1
         
-        # Iterate between elements between start of array and pivot index 
+        # Iterate between elements between start of array and the pivot initial index
         i = 0 
-        while(i != pivotIndex):
-            if(self.getElement(i) > pivot): 
-                arr = self.__shiftLeft(i, pivotShift)  
-                pivotShift -= 1  
-                pivotIndex -= 1
+        while(i != startPivotIdx): 
+            self.changeBarColour(pivotIdx, "orange")
+            self.changeBarColour(i, "red")
+            self.updateArrayOnScreen() 
+            self.delay()
+            # If element is greater than the pivot 
+            if(self.isSwapNeeded(i, pivotIdx) and not self.areElementsEqual(i, pivotIdx)):
+                # Shift elements between i and the pivot one place left
+                self.__shiftLeft(i, pivotIdx)   
+                # Decrement pivotIdx to point to new index of the pivot
+                pivotIdx -= 1  
+                # Decrement startPivotIdx
+                # i is not incremented as elements have been shifted so a different value is now at i
+                startPivotIdx -= 1 
+            # If element is less than or equal to pivot, move to next element
             else: i+=1
-        return pivotShift
+        return pivotIdx
     
     def __shiftRight(self, start, end): 
         index = end 
@@ -58,14 +80,17 @@ class QuickSort(Algorithm):
             self.changeElement(index, self.getElement(index - 1))
             index-=1  
         self.changeElement(index, value)
-    
+        
+   
+        
     def __shiftLeft(self, start, end): 
         index = start 
         value = self.getElement(start)
         while(index != end):  
             self.changeElement(index, self.getElement(index + 1))
             index+=1  
-        self.changeElement(index, value)    
+        self.changeElement(index, value)  
+      
 
                      
 # Listen to Times like these by the Foo Fighters

@@ -94,12 +94,16 @@ class Algorithm(ABC):
         self.__dataModel.changeElement(index, value)
     
     # Checks if elements need to be swapped 
-    def isSwapNeeded(self, sourceIndex, destinationIndex): 
+    def isSwapNeeded(self, sourceIdx : int, destIdx : int) -> bool: 
         # If the sorting is in ascending order
         if(self.__dataModel.isAscending()):
-            return self.getElement(sourceIndex) > self.getElement(destinationIndex) 
+            return self.getElement(sourceIdx) > self.getElement(destIdx) 
         # If sorting is in descending order 
-        else: return self.getElement(sourceIndex) < self.getElement(destinationIndex) 
+        else: return self.getElement(sourceIdx) < self.getElement(destIdx) 
+    
+    # Checks if elements at the specified indexes are equal
+    def areElementsEqual(self, sourceIdx : int, destIdx : int) -> bool: 
+        return self.getElement(sourceIdx) == self.getElement(destIdx)
 
     # Plays a cool animation when the array is sorted
     # It alternates between colouring the bars green and black
