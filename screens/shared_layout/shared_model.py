@@ -24,8 +24,13 @@ class SharedModel():
         self.__higherBound = None
         # Maximum number of bars that can be drawn, ie the maximum size of the array
         self.__maxBars = None 
-        self.__minDelay = 0.5
+        # Default minimum and maximum delay for algorithms 
+        self.__minDelay = 0.1
         self.__maxDelay = 4
+        # Sets the default resolution of the speed slider 
+        self.__defaultResolution = 0.1  
+        # The buffer used when selecting a target outside the array 
+        self.__buffer = 100
 
     # Returns width of the bars drawn on screen
     def getBarWidth(self) -> int: return self.__barWidth 
@@ -67,6 +72,10 @@ class SharedModel():
     # Get the minimum delay
     def getMinDelay(self): return self.__minDelay 
     # Get the maximum delay 
-    def getMaxDelay(self): return self.__maxDelay
+    def getMaxDelay(self): return self.__maxDelay 
+    # Gets the default resolution 
+    def getDefaultResolution(self): return self.__defaultResolution
+    # Gets the buffer used when selecting a target outside the array 
+    def getBuffer(self): return self.__buffer
 
 # Listen to Last Nite by The Strokes

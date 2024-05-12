@@ -6,6 +6,17 @@ if(__name__ == "__main__"):
 
 class SortController():
     def __init__(self, screen, model, dataModel) -> None:
-        pass
+        self.__screen = screen 
+        self.__model = model 
+        self.__dataModel = dataModel
+    
+    # Changes the sort direction 
+    def toggleSortDirection(self):
+        # Changes the sort direction
+        self.__dataModel.toggleSortDirection()  
+        # Disables the button that called the function and enables the currently disabled button
+        self.__screen.disableEnableButtons(self.__dataModel.isAscending())
+
+    
                     
 # Listen to Give Me Novacaine by Green Day

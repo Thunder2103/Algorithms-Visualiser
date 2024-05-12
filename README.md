@@ -3,16 +3,17 @@
 Written in python by Thomas Gibson.
 
 ---
-| Table of contents                                              | 
-| -------------------------------------------------------------- |
-|   [1. Searching Algorithms](#searching-algorithms)             |  
-|   [2. Adding a new Search Algorithm](#adding-a-new-search-algorithm) |
-
+| Table of contents                                                      | 
+| ---------------------------------------------------------------------- |
+|   [1. Searching Algorithms](#searching-algorithms)                     |  
+|   [2. Sorting Algorithms](#sorting-algorithms)                         |
+|   [3. Adding a new Search Algorithm](#adding-a-new-search-algorithm)   |
+|   [4. Adding a new Sorting Algorithm](#adding-a-new-sorting-algorithm) |
 ---
 
 ## Searching Algorithms:  
---- 
-Below is a table containing the algorithms this project visualises. <br>
+
+Below is a table containing the searching algorithms this project visualises. <br>
 The links in the table direct to a information about the algorithm and its implementation steps. 
 
 | Algorithm |
@@ -38,7 +39,7 @@ Time Complexity: O(n)<br>
 Space Complexity: O(1)
 
 ---
-### Binary Search 
+### Binary Search: 
 ---
 Algorithm steps:
 
@@ -60,8 +61,7 @@ Space Complexity: O(1)
 $mid = {(low+high) \div 2}$
 
 ---
-
-### Jump Search 
+### Jump Search: 
 --- 
 Algorithm Steps:
 
@@ -77,7 +77,8 @@ If prev is greater than or equal to n, return false. Else if the value at index 
 Time Complexity: O($\sqrt{n}$)<br>
 Space Complexity: O(1)
 
-### Tenary Search 
+---
+### Tenary Search:
 --- 
 Algorithm Steps: 
 
@@ -104,8 +105,8 @@ $mid1 = {left + (right - left) \div 3}$
 
 $mid2 = {right - (right - left) \div 3}$
 
-
-### Fibonacci Search 
+---
+### Fibonacci Search: 
 --- 
 Algorithm Steps: 
 
@@ -130,7 +131,8 @@ Space Complexity: O(1)
 
 $index = {\min(offset + fibNMin2, n - 1)}$
 
-### Exponential Search 
+---
+### Exponential Search:
 --- 
 Algorithm Steps:
 
@@ -153,7 +155,8 @@ $low = i \div 2$
 
 $high = \min(i, n - 1)$ 
 
-### Interpolation Search 
+---
+### Interpolation Search: 
 ---
 Algorithm Steps:
 
@@ -176,6 +179,110 @@ $$pos = {low+{(target-array[low])\times(high - low)\over(array[high]-array[low])
 
 ---
 
+## Sorting Algorithms:
+
+Below is a table containing the sorting algorithms this project visualises. <br>
+The links in the table direct to a information about the algorithm and its implementation steps. 
+
+| Algorithm |
+| --------- |
+| [Bubble Sort](#bubble-sort) |
+| [Merge Sort](#merge-sort) |
+| [Bogo Sort](#bogo-sort) |
+
+
+---
+### Bubble Sort:
+--- 
+Algorithm steps: 
+
+1. Loop through the array from left to right
+2. At the beginning of each iteration set a boolean flag to False 
+3. In a nested loop, traverse from the beginning of the array to the end of the unsorted array using [this formula](#index-of-last-sorted-element-formula)
+4. Compare the current element to the element adjacent to it 
+5. If the current element is greater than the adjacent elment, swap them and set the boolean flag to True 
+6. When the nested loop has terminated check the value of the boolean flag 
+7. If the boolean flag is True, continue for another iteration 
+8. If the boolean flag is False, the array is sorted and the algorithm should terminate. 
+
+Time Complexity: O(n<sup>2</sup>) <br>
+Space Complexity: O(1)
+
+#### End of unsorted array formula: 
+
+$$ index = n - i - 1$$
+
+n -> length of the array <br>
+i -> index of current element 
+
+---
+### Merge Sort:
+---
+Algorithm Steps:
+
+1. Divide the array into sub-arrays of size one. (Arrays of size one are considered sorted)
+2. Compare the elements in each of the sub-arrays, inserting them in numerical order into a new sub-array 
+3. Repeat step 2 until all the sub-arrays have been merged leaving only one sorted array 
+
+Time Complexity: O(n log n) <br>
+Space Complexity: O(n)
+
+---
+### Bogo Sort:
+---
+
+Algorithm Steps: 
+
+1. Randomly shuffle array 
+2. If array is sorted, stop.
+3. If array is not sorted repeat step 1. 
+
+Time Complexity: O((n + 1)!)<br>
+Space Complexity: O(1)
+
+---
+### Quick Sort:
+---
+
+Algorithm Steps: 
+
+1. Initialise a variable called low and assign it the value 0 
+2. Initialise a variavle called high and assign it the length of the array minus one 
+3. Select pivot using median of three 
+4. All elements less than the pivot must be placed to the left of the pivot
+5. All elements greater than the pivot must be places to the right of the pivot
+6. Two new pivots need to be selected to sort the separate halves of the array 
+7. The first pivot should be in the range, low to index of current pivot - 1
+8. The second pivot should be in the range, index of current pivot + 1 to end
+9. Repeat steps 3 - 8 until low is greater than pivot index - 1 and pivot index + 1 is greater than end 
+
+Time Complexity: O(log n) <br>
+Time Complexity: O(n<sup>2</sup>)  (If the pivot is chosen poorly)<br>
+Space Complexity: O(1) 
+
+#### Median of three
+
+- Get the elements at low, high and (low + high) / 2 
+- Place the element in an array and sort 
+- The pivot is the middle value (element in index 1)
+
+---
+### Selection Sort:
+---
+
+Algorithm Steps: 
+
+1. Iterate through the array
+2. Set a variable called minIdx to the current index
+3. In a nested loop from the current index plus one to the end of the array
+4. Find the index of the smallest element and store it in minIdx 
+5. Shift all elements between the current index and the smallest element index one place right 
+6. Place the smallest element into the current index
+
+Time Complexity: O(n<sup>2</sup>)<br>
+Space Complexity: O(1)
+
+---
 ## Adding a new Search Algorithm
 New search algorithms can be added if they meet these requirements:
 
@@ -184,13 +291,33 @@ New search algorithms can be added if they meet these requirements:
 | Location     | New algorithm files must be found in the <b>algorithms/searching</b> directory | 
 | File Name    | New files must be named in the following format: <b>algorithm_name_search.py.</b> <br> e.g. binary_search.py, linear_search.py |
 | Class Implementation        | The algorithm must be implemented as a class. | 
-| Class Name   | An algorithm class must be named in the following format: <b>AlgorithmNameSearch.</b> <br> e.g BinarySearch, Linearsearch | 
-| Inheritance  | Each algorithm class must be a child of the [Algorithm class](#algorithm-class). <br> The Algorithm class must be imported (See [imports](#Imports).) | 
+| Class Name   | An algorithm class must be named in the following format: <b>AlgorithmNameSearch.</b> <br> e.g BinarySearch, LinearSearch | 
+| Inheritance  | Each algorithm class must be a child of the [Algorithm class](#algorithm-class). <br> The Algorithm class must be imported (See [imports](#imports).) | 
 | Constructor | Each new class must implement a constructor. (See [Constructor](#constructor)) |
 | DataModel helper functions   | The DataModel class contains useful functions that will be needed (See [DataModel](#datamodel-class)) | 
 | Function Naming | The function which implements the algorithm must be named in the following format: <b>algorithmNameSearch</b> <br> e.g. binarySearch and linearSearch |
 | Function Implementation | Each new algorithm class must provide an implementation for the <b>getName()</b> method. (See [Algorithm class](#algorithm-class))  |
 | Return value/s          | Each algorithm doesn't strictly need to return anything. <br> As a convention, 1 for success or -1 for failure should be returned | 
+
+--- 
+
+## Adding a new Sorting Algorithm 
+
+New sorting algorithms can be added if they meet these requirements:
+
+| Requirement: | Description: |
+| ------------ | ------------ | 
+| Location     | New algorithm files must be found in the <b>algorithms/sorting</b> directory | 
+| File Name    | New files must be named in the following format: <b>algorithm_name_sort.py.</b> <br> e.g. bubble_sort.py, merge_sort.py |
+| Class Implementation        | The algorithm must be implemented as a class. | 
+| Class Name   | An algorithm class must be named in the following format: <b>AlgorithmNameSort.</b> <br> e.g BubbleSort, MergeSort | 
+| Inheritance  | Each algorithm class must be a child of the [Algorithm class](#algorithm-class). <br> The Algorithm class must be imported (See [imports](#imports).) | 
+| Constructor | Each new class must implement a constructor. (See [Constructor](#constructor)) |
+| DataModel helper functions   | The DataModel class contains useful functions that will be needed (See [DataModel](#datamodel-class)) | 
+| Function Naming | The function which implements the algorithm must be named in the following format: <b>algorithmNameSort</b> <br> e.g. bubbleSort and mergeSort |
+| Function Implementation | Each new algorithm class must provide an implementation for the <b>getName()</b> method. (See [Algorithm class](#algorithm-class))  |
+| Return value/s          | Each algorithm doesn't strictly need to return anything. <br> As a convention, 1 for success or -1 for failure should be returned | 
+| Sorting in Ascending and Descending order | Code does not need to be written in an algorithms implementation to sort in ascending and descending order. A helper function in the [Algorithm class](#algorithm-class) returns True or False if two elements need to be swapped, another helper function can then be called to make this swap. |  
 
 --- 
 
@@ -223,12 +350,19 @@ The methods in DataModel can still be called directly (not recommended).
 | -------- | ---------- | -------- | ------------ |
 | getName()| None       | A String, contains the name of the algorithm being implemented | An abstract method. Every subclass must provide an implementation. | 
 | getArray() | None     | The array to be processed | Returns the array to be iterated over. (See [DataModel](#datamodel-class)). |
+| getElement()     | index (int) : index of the element to be retieved | The value at the specified index, or -1 if the index is out of bounds | Gets the value of the element at the specified index (See [DataModel](#datamodel-class)) | 
+| changeElement()  | index (int) : index of the element to be changed <br> value (int): The new value that the element is being replaced with| None | Changes the value at the specified index to the value passed (See [DataModel](#datamodel-class)) | 
+| swapElements() | sourceIdx (int) : index of an element to be swapped destIdx (int): index of an element to be swapped | none | Swaps the elements at the specified indexes. (See [DataModel](#datamodel-class))|
+| sortArray() | None    | delay (bool): By default there is a small delay when the array is sorted. Setting this parameter to False removed this delay | Sorts the array and refreshes the screen to display it. (See [DataModel](#datamodel-class)).| 
+| shuffleArray() | None | delay (bool): By default there is a small delay when the array is shuffled. Setting this parameter to False removed this delay | Randomly shuffles the array and refreshes the screen to display it. (See [DataModel](#datamodel-class)). | 
+| changeBarColour() | index (int) : Position to have the colour changed. <br> colour (str) : The new colour | None | Changes the colour of the bar at the specified index. (See [DataModel](#datamodel-class)). | 
+| swapbarColours() | sourceIdx (int) : index of a bar colour to be swapped destIdx (int): index of a bar colour to be swapped | none | Swaps the bar colours at the specified indexes. (See [DataModel](#datamodel-class))|
+| isSwapNeeded()   | sourceIdx (int) : index of an element to be checked. destIdx (int): index of an element to be checked | A boolean value, True if the elements need to be swapped otherwise False is returned | Checks if the elements at the passed indexes need to be swapped. (Works for both sorting in descending and ascending order) | 
+| areElementsEqual() | sourceIdx (int) : index of an element to be checked. destIdx (int): index of an element to be checked | A boolean value, True if the elements at the specified index are true, else false | Compared the elements at the specified indexes and returns True if they are equal | 
 | getTarget() | None    | The target to be searched for | Returns the target to be searched for. (See [DataModel](#datamodel-class)). |
 | updateArrayOnScreen() | None     | None | Refreshes the screen to display any changes to the array. (See [DataModel](#datamodel-class)). |  
-| changeBarColour() | index (int) : Position to have the colour changed. <br> colour (str) : The new colour | None | Changes the colour of the bar at the specified index. (See [DataModel](#datamodel-class)). | 
-| sortArray() | None    | None     | Sorts the array and refreshes the screen to display it. (See [DataModel](#datamodel-class)).| 
-| shuffleArray() | None | None     | Randomly shuffles the array and refreshes the screen to display it. (See [DataModel](#datamodel-class)). | 
 | delay() | None        | None     | Pauses the execution of the program using <b> time.sleep().</b> |
+
 
 ### DataModel class:
 
@@ -238,13 +372,16 @@ The functions can still be called directly, if an attribute containing the DataM
 | Function | Parameters | Returns  | Description: |
 | -------- | ---------- | -------- | ------------ |
 | getArray() | None     | The array to be processed | Returns the array to be iterated over |
-| getTarget() | None    | The target to be searched for | Returns the target to be searched for |
+| getElementAtIndex()     | index (int) : index of the element to be retieved | The value at the specified index, or -1 if the index is out of bounds | Gets the value of the element at the specified index | 
+| changeElement()  | index (int) : index of the element to be changed <br> value (int): The new value that the element is being replaced with| None | Changes the value at the specified index to the value passed | 
+| swapElements() | sourceIndex (int) : index of an element to be swapped destinationIndex (int): index of an element to be swapped | none | Swaps the elements at the specified indexes. |
 | updateArrayOnScreen() | None | None | Redraws the array on screen | 
-| setBarColour() | index (int) : Position to have the colour changed. <br> colour (str) : The new colour | None | Changes the colour of the bar at the specified index | 
 | sortArray()    | None | None | Sorts the array and refreshes the screen to display it. |
 | shuffleArray() | None | None | Randomly shuffles the array and refreshes the screen to display it. | 
+| setBarColour() | index (int) : Position to have the colour changed. <br> colour (str) : The new colour | None | Changes the colour of the bar at the specified index | 
+| swapbarColours() | sourceIndex (int) : index of a bar colour to be swapped destinationIndex (int): index of a bar colour to be swapped | none | Swaps the bar colours at the specified indexes. |
+| isAscending()    | None | Returns True if the sorting direction is in ascending order. <br> Returns False if the sorting direction is in descending order | Returns the boolean value corresponding to the direction of the sort | 
+| getTarget() | None    | The target to be searched for | Returns the target to be searched for |
 
 ---
 
-
-<!-- Testing to make sure I can push -->

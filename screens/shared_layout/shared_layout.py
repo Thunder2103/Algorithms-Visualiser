@@ -14,6 +14,7 @@ import tkinter as tk
 from tkinter import ttk
 import random
 import threading
+import time 
 
 
 class SharedLayout(sc.ScreenTemplate):
@@ -37,6 +38,9 @@ class SharedLayout(sc.ScreenTemplate):
         # Thread algorithm runs in
         self.__algorithmThread = None
 
+        # Array containing widgets to be diabled when an algorithm runs and renabled when an algorithm resumes 
+        self.__disableEnableArray = []
+
         # Creating and displaying options
         self.__createOptions() 
         # Sets the default delay
@@ -53,14 +57,14 @@ class SharedLayout(sc.ScreenTemplate):
     # Creates a combo box which displays all algorithms 
     def __createAlgorithmOptions(self) -> None:
         #combo box, allows the user to choose what algorithm they want
-        self.__algorithmOptions = ttk.Combobox(self.getOptionsWidgetFrame(), textvariable = tk.StringVar(), state = "readonly", font = (self.getFont(), 12),\
+        self.__algorithmOptions = ttk.Combobox(self.getOptionsWidgetFrame(), textvariable = tk.StringVar(), state = "readonly", font = (self.getFont(), self.getFontSize()),\
              width = self.getOptionsWidgetFrame().winfo_width())
         self.__algorithmOptions.set('Select an algorithm.')
         # Removes the blue highlighting when something is selected that annoyed me
         self.__algorithmOptions.bind("<<ComboboxSelected>>", lambda _: self.getOptionsWidgetFrame().focus())
         self.__algorithmOptions.pack(pady = (10,0)) 
     
-    def loadAlgorithmOptions(self, algorithmsType : str):
+    def loadAlgorithmOptions(self, algorithmsType : str) -> None:
         self.__algorithmOptions['value'] = getAlgorithms(algorithmsType)
     
     # Creates a slider that allows users to adjust an algorithms speed
@@ -68,14 +72,16 @@ class SharedLayout(sc.ScreenTemplate):
         # Creates a slider that goes 0 to 1 then 2
         # It has three options correlating to the three speeds; slow, medium, fast 
         # Every time the sliders value is changed the setDelay() method is called
-        self.__speedSlider = tk.Scale(self.getOptionsWidgetFrame(), from_ = self.__model.getMaxDelay(), to_ = self.__model.getMinDelay(), resolution=0.1, 
+        self.__speedSlider = tk.Scale(self.getOptionsWidgetFrame(), from_ = self.__model.getMaxDelay(), to_ = self.__model.getMinDelay(), resolution=self.__model.getDefaultResolution(), 
                                       length = self.getOptionsWidgetFrame().winfo_width(), orient = "horizontal", showvalue = False, 
                                       bg =  "white", highlightbackground = "white", command = self.__updateDelay)
         self.__speedSlider.pack(pady = (10, 0))  
         self.__speedSlider.set(self.__model.getMaxDelay())
-        self.__speedSlider.bind("<ButtonRelease-1>", lambda _ : self.__setDelay())
-        # Initially the slider is set at 0, which is the Slow speed
-        #self.__speedSlider.config(label = f"Slow: {self.__speedSlider.get()} seconds")  
+        self.__speedSlider.bind("<ButtonRelease-1>", lambda _ : self.__setDelay()) 
+        # Time units of the delay 
+        self.__sliderUnitsText = "Seconds" 
+        # Used to check if units needs to be converted to seconds when algorithm is run 
+        self.__isMilliSeconds = False
     
     # Creates a slider that allows users to alter an arrays size
     def __createArrayAdjuster(self) -> None:
@@ -83,14 +89,15 @@ class SharedLayout(sc.ScreenTemplate):
             orient = "horizontal", bg = "white", highlightbackground = "white", command = self.__controller.adjustArray)
         self.__arraySizeSlider.pack(pady = (10, 0))
 
-    def __createSortShuffleButtons(self): 
+    # Creates buttons the allow algorithms to be sorted and shuffled
+    def __createSortShuffleButtons(self) -> None: 
         self.__arraySortShuffleFrame = tk.Frame(self.getOptionsWidgetFrame(), bg = "white") 
         self.__arraySortShuffleFrame.pack(pady=(20, 0)) 
 
-        self.__sortButton = tk.Button(self.__arraySortShuffleFrame, text="Sort.", width = 7, relief = "solid", font = (self.getFont(), 12), command=self.__sortArray)
-        self.__sortButton.grid(row = 0, column = 0, padx = (0,5)) 
-        self.__shuffleButton = tk.Button(self.__arraySortShuffleFrame, text="Shuffle.", width = 7, relief = "solid", font = (self.getFont(), 12), command=self.__shuffleArray)
-        self.__shuffleButton.grid(row = 0, column = 1, padx = (0,5)) 
+        self.__sortButton = tk.Button(self.__arraySortShuffleFrame, text="Sort.", width = 7, relief = "solid", font = (self.getFont(), self.getFontSize()), command=self.__sortArray)
+        self.__sortButton.grid(row = 0, column = 0, padx = (9,5)) 
+        self.__shuffleButton = tk.Button(self.__arraySortShuffleFrame, text="Shuffle.", width = 7, relief = "solid", font = (self.getFont(), self.getFontSize()), command=self.__shuffleArray)
+        self.__shuffleButton.grid(row = 0, column = 1, padx = (3,8)) 
     
     # Creates buttons that lets user execute algorithms or stop them
     def __createStopSolveButtons(self) -> None:
@@ -99,18 +106,33 @@ class SharedLayout(sc.ScreenTemplate):
         algorithmToggleFrame.pack(side = "bottom", pady = (0,5))
         # Allows user to see the algorithm in action
         self.__solveStopButton = tk.Button(algorithmToggleFrame, text = "Solve.", width = 7, relief = "solid", 
-                                           font = (self.getFont(), 12), command = lambda: self.__initAlgorithm())
+                                           font = (self.getFont(), self.getFontSize()), command = lambda: self.__initAlgorithm())
         self.__solveStopButton.grid(row = 0, column = 0, padx = (0,5)) 
         # Allows user to stop algorithm whilst it's running - button is initially disabled
         self.__pauseResumeButton = tk.Button(algorithmToggleFrame, text = "Pause.", width = 7, relief = "solid", 
-                                             font = (self.getFont(), 12), state = "disabled", command = lambda : self.__pauseAlgorithm())
+                                             font = (self.getFont(), self.getFontSize()), state = "disabled", command = lambda : self.__pauseAlgorithm())
         self.__pauseResumeButton.grid(row = 0, column = 1)  
 
     # When the slider has changed value a label is added with the relevant speed 
     # The delay is also changed in the DataModel Object
     def __updateDelay(self, value : str) -> None: 
-        self.__speedSlider.config(label = f"Delay: {value} Seconds")  
-    
+        self.__speedSlider.config(label = f"Delay: {value} {self.__sliderUnitsText}")  
+ 
+    # Changes the to_ and from_ values of the speed slider, also lets the units be changed to millseconds or seconds 
+    def configSpeedSlider(self, to_ : int, from_ : int, interval : int, milliseconds : bool =False) -> None: 
+        if(to_ > from_): to_, from_ = from_, to_
+        if(milliseconds):
+                self.__sliderUnitsText = "Milliseconds" 
+                self.__isMilliSeconds = True
+        else: 
+            self.__sliderUnitsText = "Seconds"    
+            self.__isMilliSeconds = False 
+        
+        self.__speedSlider.config(to_ = to_, from_= from_, resolution = interval)
+        self.__speedSlider.set(from_)
+        self.__updateDelay(str(from_))
+        self.__setDelay()
+
     # Makes sure that target generated has (almost) equal chance to be in the array or not 
     def targetRandom(self) -> int: 
         # Generates decimal between 0 and 1 
@@ -128,14 +150,14 @@ class SharedLayout(sc.ScreenTemplate):
     # Guarantees target is not in array
     def targetOut(self) -> int: 
         # Chooses a number between the range of arrays smallest value - 20 and arrays largest value + 20
-        target = random.randint(min(self.__dataModel.getArray()) - 20, max(self.__dataModel.getArray()) + 20)
+        target = random.randint(min(self.__dataModel.getArray()) - self.__model.getBuffer(), max(self.__dataModel.getArray()) + self.__model.getBuffer())
         # If generated number in array recall function
         if target in self.__dataModel.getArray(): self.targetOut()
         # If generated number not in array then just return value
         else: return target
         
     # Call algorithm user has selected
-    def __initAlgorithm(self) -> None: 
+    def __initAlgorithm(self) -> None:  
         # Doesn't do anything if user hasn't chosen an algorithm
         if(self.__getAlgorithmChoice() == 'Select an algorithm.'): 
             self.__algorithmOptions.config(foreground = "red")
@@ -146,7 +168,7 @@ class SharedLayout(sc.ScreenTemplate):
             if(self.__dataModel.isStopped()): self.__dataModel.clearStopFlag()
             self.__widgetsAlgorithmStarts()
             # Generates the target based on the setting (Only applicable when searching)
-            self.__controller.generateTarget(self.__dataModel.getTargetSetting())
+            self.__controller.generateTarget(self.__dataModel.getTargetSetting()) 
             # Call algorithm -> so this program actually has a use
             self.__algorithmThread = threading.Thread(target=callAlgorithm, args=(self.__dataModel, self.__getAlgorithmChoice(), self.__getAlgorithmType(), 
                                                                                   self.__widgetsAlgorithmStops))
@@ -154,8 +176,8 @@ class SharedLayout(sc.ScreenTemplate):
             self.__algorithmThread.start()
     
     # Forces current running algorithm thread to terminate (safely)
-    def __stopAlgorithm(self):
-        # Sets to falg to True -> this is what tells the thread/s to stop
+    def __stopAlgorithm(self) -> None:
+        # Sets to flag to True -> this is what tells the thread/s to stop
         self.__dataModel.setStopFlag()   
         # If the algorithm has been paused
         if(self.__dataModel.isPaused()):
@@ -173,110 +195,130 @@ class SharedLayout(sc.ScreenTemplate):
     def __getAlgorithmType(self) -> str: 
         return self.__algorithmOptions.get().split(" ")[1].lower()
     
-    def __setDelay(self): 
-        self.__dataModel.setDelay(self.__speedSlider.get()) 
+    def __setDelay(self) -> None:  
+        if(self.__isMilliSeconds):  
+            self.__dataModel.setDelay(self.__speedSlider.get() / 1000)
+        else:  self.__dataModel.setDelay(self.__speedSlider.get())
   
     # Changes solve button text and function it calls when it's pressed
-    def __solveToStop(self):
+    def __solveToStop(self) -> None:
         self.__solveStopButton.config(text="Stop.", command=self.__stopAlgorithm)
     
     # Changes stop button text and function it calls when it's pressed
-    def __stopToSolve(self):
+    def __stopToSolve(self) -> None:
         self.__solveStopButton.config(text="Solve.", command=self.__initAlgorithm) 
     
     # Changes pause button text and function it calls when it's pressed
-    def __pauseToResume(self): 
+    def __pauseToResume(self) -> None: 
          self.__pauseResumeButton.config(text="Resume.", command=self.__resumeAlgorithm) 
 
     # Changes resume button text and function it calls when it's pressed    
-    def __resumeToPause(self):
+    def __resumeToPause(self) -> None:
         self.__pauseResumeButton.config(text="Pause.", command=self.__pauseAlgorithm)
         
     # Holds the lock, pausing the algorithm Thread
-    def __pauseAlgorithm(self):
+    def __pauseAlgorithm(self) -> None:
         self.__dataModel.acquireLock() 
         self.__pauseToResume()
        
     # Releases the lock, letting the algorithm thread run again
-    def __resumeAlgorithm(self): 
+    def __resumeAlgorithm(self) -> None: 
         self.__dataModel.releaseLock()
         self.__resumeToPause()
     
     # Enables the button to pause/resume algorithm
-    def __enablePauseResumeButton(self):
+    def __enablePauseResumeButton(self) -> None:
         self.__pauseResumeButton.config(state="active")
     
     # Disables the button to pause/resume algorithm
-    def __disablePauseResumeButton(self):
+    def __disablePauseResumeButton(self) -> None:
         self.__pauseResumeButton.config(state="disabled") 
     
     # Changes the function of the home buttton
-    def __overrideHomeButtonCommand(self):
+    def __overrideHomeButtonCommand(self) -> None:
         self.getHomeButton().config(command=self.__loadHomeScreen) 
     
     # Ensures any algorithm threads are terminated before moving to the homescreen
-    def __loadHomeScreen(self): 
+    def __loadHomeScreen(self) -> None: 
         # If a thread exists and it is still running
         if(self.__algorithmThread and self.__algorithmThread.is_alive()): 
             # Tell the thread to stop
-            self.__stopAlgorithm() 
-            # Loop until thread has stopped
-            while(self.__algorithmThread.is_alive()): continue 
-        # Load home screen
-        self.loadHomeScreen() 
-    
+            self.__stopAlgorithm()  
+            self.__controller.cancelScheduledProcesses()
+        self.loadHomeScreen()
+
     # Sorts and displays the array
-    def __sortArray(self):
+    def __sortArray(self) -> None:
         self.__dataModel.sortArray()
         self.__controller.displayArray() 
     
     # Enables the button to sort the array
-    def __enableSortButton(self):
+    def __enableSortButton(self) -> None:
         self.__sortButton.config(state="active")
     
     # Disables the button to sort the array
-    def __disableSortButton(self):
+    def __disableSortButton(self) -> None:
         self.__sortButton.config(state="disabled")
     
     # Shuffles and displays the array
-    def __shuffleArray(self):
+    def __shuffleArray(self) -> None:
         self.__dataModel.shuffleArray()
         self.__controller.displayArray()  
     
     # Enables the button to shuffle the array
-    def __enableShuffleButton(self):
+    def __enableShuffleButton(self) -> None:
         self.__shuffleButton.config(state="active")
     
     # Disables the button to shuffle the array
-    def __disableShuffleButton(self):
+    def __disableShuffleButton(self) -> None:
         self.__shuffleButton.config(state="disabled")
     
     # Enables the slider to change the array size
-    def __enableArraySizeSlider(self):
+    def __enableArraySizeSlider(self) -> None:
         self.__arraySizeSlider.config(state="active")
     
     # Disables the slider to change the array size
-    def __disableArraySizeSlider(self):
+    def __disableArraySizeSlider(self) -> None:
         self.__arraySizeSlider.config(state = "disabled")
     
     # Enables/Disables widgets when algorithms runs
-    def __widgetsAlgorithmStarts(self):
+    def __widgetsAlgorithmStarts(self) -> None:
         self.__disableArraySizeSlider()
         self.__disableSortButton()
         self.__disableShuffleButton() 
         self.__solveToStop()
         self.__enablePauseResumeButton()
+        self.__disableWidgetsInArray()
     
     # Enables/Disables widgets when algorithms stops
-    def __widgetsAlgorithmStops(self):
+    def __widgetsAlgorithmStops(self) -> None:
         self.__enableArraySizeSlider()
         self.__enableSortButton()
         self.__enableShuffleButton()  
         self.__stopToSolve()
-        self.__disablePauseResumeButton() 
+        self.__disablePauseResumeButton()  
+        self.__enableWidgetsInArray()
+    
+    # Adds widget to array which will be disabled when algorithms are run
+    def addWidgetToArray(self, item) -> None: 
+        self.__disableEnableArray.append(item)
+    
+    # Removes the passed widget from the array
+    def removeWidgetFromArray(self, item) -> None: 
+        self.__disableEnableArray.remove(item)
+
+    # Disables all widgets in the array
+    def __disableWidgetsInArray(self): 
+        for widget in self.__disableEnableArray: 
+            widget.config(state="disabled")
+    
+    # Enables all widgets in the array 
+    def __enableWidgetsInArray(self): 
+        for widget in self.__disableEnableArray: 
+            widget.config(state="active")
     
     # Returns the data model class
-    def getDataModel(self):
+    def getDataModel(self) -> SharedDataModel:
         return self.__dataModel
     
 # Listen to Whatsername by Green Day    
