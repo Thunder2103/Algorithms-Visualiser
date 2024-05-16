@@ -109,4 +109,21 @@ Space Complexity: O(1)
 
 ---
 
+### Insertion Sort:
+---
+
+Algorithm Steps: 
+
+1. Consider the first element in the array as already sorted 
+2. Iterate through the array (starting at the second element)
+3. Iterate from the current index minus one to the first index of the array 
+4. Compare the current unsorted element with the current element in the sorted array 
+5. If the unsorted element is greater than the sorted element, swap them 
+6. If sorted element is less than the unsorted, break the nested loop (the unsorted element is in the right place)
+
+Time Complexity: O(n<sup>2</sup>)<br>
+Space Complexity: O(1)
+
+---
+
 Go to [README.md](../README.md)
