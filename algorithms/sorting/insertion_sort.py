@@ -1,8 +1,8 @@
 # If this isn't at the top the program breaks :/
 # If the file is run as is message this returned and program exits
-#if(__name__ == "__main__"):
-#    print("This is file shouldn't be run on it's own. \nIt should be imported only.")
-#    exit()
+if(__name__ == "__main__"):
+    print("This is file shouldn't be run on it's own. \nIt should be imported only.")
+    exit()
 
 
 from ..algorithm import Algorithm
@@ -29,7 +29,8 @@ class InsertionSort(Algorithm):
             leftPtr = i - 1
             # The right pointer keeps track of the unsorted element
             rightPtr = i 
-            # Iterate until the end of the sorted array of the unsorted element is in the right place 
+            # Iterate until the start of the sorted array or 
+            # the unsorted element is in the right place 
             while(leftPtr >= 0 and self.isSwapNeeded(leftPtr, rightPtr)): 
                 # Swap elements indexes leftPtr, rightPtr
                 self.swapElements(leftPtr, rightPtr)
@@ -42,6 +43,7 @@ class InsertionSort(Algorithm):
                 self.delay()
         
         self.coolEndingAnimation()
+        return 1 
 
                      
 # Listen to Highway to Hell by ACDC

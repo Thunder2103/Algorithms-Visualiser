@@ -10,6 +10,8 @@ The links in the table direct to a information about the algorithm and its imple
 | [Bogo Sort](#bogo-sort)             |
 | [Quick Sort](#quick-sort)           |
 | [Selection Sort](#selection-sort)   |
+| [Insertion Sort](#insertion-sort)   |
+| [Tim Sort]()         |
 
 ---
 
@@ -49,6 +51,11 @@ Algorithm Steps:
 Time Complexity: O(n log n) <br>
 Space Complexity: O(n)
 
+
+#### A note on the Space Complexity 
+
+An O(1) space complexity can be achieved by merging the sub arrays in-place. 
+
 ---
 
 ### Bogo Sort:
@@ -80,9 +87,12 @@ Algorithm Steps:
 8. The second pivot should be in the range, index of current pivot + 1 to end
 9. Repeat steps 3 - 8 until low is greater than pivot index - 1 and pivot index + 1 is greater than end 
 
-Time Complexity: O(log n) <br>
-Time Complexity: O(n<sup>2</sup>)  (If the pivot is chosen poorly)<br>
-Space Complexity: O(1) 
+Time Complexity: O(n log n) <br>
+Space Complexity: O(1)  
+
+#### A note on the Time Complexity 
+
+If the pivot is not chosen efficiently, the worst case time complexity becomes O(n<sup>2</sup>)
 
 #### Median of three
 
@@ -123,6 +133,32 @@ Algorithm Steps:
 
 Time Complexity: O(n<sup>2</sup>)<br>
 Space Complexity: O(1)
+
+---
+
+### Tim Sort:
+---
+
+Algorithm Steps: 
+
+1. Calculate the minimum run size 
+2. Split the array into sub-arrays with sizes equal to the run size
+3. Perform insertion sort on each of these sub arrays
+4. Merge the sub-arrays using the same method as the merge sort 
+5. Repeatedly merge the sub-arrays until only one sorted array is lefy
+
+Time Complexity: O(n log n)<br>
+Space Complexity: O(n) 
+
+#### A note on the Space Complexity 
+
+An O(1) space complexity can be achieved by merging the sub arrays in-place. 
+
+#### Calculating run size 
+
+Tim sort calculated the run size between the rangge of 32 - 64 (inclusive). <br>
+For arrays that are smaller than 64, the algorithm just performs an insersion sort on the whole array. <br>
+The process Tim Sort uses to calculate the run size can be found [here.](https://en.wikipedia.org/wiki/Timsort)
 
 ---
 
