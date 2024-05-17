@@ -3,15 +3,16 @@
 Below is a table containing the sorting algorithms this project visualises. <br>
 The links in the table direct to a information about the algorithm and its implementation steps. 
 
-| Algorithm                           |
-| ----------------------------------- |
-| [Bubble Sort](#bubble-sort)         |
-| [Merge Sort](#merge-sort)           |
-| [Bogo Sort](#bogo-sort)             |
-| [Quick Sort](#quick-sort)           |
-| [Selection Sort](#selection-sort)   |
-| [Insertion Sort](#insertion-sort)   |
-| [Tim Sort](#tim-sort)               |
+| Algorithm                                     |
+| --------------------------------------------- |
+| [Bubble Sort](#bubble-sort)                   |
+| [Merge Sort](#merge-sort)                     |
+| [Bogo Sort](#bogo-sort)                       |
+| [Quick Sort](#quick-sort)                     |
+| [Selection Sort](#selection-sort)             |
+| [Insertion Sort](#insertion-sort)             |
+| [Tim Sort](#tim-sort)                         |
+| [Cocktail Shaker Sort](#cocktail-shaker-sort) |
 
 ---
 
@@ -159,6 +160,24 @@ An O(1) space complexity can be achieved by merging the sub arrays in-place.
 Tim sort calculated the run size between the rangge of 32 - 64 (inclusive). <br>
 For arrays that are smaller than 64, the algorithm just performs an insersion sort on the whole array. <br>
 The process Tim Sort uses to calculate the run size can be found [here.](https://en.wikipedia.org/wiki/Timsort)
+
+--- 
+
+### Cocktail Shaker Sort 
+
+Algorithm steps:
+
+1. Set a variables named swapped to true 
+2. While swapped is true do, 
+3. Set swapped to false
+4. Iterate from the beginning of the array until the end comparing adjacent elements
+5. If the element to the left if larger than the element to the right swap them and set swapped to true
+6. If swapped is false, halt algorithm 
+7. Iterate from the end of the array to the beginning comparing adjacent elements
+8. If the element to the left if larger than the element to the right swap them and set swapped to true
+
+Time Complexity: O(n<sup>2</sup>)<br>
+Space Complexity: O(1) 
 
 ---
 
