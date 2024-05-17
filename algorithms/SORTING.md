@@ -11,7 +11,7 @@ The links in the table direct to a information about the algorithm and its imple
 | [Quick Sort](#quick-sort)           |
 | [Selection Sort](#selection-sort)   |
 | [Insertion Sort](#insertion-sort)   |
-| [Tim Sort]()         |
+| [Tim Sort](#tim-sort)               |
 
 ---
 
