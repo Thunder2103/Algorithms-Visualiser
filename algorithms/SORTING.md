@@ -181,4 +181,21 @@ Space Complexity: O(1)
 
 ---
 
+### Gnome Sort 
+
+Algorithm steps:
+
+1. Create a variables called pos and assign it the value 0 
+2. While pos is less than the length of the array do 
+3. if pos is equal to 0, increment pos by one 
+4. if the element at pos is less than the element at pos - 1, swap them and decrement pos by one 
+5. else increment pos by one 
+
+Time Complexity: O(n<sup>2</sup>)<br>
+Space Complexity: O(1) 
+
+---
+
+
+
 Go to [README.md](../README.md)
