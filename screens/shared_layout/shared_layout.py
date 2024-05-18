@@ -14,8 +14,6 @@ import tkinter as tk
 from tkinter import ttk
 import random
 import threading
-import time 
-
 
 class SharedLayout(sc.ScreenTemplate):
     
@@ -69,18 +67,18 @@ class SharedLayout(sc.ScreenTemplate):
     
     # Creates a slider that allows users to adjust an algorithms speed
     def __createSpeedAdjuster(self) -> None:
-        # Creates a slider that goes 0 to 1 then 2
-        # It has three options correlating to the three speeds; slow, medium, fast 
-        # Every time the sliders value is changed the setDelay() method is called
+        # Creates a slider that goes from the maximum delay to the minmum delay 
+        # Every time the sliders value is changed the updateDelay() method is called to update the value seen on screen
         self.__speedSlider = tk.Scale(self.getOptionsWidgetFrame(), from_ = self.__model.getMaxDelay(), to_ = self.__model.getMinDelay(), resolution=self.__model.getDefaultResolution(), 
                                       length = self.getOptionsWidgetFrame().winfo_width(), orient = "horizontal", showvalue = False, 
                                       bg =  "white", highlightbackground = "white", command = self.__updateDelay)
         self.__speedSlider.pack(pady = (10, 0))  
         self.__speedSlider.set(self.__model.getMaxDelay())
+        # When the user stops moving the slider the slider is updated in the DataModel class 
         self.__speedSlider.bind("<ButtonRelease-1>", lambda _ : self.__setDelay()) 
         # Time units of the delay 
         self.__sliderUnitsText = "Seconds" 
-        # Used to check if units needs to be converted to seconds when algorithm is run 
+        # Used to check if units needs to be converted to milliseconds when algorithm is run 
         self.__isMilliSeconds = False
     
     # Creates a slider that allows users to alter an arrays size
@@ -138,7 +136,7 @@ class SharedLayout(sc.ScreenTemplate):
         # Generates decimal between 0 and 1 
         # If decimal is less than or equal to 0.5 make the target in the array 
         # Gives a roughly 50-50 chance for target to be in the array or out the array
-        if(random.random() <= 0.5): return self.targetIn()
+        if(random.random() < 0.5): return self.targetIn()
         # Else call function to generate the target so it is not in the array
         else: return self.targetOut()
     

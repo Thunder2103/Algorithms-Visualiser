@@ -17,6 +17,4 @@ class SortController():
         # Disables the button that called the function and enables the currently disabled button
         self.__screen.disableEnableButtons(self.__dataModel.isAscending())
 
-    
-                    
 # Listen to Give Me Novacaine by Green Day

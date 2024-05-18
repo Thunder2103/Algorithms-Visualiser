@@ -46,7 +46,8 @@ class IntroductionScreen(sc.Screen):
         buttonsFrame = tk.Frame(self.__contentFrame, bg = "white")
         buttonsFrame.pack()
         # Navigate to path finding algorithms screen
-        tk.Button(buttonsFrame, text = "Path Finding", font = (self.__FONT, 12), height = 2, width = 15, relief = "solid")\
+        tk.Button(buttonsFrame, text = "Path Finding", font = (self.__FONT, 12), height = 2, width = 15, relief = "solid", 
+                  command = lambda : [self.__window.removeScreen(), self.__window.loadScreen(sc.TraversalScreen(self.__window, self))])\
             .pack(pady = (25, 0))  
         # Navigate to array searching screen
         tk.Button(buttonsFrame, text = "Array Searching",  font = (self.__FONT, 12), height = 2, width = 15, relief = "solid", \

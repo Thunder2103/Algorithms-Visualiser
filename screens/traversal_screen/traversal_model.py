@@ -1,0 +1,21 @@
+# If this isn't at the top the program breaks :/
+# If the file is run as is message this returned and program exits
+if(__name__ == "__main__"):
+    print("This is file shouldn't be run on it's own. \nIt should be imported only.")
+    exit()
+
+class TraversalModel():
+    def __init__(self): 
+        self.__controller = None  
+        self.__minDelay = 1 
+        self.__maxDelay = 1000
+        self.__resolution = 1
+
+    def addController(self, controller): 
+        self.__controller = controller 
+    
+    def getMinDelay(self): return self.__minDelay
+    def getMaxDelay(self): return self.__maxDelay  
+    def getResolution(self): return self.__resolution 
+
+# Listen to Jigsaws Falling Into Place by Radiohead
