@@ -18,7 +18,7 @@ from ..algorithm import Algorithm
 # Makes sure only files containing the algorithms are selected  
 # Provided files containing algorithms follow the naming convention -> (name)_(algorithm type).py
 def filterFileNames(file : str, algorithmType : str) -> bool:
-    return True if file.split("_")[1] == f"{algorithmType}.py" else False 
+    return True if file.split("_")[-1] == f"{algorithmType}.py" else False 
 
 # Checks that relevant files follow inheritance and naming convenvtions 
 # Checks if any class name has words "Algorithm" or "Search" in them
@@ -55,7 +55,6 @@ def getAlgorithmNames(modules : list, algorithmsType : str) -> tuple:
     classType = algorithmsType.capitalize()
     # Imports relevant modules and gets relevant classes
     for module in modules:
-
         # Imports module
         try:
             algorithmModule = importlib.import_module(f"algorithms.{algorithmsType}ing." + module)

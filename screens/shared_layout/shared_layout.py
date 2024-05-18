@@ -193,7 +193,7 @@ class SharedLayout(sc.ScreenTemplate):
         return self.__algorithmOptions.get()  
     
     def __getAlgorithmType(self) -> str: 
-        return self.__algorithmOptions.get().split(" ")[1].lower()
+        return self.__algorithmOptions.get().split(" ")[-1].lower()
     
     def __setDelay(self) -> None:  
         if(self.__isMilliSeconds):  

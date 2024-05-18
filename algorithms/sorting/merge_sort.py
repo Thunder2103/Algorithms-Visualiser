@@ -18,7 +18,7 @@ class MergeSort(Algorithm):
     def mergeSort(self) -> int: 
         # Call function to peform splitting into sub arrays 
         self.mergeSortHelper(0, len(self.getArray()) - 1)
-        self.coolEndingAnimation()
+        self.coolEndingAnimation() 
         return 1
     
     def mergeSortHelper(self, leftPtr, rightPtr):   

@@ -38,7 +38,8 @@ class SelectionSort(Algorithm):
         
         self.updateArrayOnScreen()
         self.delay()
-        self.coolEndingAnimation()
+        self.coolEndingAnimation() 
+        return 1
     
     # Shifts elements between the specified indexes one place right 
     def __shiftRight(self, start, end): 

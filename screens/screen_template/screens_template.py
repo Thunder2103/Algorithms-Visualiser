@@ -151,5 +151,4 @@ class ScreenTemplate():
     def getHomeButton(self) -> tk.Button:
         return self.__homeButton
 
- 
 # Listen to Under You by Foo Fighters

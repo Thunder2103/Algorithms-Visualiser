@@ -78,4 +78,4 @@ class SharedModel():
     # Gets the buffer used when selecting a target outside the array 
     def getBuffer(self): return self.__buffer
 
-# Listen to Last Nite by The Strokes
+# Listen to The Adults Are Talking by The Strokes
