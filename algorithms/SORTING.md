@@ -5,21 +5,48 @@ The links in the table direct to a information about the algorithm and its imple
 
 | Algorithm                                     |
 | --------------------------------------------- |
-| [Bubble Sort](#bubble-sort)                   |
-| [Merge Sort](#merge-sort)                     |
 | [Bogo Sort](#bogo-sort)                       |
-| [Quick Sort](#quick-sort)                     |
-| [Selection Sort](#selection-sort)             |
-| [Insertion Sort](#insertion-sort)             |
-| [Tim Sort](#tim-sort)                         |
+| [Brick Sort](#brick-sort)                     | 
+| [Bubble Sort](#bubble-sort)                   |
 | [Cocktail Shaker Sort](#cocktail-shaker-sort) |
 | [Gnome Sort](#gnome-sort)                     |
-| [Brick Sort](#brick-sort)                     | 
+| [Insertion Sort](#insertion-sort)             |
+| [Merge Sort](#merge-sort)                     |
+| [Quick Sort](#quick-sort)                     |
+| [Selection Sort](#selection-sort)             |
+| [Tim Sort](#tim-sort)                         |
 
 ---
+### Bogo Sort:
 
+Algorithm Steps: 
+
+1. Randomly shuffle array 
+2. If array is sorted, stop.
+3. If array is not sorted repeat step 1. 
+
+Time Complexity: O((n + 1)!)<br>
+Space Complexity: O(1)
+
+---
+### Brick Sort 
+
+Algorithm steps:
+
+1. Create a variable names swapped and set it to true 
+2. While swapped is true, do 
+3. Set swapped to false 
+4. Iterate through the odd indexes of the array 
+5. If the element at the current odd index is greater than the element in the adjacent index, swap the elements and set swapped to true
+6. Iterate through the even indexes of the array 
+7. If the element at the current even index is greater than the element in the adjacent index, swap the elements and set swapped to true
+
+Time Complexity: O(n<sup>2</sup>)<br>
+Space Complexity: O(1) 
+
+---
 ### Bubble Sort:
---- 
+
 Algorithm steps: 
 
 1. Loop through the array from left to right
@@ -42,9 +69,54 @@ n -> length of the array <br>
 i -> index of current element 
 
 ---
+### Cocktail Shaker Sort 
 
-### Merge Sort:
+Algorithm steps:
+
+1. Set a variable named swapped to true 
+2. While swapped is true do, 
+3. Set swapped to false
+4. Iterate from the beginning of the array until the end comparing adjacent elements
+5. If the element to the left if larger than the element to the right swap them and set swapped to true
+6. If swapped is false, halt algorithm 
+7. Iterate from the end of the array to the beginning comparing adjacent elements
+8. If the element to the left if larger than the element to the right swap them and set swapped to true
+
+Time Complexity: O(n<sup>2</sup>)<br>
+Space Complexity: O(1) 
+
 ---
+### Gnome Sort 
+
+Algorithm steps:
+
+1. Create a variable called pos and assign it the value 0 
+2. While pos is less than the length of the array do 
+3. if pos is equal to 0, increment pos by one 
+4. if the element at pos is less than the element at pos - 1, swap them and decrement pos by one 
+5. else increment pos by one 
+
+Time Complexity: O(n<sup>2</sup>)<br>
+Space Complexity: O(1) 
+
+---
+### Insertion Sort:
+
+Algorithm Steps: 
+
+1. Consider the first element in the array as already sorted 
+2. Iterate through the array (starting at the second element)
+3. Iterate from the current index minus one to the first index of the array 
+4. Compare the current unsorted element with the current element in the sorted array 
+5. If the unsorted element is greater than the sorted element, swap them 
+6. If sorted element is less than the unsorted, break the nested loop (the unsorted element is in the right place)
+
+Time Complexity: O(n<sup>2</sup>)<br>
+Space Complexity: O(1)
+
+---
+### Merge Sort:
+
 Algorithm Steps:
 
 1. Divide the array into sub-arrays of size one. (Arrays of size one are considered sorted)
@@ -60,23 +132,7 @@ Space Complexity: O(n)
 An O(1) space complexity can be achieved by merging the sub arrays in-place. 
 
 ---
-
-### Bogo Sort:
----
-
-Algorithm Steps: 
-
-1. Randomly shuffle array 
-2. If array is sorted, stop.
-3. If array is not sorted repeat step 1. 
-
-Time Complexity: O((n + 1)!)<br>
-Space Complexity: O(1)
-
----
-
 ### Quick Sort:
----
 
 Algorithm Steps: 
 
@@ -104,9 +160,7 @@ If the pivot is not chosen efficiently, the worst case time complexity becomes O
 - The pivot is the middle value (element in index 1)
 
 ---
-
 ### Selection Sort:
----
 
 Algorithm Steps: 
 
@@ -121,26 +175,7 @@ Time Complexity: O(n<sup>2</sup>)<br>
 Space Complexity: O(1)
 
 ---
-
-### Insertion Sort:
----
-
-Algorithm Steps: 
-
-1. Consider the first element in the array as already sorted 
-2. Iterate through the array (starting at the second element)
-3. Iterate from the current index minus one to the first index of the array 
-4. Compare the current unsorted element with the current element in the sorted array 
-5. If the unsorted element is greater than the sorted element, swap them 
-6. If sorted element is less than the unsorted, break the nested loop (the unsorted element is in the right place)
-
-Time Complexity: O(n<sup>2</sup>)<br>
-Space Complexity: O(1)
-
----
-
 ### Tim Sort:
----
 
 Algorithm Steps: 
 
@@ -164,57 +199,5 @@ For arrays that are smaller than 64, the algorithm just performs an insersion so
 The process Tim Sort uses to calculate the run size can be found [here.](https://en.wikipedia.org/wiki/Timsort)
 
 --- 
-
-### Cocktail Shaker Sort 
-
-Algorithm steps:
-
-1. Set a variable named swapped to true 
-2. While swapped is true do, 
-3. Set swapped to false
-4. Iterate from the beginning of the array until the end comparing adjacent elements
-5. If the element to the left if larger than the element to the right swap them and set swapped to true
-6. If swapped is false, halt algorithm 
-7. Iterate from the end of the array to the beginning comparing adjacent elements
-8. If the element to the left if larger than the element to the right swap them and set swapped to true
-
-Time Complexity: O(n<sup>2</sup>)<br>
-Space Complexity: O(1) 
-
----
-
-### Gnome Sort 
-
-Algorithm steps:
-
-1. Create a variable called pos and assign it the value 0 
-2. While pos is less than the length of the array do 
-3. if pos is equal to 0, increment pos by one 
-4. if the element at pos is less than the element at pos - 1, swap them and decrement pos by one 
-5. else increment pos by one 
-
-Time Complexity: O(n<sup>2</sup>)<br>
-Space Complexity: O(1) 
-
----
-
-### Brick Sort 
-
-Algorithm steps:
-
-1. Create a variable names swapped and set it to true 
-2. While swapped is true, do 
-3. Set swapped to false 
-4. Iterate through the odd indexes of the array 
-5. If the element at the current odd index is greater than the element in the adjacent index, swap the elements and set swapped to true
-6. Iterate through the even indexes of the array 
-7. If the element at the current even index is greater than the element in the adjacent index, swap the elements and set swapped to true
-
-Time Complexity: O(n<sup>2</sup>)<br>
-Space Complexity: O(1) 
-
----
-
-
 
 Go to [README.md](../README.md)
