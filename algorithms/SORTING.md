@@ -13,6 +13,8 @@ The links in the table direct to a information about the algorithm and its imple
 | [Insertion Sort](#insertion-sort)             |
 | [Tim Sort](#tim-sort)                         |
 | [Cocktail Shaker Sort](#cocktail-shaker-sort) |
+| [Gnome Sort](#gnome-sort)                     |
+| [Brick Sort](#brick-sort)                     | 
 
 ---
 
@@ -167,7 +169,7 @@ The process Tim Sort uses to calculate the run size can be found [here.](https:/
 
 Algorithm steps:
 
-1. Set a variables named swapped to true 
+1. Set a variable named swapped to true 
 2. While swapped is true do, 
 3. Set swapped to false
 4. Iterate from the beginning of the array until the end comparing adjacent elements
@@ -185,11 +187,28 @@ Space Complexity: O(1)
 
 Algorithm steps:
 
-1. Create a variables called pos and assign it the value 0 
+1. Create a variable called pos and assign it the value 0 
 2. While pos is less than the length of the array do 
 3. if pos is equal to 0, increment pos by one 
 4. if the element at pos is less than the element at pos - 1, swap them and decrement pos by one 
 5. else increment pos by one 
+
+Time Complexity: O(n<sup>2</sup>)<br>
+Space Complexity: O(1) 
+
+---
+
+### Brick Sort 
+
+Algorithm steps:
+
+1. Create a variable names swapped and set it to true 
+2. While swapped is true, do 
+3. Set swapped to false 
+4. Iterate through the odd indexes of the array 
+5. If the element at the current odd index is greater than the element in the adjacent index, swap the elements and set swapped to true
+6. Iterate through the even indexes of the array 
+7. If the element at the current even index is greater than the element in the adjacent index, swap the elements and set swapped to true
 
 Time Complexity: O(n<sup>2</sup>)<br>
 Space Complexity: O(1) 

@@ -45,5 +45,4 @@ class GnomeSort(Algorithm):
         self.coolEndingAnimation()
         return 1 
         
-        
-    
+# Listen to Smells Like Teen Spirit by Nirvana 
