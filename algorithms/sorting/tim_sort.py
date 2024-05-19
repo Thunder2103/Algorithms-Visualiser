@@ -17,7 +17,7 @@ class TimSort(Algorithm):
         return "Tim Sort"  
     
     # Tim Sort Algorithm
-    def timSort(self) -> int:    
+    def timSort(self) -> int:     
         n = len(self.getArray()) 
         # Calculates the size of the run 
         runSize = self.__calcMinRinSize(n)
@@ -26,23 +26,27 @@ class TimSort(Algorithm):
             # Perform insertion sort on each run 
             self.insertionSort(i, min((i + runSize) - 1, n - 1))
 
+        initialRunSize = runSize
         # While run size is less than the size of the array
         while(runSize < n):  
             # Iterate through each pair of sub arrays
             for i in range(0, n, runSize * 2):  
-                # Ending index of the right sub array
+                
+                # Ending index of the right sub array 
                 rightPtr = min(i + (runSize * 2) - 1, n - 1) 
+            
                 # Starting index of the right sub array
-                rightArrStart = min(i + runSize, n - 1)
-                # There can be an odd number of runs meaning one sub array is leftover and can't be merged
-                # It's pointless to merge a sub array with itself 
-                # So this check make sure merging is performed on two sub arrays only 
-                if(rightArrStart < rightPtr):
-                    self.mergeSubArrays(i, rightArrStart, rightPtr) 
-            # Doubles run size has now the number of sub arrays as halved 
+                if(rightPtr == n - 1 and n % initialRunSize): 
+                    rightArrStart = n - n % initialRunSize
+                rightArrStart = min(i + runSize, n - 1)  
+
+                # Merge the sub arrays 
+                self.mergeSubArrays(i, rightArrStart, rightPtr) 
+            
+            # Doubles run size as now the number of sub arrays as halved 
             # but they are now double in size 
             runSize *= 2 
-        
+
         self.updateArrayOnScreen()
         self.delay()
         self.coolEndingAnimation()
@@ -72,8 +76,9 @@ class TimSort(Algorithm):
         # Iterate until index = leftPtr
         while(index != leftPtr):   
             # Shift element at index one place to the left 
-            self.swapElements(index, index - 1) 
+            self.swapElements(index, index - 1)
             index -=  1
+        self.changeElement(leftPtr, index)
         self.changeElement(index, value)
         self.changeBarColour(rightPtr, "red")
         self.updateArrayOnScreen()
@@ -96,7 +101,7 @@ class TimSort(Algorithm):
             # until the unsorted element is in the right place 
             while(leftPtr >= start and self.isSwapNeeded(leftPtr, rightPtr)):
                 # Swap elements at the specified indexes
-                self.swapElements(leftPtr, rightPtr)
+                self.swapElements(leftPtr, rightPtr) 
                 # Adjust the pointers
                 leftPtr -= 1
                 rightPtr -= 1
@@ -122,3 +127,4 @@ class TimSort(Algorithm):
         return runSize
 
 # Listen to No Surprises by Radiohead
+
