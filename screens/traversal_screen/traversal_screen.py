@@ -28,7 +28,7 @@ class TraversalScreen(sc.Screen, sc.ScreenTemplate):
     def __createOptions(self) -> None: 
         self.__createAlgorithmOptions() 
         self.__createSpeedAdjuster()
-
+        self.__createAddNodeButton()
         self.__createStopSolveButtons()
 
     # Create the combo box that displays the algorithms users can see visualised 
@@ -57,8 +57,25 @@ class TraversalScreen(sc.Screen, sc.ScreenTemplate):
         self.__speedSlider.config(label = f"Delay: {value} Milliseconds")  
 
     def __setDelay(self) -> None:
-        pass  
+        pass   
 
+    # Creates the button that lets users add nodes to the canvas 
+    def __createAddNodeButton(self) -> None: 
+        tk.Button(self.getOptionsWidgetFrame(), text="Add a Node.", width=12, relief="solid", 
+                  font = (self.getFont(), self.getFontSize()), command=self.__addNode).pack(pady = (10, 0))
+    
+    # Draws a circle (node) on the canvas 
+    def __addNode(self): 
+        circle = self.getCanvas().create_oval(5, 5, 30, 30, outline = "black", fill="blue") 
+        self.getCanvas().tag_bind(circle, "<Button-1>", lambda event: self.__onClick(event, circle))
+        # Updates screen so bars can be seen onscreen
+        self.getWindow().update()
+    
+    def __onClick(self, event, circle): 
+        print(event.x, event.y)
+        print(circle)
+        self.getCanvas().move(circle, 50, 0)
+        self.getWindow().update()
 
     # Creates buttons that lets user execute algorithms or stop them
     def __createStopSolveButtons(self) -> None:

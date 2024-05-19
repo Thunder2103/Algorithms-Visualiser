@@ -141,7 +141,7 @@ class ScreenTemplate():
     def getOptionsWidgetFrame(self) -> tk.Frame: return self.__optionsWidgetsFrame 
     
     # Gets canvas array is displayed in
-    def getArrayCanvas(self) -> tk.Canvas: return self.__arrayCanvas 
+    def getCanvas(self) -> tk.Canvas: return self.__arrayCanvas 
 
     # Loads the home screen 
     def loadHomeScreen(self) -> None:

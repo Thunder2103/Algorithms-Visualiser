@@ -23,7 +23,7 @@ class SharedController():
     # Largest number that can be displayed on screen
     def __calculateMaximumPixels(self) -> int:
         # Two is taken from the canvas' height because the canvas widget has a border where no pixels are drawn   
-        return self.__screen.getArrayCanvas().winfo_height() - 2 
+        return self.__screen.getCanvas().winfo_height() - 2 
 
     # Finds the best distance between the displayed array and the edges of canvas, 
     # to maximise the number of elements and centre the array as best as possible
@@ -44,11 +44,11 @@ class SharedController():
 
     # Calculates maximum number of bars that can be displayed given the padding
     def __calculateMaxBars(self, barWidth, padding) -> int:
-        return ((self.__screen.getArrayCanvas().winfo_width()) - (padding * 2)) / (barWidth + self.__model.getBarDistance())
+        return ((self.__screen.getCanvas().winfo_width()) - (padding * 2)) / (barWidth + self.__model.getBarDistance())
 
     # Calculates the padding to centre the array of a given size
     def __calculatePadding(self) -> int:
-        return ((self.__screen.getArrayCanvas().winfo_width() - (len(self.__dataModel.getArray()) * (self.__model.getBarDistance() 
+        return ((self.__screen.getCanvas().winfo_width() - (len(self.__dataModel.getArray()) * (self.__model.getBarDistance() 
                                                                                       + self.__model.getBarWidth()))) // 2) + self.__model.getBarDistance()
     
     # Adjusts size of bars so amount of elements can fit on screen and stay in the canvas' centre
@@ -86,20 +86,20 @@ class SharedController():
                 # Bottom left co-ord
                 x1 = x * self.__model.getBarDistance() + x * self.__model.getBarWidth() + self.__padding
                 # Top left coord
-                y1 = self.__screen.getArrayCanvas().winfo_height() - (y * self.yStretch)  
+                y1 = self.__screen.getCanvas().winfo_height() - (y * self.yStretch)  
                 # Bottom right coord
                 x2 = x * self.__model.getBarDistance() + x * self.__model.getBarWidth()+ self.__model.getBarWidth() + self.__padding
                 # Top right coord
-                y2 = self.__screen.getArrayCanvas().winfo_height() 
+                y2 = self.__screen.getCanvas().winfo_height() 
                 # Chooses correct colour for bar to be filled in with
-                self.__screen.getArrayCanvas().create_rectangle(x1, y1, x2, y2, fill = self.__dataModel.getBarColour(x)) 
+                self.__screen.getCanvas().create_rectangle(x1, y1, x2, y2, fill = self.__dataModel.getBarColour(x)) 
             self.__dataModel.resetBarColours()
             # Updates screen so bars can be seen onscreen
             self.__screen.getWindow().update() 
       
     # Wipes everything off the canvas
     def __clearDisplayedArray(self) -> None:
-        self.__screen.getArrayCanvas().delete("all")
+        self.__screen.getCanvas().delete("all")
 
     # Adds amount of elements corresponding to the value
     def __addElements(self, value):
@@ -138,7 +138,7 @@ class SharedController():
         # Bars are only visible if the top right coorindate is less than or equal to the value of maximumPixels - 0.5 
         # So lower can be calculated be rearranging the y1 coord equation to solve for y
         # 0.5 was rounded up to 1 because it looks nicer
-        lowerBound = round((self.__screen.getArrayCanvas().winfo_height() - self.__model.getMaximumPixels() + 1) 
+        lowerBound = round((self.__screen.getCanvas().winfo_height() - self.__model.getMaximumPixels() + 1) 
                                   / (self.__model.getMaximumPixels() / self.__model.getHigherBound()))  
         self.__model.setLowerBound(lowerBound)
         # Draw the first element on screen
