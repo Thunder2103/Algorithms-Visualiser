@@ -10,12 +10,20 @@ class TraversalModel():
         self.__minDelay = 1 
         self.__maxDelay = 1000
         self.__resolution = 1
-
+        self.__initialNodeCoords = (5, 30)
+        self.__circleRadius = abs(self.__initialNodeCoords[1] - self.__initialNodeCoords[0])   
+        self.__canvasUpperBoundOffset = 4
+        self.__canvasLowerBoundOffset = 2
+        
     def addController(self, controller): 
         self.__controller = controller 
     
     def getMinDelay(self): return self.__minDelay
     def getMaxDelay(self): return self.__maxDelay  
-    def getResolution(self): return self.__resolution 
+    def getResolution(self): return self.__resolution   
+    def getInitialCoords(self): return self.__initialNodeCoords
+    def getRadius(self): return self.__circleRadius
+    def getCanvasUpperBoundOffset(self) -> int: return self.__canvasUpperBoundOffset
+    def getCanvasLowerBoundOffset(self) -> int: return self.__canvasLowerBoundOffset
 
 # Listen to Jigsaws Falling Into Place by Radiohead

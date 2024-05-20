@@ -6,9 +6,11 @@ if(__name__ == "__main__"):
 
 import screens as sc 
 import tkinter as tk 
+from tkinter import Event
 from tkinter import ttk 
 from .traversal_controller import TaversalController
 from .traversal_model import TraversalModel
+from  canvas_node import CanvasNode
 
 
 class TraversalScreen(sc.Screen, sc.ScreenTemplate): 
@@ -62,20 +64,56 @@ class TraversalScreen(sc.Screen, sc.ScreenTemplate):
     # Creates the button that lets users add nodes to the canvas 
     def __createAddNodeButton(self) -> None: 
         tk.Button(self.getOptionsWidgetFrame(), text="Add a Node.", width=12, relief="solid", 
-                  font = (self.getFont(), self.getFontSize()), command=self.__addNode).pack(pady = (10, 0))
-    
+                  font = (self.getFont(), self.getFontSize()), command=self.__spawnNode).pack(pady = (10, 0))
+
     # Draws a circle (node) on the canvas 
-    def __addNode(self): 
-        circle = self.getCanvas().create_oval(5, 5, 30, 30, outline = "black", fill="blue") 
-        self.getCanvas().tag_bind(circle, "<Button-1>", lambda event: self.__onClick(event, circle))
-        # Updates screen so bars can be seen onscreen
+    def __spawnNode(self):  
+        canvas = self.getCanvas() 
+        initialX, initialY = self.__model.getInitialCoords()
+        circle = canvas.create_oval(initialX, initialX, initialY, initialY, outline = "black", fill="blue")  
+        # Add event to let nodes change colour when the mouse hovers over them
+        canvas.tag_bind(circle, "<Enter>", lambda _: self.__changeColourOnHover(circle))
+        canvas.tag_bind(circle, "<Leave>", lambda _: self.__changeColourOnLeave(circle)) 
+        # Add event listener to move node when it's dragged by the mouse 
+        canvas.tag_bind(circle, "<B1-Motion>", lambda event: self.__moveNode(event, circle))
+        
+        # Updates screen so node can be seen onscreen
         self.getWindow().update()
+        
+    def __moveNode(self, event : Event, circle : int) -> None:    
+        # Offset to keep center of circle underneath mouse 
+        circleOffset = self.__model.getRadius() // 2
+  
+        # Checks if mouse has gone out of bounds to the left 
+        # Stops the node from moving off the canvas
+        xCoord = max(event.x - circleOffset, self.__model.getCanvasLowerBoundOffset()) 
+        # Checks if mouse has gone out of bounds to the right 
+        # Stops the node from moving off the canvas
+        xCoord = min(xCoord, self.getCanvas().winfo_width() - self.__model.getCanvasUpperBoundOffset() - self.__model.getRadius()) 
+
+        # Checks if mouse has gone out of bounds by going above the canvas
+        # Stops the node from moving off the canvas 
+        yCoord = max(event.y - circleOffset, self.__model.getCanvasLowerBoundOffset()) 
+        # Checks if mouse has gone out of bounds by going below the canvas
+        # Stops the node from moving off the canvas 
+        yCoord = min(yCoord, self.getCanvas().winfo_height() - self.__model.getCanvasUpperBoundOffset() - self.__model.getRadius())
+     
+        # The above could be done in one line but just because it can doesn't mean it should 
+        # Doing it in one line would make the calculations very hard to read 
+
+        # Moves center of the circle to the coordinates specified 
+        self.getCanvas().moveto(circle, xCoord, yCoord) 
+        # Updates screen so node can be seen onscreen
+        self.getWindow().update()
+  
     
-    def __onClick(self, event, circle): 
-        print(event.x, event.y)
-        print(circle)
-        self.getCanvas().move(circle, 50, 0)
-        self.getWindow().update()
+    # Changes the nodes colour the mouse is hovering to red
+    def __changeColourOnHover(self, circle): 
+        self.getCanvas().itemconfig(circle, fill="red") 
+    
+    # Changes the mouse stops hovering over a node it's colour is set to blue 
+    def __changeColourOnLeave(self, circle):
+        self.getCanvas().itemconfig(circle, fill="blue") 
 
     # Creates buttons that lets user execute algorithms or stop them
     def __createStopSolveButtons(self) -> None:
