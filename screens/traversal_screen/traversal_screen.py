@@ -80,33 +80,64 @@ class TraversalScreen(sc.Screen, sc.ScreenTemplate):
         # Updates screen so node can be seen onscreen
         self.getWindow().update()
         
-    def __moveNode(self, event : Event, circle : int) -> None:    
-        # Offset to keep center of circle underneath mouse 
-        circleOffset = self.__model.getRadius() // 2
+    def __moveNode(self, event : Event, circle : int) -> None: 
+        # Radius of the nodes
+        circleRadius = self.__model.getRadius()    
+        # Offset to keep center of circle underneath mouse  
+        circleOffset = circleRadius // 2 
+        # Space that should exist between nodes 
+        spaceBetweenNodes = self.__model.getSpaceBetweenNodes()
+
+        circleCoords = (self.getCanvas().coords(circle)) 
+
   
         # Checks if mouse has gone out of bounds to the left 
         # Stops the node from moving off the canvas
         xCoord = max(event.x - circleOffset, self.__model.getCanvasLowerBoundOffset()) 
         # Checks if mouse has gone out of bounds to the right 
         # Stops the node from moving off the canvas
-        xCoord = min(xCoord, self.getCanvas().winfo_width() - self.__model.getCanvasUpperBoundOffset() - self.__model.getRadius()) 
+        xCoord = min(xCoord, self.getCanvas().winfo_width() - self.__model.getCanvasUpperBoundOffset() - circleRadius) 
 
         # Checks if mouse has gone out of bounds by going above the canvas
         # Stops the node from moving off the canvas 
         yCoord = max(event.y - circleOffset, self.__model.getCanvasLowerBoundOffset()) 
         # Checks if mouse has gone out of bounds by going below the canvas
         # Stops the node from moving off the canvas 
-        yCoord = min(yCoord, self.getCanvas().winfo_height() - self.__model.getCanvasUpperBoundOffset() - self.__model.getRadius())
+        yCoord = min(yCoord, self.getCanvas().winfo_height() - self.__model.getCanvasUpperBoundOffset() - circleRadius)
      
         # The above could be done in one line but just because it can doesn't mean it should 
-        # Doing it in one line would make the calculations very hard to read 
+        # Doing it in one line would make the calculations very hard to read  
+
+
+        # Checks if the node is going to collide with the node to it's left 
+        if(self.__isCollision(circle, xCoord, yCoord, 
+                              xCoord + circleRadius + spaceBetweenNodes, yCoord + circleRadius)):  
+            return
+        if(self.__isCollision(circle, xCoord - spaceBetweenNodes, yCoord, 
+                              xCoord + circleRadius, yCoord + circleRadius)): 
+            return
+        if(self.__isCollision(circle, xCoord, yCoord, 
+                              xCoord + circleRadius, yCoord + circleRadius + spaceBetweenNodes)):  
+            return
+        if(self.__isCollision(circle, xCoord, yCoord - spaceBetweenNodes, 
+                              xCoord + circleRadius, yCoord + circleRadius)): 
+            return
+            
+
 
         # Moves center of the circle to the coordinates specified 
         self.getCanvas().moveto(circle, xCoord, yCoord) 
         # Updates screen so node can be seen onscreen
         self.getWindow().update()
   
-    
+    # Checks if node is going to intersect with another node 
+    def __isCollision(self, circle : int, x :int, y : int, x2 : int, y2: int) -> bool: 
+        overlapping =  self.getCanvas().find_overlapping(x, y , x2, y2) 
+        numOverlapping = len(overlapping)
+        return True if numOverlapping > 1 or (numOverlapping == 1 and circle not in overlapping) else False
+
+
+
     # Changes the nodes colour the mouse is hovering to red
     def __changeColourOnHover(self, circle): 
         self.getCanvas().itemconfig(circle, fill="red") 

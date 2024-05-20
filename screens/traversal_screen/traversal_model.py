@@ -14,6 +14,7 @@ class TraversalModel():
         self.__circleRadius = abs(self.__initialNodeCoords[1] - self.__initialNodeCoords[0])   
         self.__canvasUpperBoundOffset = 4
         self.__canvasLowerBoundOffset = 2
+        self.__nodesSpacingOffset = 20
         
     def addController(self, controller): 
         self.__controller = controller 
@@ -24,6 +25,7 @@ class TraversalModel():
     def getInitialCoords(self): return self.__initialNodeCoords
     def getRadius(self): return self.__circleRadius
     def getCanvasUpperBoundOffset(self) -> int: return self.__canvasUpperBoundOffset
-    def getCanvasLowerBoundOffset(self) -> int: return self.__canvasLowerBoundOffset
+    def getCanvasLowerBoundOffset(self) -> int: return self.__canvasLowerBoundOffset 
+    def getSpaceBetweenNodes(self) -> int: return self.__nodesSpacingOffset
 
 # Listen to Jigsaws Falling Into Place by Radiohead
