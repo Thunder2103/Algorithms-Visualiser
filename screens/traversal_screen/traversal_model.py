@@ -10,8 +10,12 @@ class TraversalModel():
         self.__minDelay = 1 
         self.__maxDelay = 1000
         self.__resolution = 1
-        self.__initialNodeCoords = (5, 30)
-        self.__circleRadius = abs(self.__initialNodeCoords[1] - self.__initialNodeCoords[0])   
+        self.__initialX = 5
+        self.__intialY = 5
+        self.__circleSize = 25
+        self.__initialNodeCoords = (self.__initialX, self.__intialY, 
+                                    self.__initialX + self.__circleSize, 
+                                    self.__intialY + self.__circleSize)
         self.__canvasUpperBoundOffset = 4
         self.__canvasLowerBoundOffset = 2
         self.__nodesSpacingOffset = 20
@@ -19,11 +23,12 @@ class TraversalModel():
     def addController(self, controller): 
         self.__controller = controller 
     
+    # Getters and setters 
     def getMinDelay(self): return self.__minDelay
     def getMaxDelay(self): return self.__maxDelay  
     def getResolution(self): return self.__resolution   
     def getInitialCoords(self): return self.__initialNodeCoords
-    def getRadius(self): return self.__circleRadius
+    def getCircleSize(self): return self.__circleSize
     def getCanvasUpperBoundOffset(self) -> int: return self.__canvasUpperBoundOffset
     def getCanvasLowerBoundOffset(self) -> int: return self.__canvasLowerBoundOffset 
     def getSpaceBetweenNodes(self) -> int: return self.__nodesSpacingOffset

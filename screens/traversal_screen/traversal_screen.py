@@ -6,12 +6,9 @@ if(__name__ == "__main__"):
 
 import screens as sc 
 import tkinter as tk 
-from tkinter import Event
 from tkinter import ttk 
 from .traversal_controller import TaversalController
 from .traversal_model import TraversalModel
-from  canvas_node import CanvasNode
-
 
 class TraversalScreen(sc.Screen, sc.ScreenTemplate): 
     def initScreen(self) -> None:
@@ -24,8 +21,11 @@ class TraversalScreen(sc.Screen, sc.ScreenTemplate):
         # Add reference to controller to the model object
         self.__model.addController(self.__controller) 
         # Create the options users can interact with 
-        self.__createOptions()
-
+        self.__createOptions()  
+        
+        # Draws the circle used to check for collisions on the canvas
+        self.__controller.createBoundaryCircle()
+        
     # Creates the widgets that allows users to toggle the visualisers settings
     def __createOptions(self) -> None: 
         self.__createAlgorithmOptions() 
@@ -63,88 +63,13 @@ class TraversalScreen(sc.Screen, sc.ScreenTemplate):
 
     # Creates the button that lets users add nodes to the canvas 
     def __createAddNodeButton(self) -> None: 
-        tk.Button(self.getOptionsWidgetFrame(), text="Add a Node.", width=12, relief="solid", 
-                  font = (self.getFont(), self.getFontSize()), command=self.__spawnNode).pack(pady = (10, 0))
-
-    # Draws a circle (node) on the canvas 
-    def __spawnNode(self):  
-        canvas = self.getCanvas() 
-        initialX, initialY = self.__model.getInitialCoords()
-        circle = canvas.create_oval(initialX, initialX, initialY, initialY, outline = "black", fill="blue")  
-        # Add event to let nodes change colour when the mouse hovers over them
-        canvas.tag_bind(circle, "<Enter>", lambda _: self.__changeColourOnHover(circle))
-        canvas.tag_bind(circle, "<Leave>", lambda _: self.__changeColourOnLeave(circle)) 
-        # Add event listener to move node when it's dragged by the mouse 
-        canvas.tag_bind(circle, "<B1-Motion>", lambda event: self.__moveNode(event, circle))
-        
-        # Updates screen so node can be seen onscreen
-        self.getWindow().update()
-        
-    def __moveNode(self, event : Event, circle : int) -> None: 
-        # Radius of the nodes
-        circleRadius = self.__model.getRadius()    
-        # Offset to keep center of circle underneath mouse  
-        circleOffset = circleRadius // 2 
-        # Space that should exist between nodes 
-        spaceBetweenNodes = self.__model.getSpaceBetweenNodes()
-
-        circleCoords = (self.getCanvas().coords(circle)) 
-
-  
-        # Checks if mouse has gone out of bounds to the left 
-        # Stops the node from moving off the canvas
-        xCoord = max(event.x - circleOffset, self.__model.getCanvasLowerBoundOffset()) 
-        # Checks if mouse has gone out of bounds to the right 
-        # Stops the node from moving off the canvas
-        xCoord = min(xCoord, self.getCanvas().winfo_width() - self.__model.getCanvasUpperBoundOffset() - circleRadius) 
-
-        # Checks if mouse has gone out of bounds by going above the canvas
-        # Stops the node from moving off the canvas 
-        yCoord = max(event.y - circleOffset, self.__model.getCanvasLowerBoundOffset()) 
-        # Checks if mouse has gone out of bounds by going below the canvas
-        # Stops the node from moving off the canvas 
-        yCoord = min(yCoord, self.getCanvas().winfo_height() - self.__model.getCanvasUpperBoundOffset() - circleRadius)
-     
-        # The above could be done in one line but just because it can doesn't mean it should 
-        # Doing it in one line would make the calculations very hard to read  
-
-
-        # Checks if the node is going to collide with the node to it's left 
-        if(self.__isCollision(circle, xCoord, yCoord, 
-                              xCoord + circleRadius + spaceBetweenNodes, yCoord + circleRadius)):  
-            return
-        if(self.__isCollision(circle, xCoord - spaceBetweenNodes, yCoord, 
-                              xCoord + circleRadius, yCoord + circleRadius)): 
-            return
-        if(self.__isCollision(circle, xCoord, yCoord, 
-                              xCoord + circleRadius, yCoord + circleRadius + spaceBetweenNodes)):  
-            return
-        if(self.__isCollision(circle, xCoord, yCoord - spaceBetweenNodes, 
-                              xCoord + circleRadius, yCoord + circleRadius)): 
-            return
-            
-
-
-        # Moves center of the circle to the coordinates specified 
-        self.getCanvas().moveto(circle, xCoord, yCoord) 
-        # Updates screen so node can be seen onscreen
-        self.getWindow().update()
-  
-    # Checks if node is going to intersect with another node 
-    def __isCollision(self, circle : int, x :int, y : int, x2 : int, y2: int) -> bool: 
-        overlapping =  self.getCanvas().find_overlapping(x, y , x2, y2) 
-        numOverlapping = len(overlapping)
-        return True if numOverlapping > 1 or (numOverlapping == 1 and circle not in overlapping) else False
-
-
-
-    # Changes the nodes colour the mouse is hovering to red
-    def __changeColourOnHover(self, circle): 
-        self.getCanvas().itemconfig(circle, fill="red") 
+        self.__addNodeButton = tk.Button(self.getOptionsWidgetFrame(), text="Add a Node.", width=12, relief="solid", 
+                  font = (self.getFont(), self.getFontSize()), command=self.__controller.spawnNode)
+        self.__addNodeButton.pack(pady = (10, 0)) 
     
-    # Changes the mouse stops hovering over a node it's colour is set to blue 
-    def __changeColourOnLeave(self, circle):
-        self.getCanvas().itemconfig(circle, fill="blue") 
+    # Changes the text colour of the add nodes button to the passed colour
+    def changeNodeButtonColour(self, colour : str) -> None: 
+        self.__addNodeButton.config(fg = colour)
 
     # Creates buttons that lets user execute algorithms or stop them
     def __createStopSolveButtons(self) -> None:
