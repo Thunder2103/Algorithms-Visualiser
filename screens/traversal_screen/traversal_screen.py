@@ -23,9 +23,6 @@ class TraversalScreen(sc.Screen, sc.ScreenTemplate):
         # Create the options users can interact with 
         self.__createOptions()  
         
-        # Draws the circle used to check for collisions on the canvas
-        self.__controller.createBoundaryCircle()
-        
     # Creates the widgets that allows users to toggle the visualisers settings
     def __createOptions(self) -> None: 
         self.__createAlgorithmOptions() 
@@ -83,6 +80,9 @@ class TraversalScreen(sc.Screen, sc.ScreenTemplate):
         # Allows user to stop algorithm whilst it's running - button is initially disabled
         self.__pauseResumeButton = tk.Button(algorithmToggleFrame, text = "Pause.", width = 7, relief = "solid", 
                                              font = (self.getFont(), self.getFontSize()), state = "disabled")
-        self.__pauseResumeButton.grid(row = 0, column = 1)  
+        self.__pauseResumeButton.grid(row = 0, column = 1)   
+    
+    def changeCircleColour(self, circle : int, colour : str) -> None: 
+        self.getCanvas().itemconfig(circle, fill = colour)
 
 # Listen to Can't Stop by The Red Hot Chili Peppers 

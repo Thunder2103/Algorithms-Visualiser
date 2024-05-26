@@ -18,7 +18,10 @@ class TraversalModel():
                                     self.__intialY + self.__circleSize)
         self.__canvasUpperBoundOffset = 4
         self.__canvasLowerBoundOffset = 2
-        self.__nodesSpacingOffset = 20
+        self.__nodesSpacingOffset = 20 
+        self.__maxNumNodes = 100  
+        self.__forceConstant = (1e-8) * 9e9 
+        self.__maximumForceDistance = 75 
         
     def addController(self, controller): 
         self.__controller = controller 
@@ -31,6 +34,10 @@ class TraversalModel():
     def getCircleSize(self): return self.__circleSize
     def getCanvasUpperBoundOffset(self) -> int: return self.__canvasUpperBoundOffset
     def getCanvasLowerBoundOffset(self) -> int: return self.__canvasLowerBoundOffset 
-    def getSpaceBetweenNodes(self) -> int: return self.__nodesSpacingOffset
+    def getSpaceBetweenNodes(self) -> int: return self.__nodesSpacingOffset 
+    def getMaxNumNodes(self) -> int: return self.__maxNumNodes
+    def getForceConstant(self) -> float: return self.__forceConstant  
+    def getMaximumForceDistance(self) -> int: return self.__maximumForceDistance 
+ 
 
 # Listen to Jigsaws Falling Into Place by Radiohead
