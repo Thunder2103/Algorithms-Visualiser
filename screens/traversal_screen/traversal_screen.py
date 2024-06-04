@@ -7,7 +7,7 @@ if(__name__ == "__main__"):
 import screens as sc 
 import tkinter as tk 
 from tkinter import ttk 
-from .traversal_controller import TaversalController
+from .traversal_controller import TraversalController
 from .traversal_model import TraversalModel
 
 class TraversalScreen(sc.Screen, sc.ScreenTemplate): 
@@ -17,9 +17,11 @@ class TraversalScreen(sc.Screen, sc.ScreenTemplate):
         # Create model class
         self.__model = TraversalModel() 
         # Create controller class and add referencces to screen and model
-        self.__controller = TaversalController(self, self.__model)
+        self.__controller = TraversalController(self, self.__model)
         # Add reference to controller to the model object
-        self.__model.addController(self.__controller) 
+        self.__model.addController(self.__controller)
+        # Add event handlers to the canvas
+        self.__controller.addCanvasEvents() 
         # Create the options users can interact with 
         self.__createOptions()  
         
@@ -67,6 +69,9 @@ class TraversalScreen(sc.Screen, sc.ScreenTemplate):
     # Changes the text colour of the add nodes button to the passed colour
     def changeNodeButtonColour(self, colour : str) -> None: 
         self.__addNodeButton.config(fg = colour)
+
+    def __createAddEdgeOption(self): 
+        pass 
 
     # Creates buttons that lets user execute algorithms or stop them
     def __createStopSolveButtons(self) -> None:
