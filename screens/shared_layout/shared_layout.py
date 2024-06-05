@@ -55,7 +55,8 @@ class SharedLayout(sc.ScreenTemplate):
     # Creates a combo box which displays all algorithms 
     def __createAlgorithmOptions(self) -> None:
         #combo box, allows the user to choose what algorithm they want
-        self.__algorithmOptions = ttk.Combobox(self.getOptionsWidgetFrame(), textvariable = tk.StringVar(), state = "readonly", font = (self.getFont(), self.getFontSize()),\
+        self.__algorithmOptions = ttk.Combobox(self.getOptionsWidgetFrame(), textvariable = tk.StringVar(), state = "readonly", 
+                                               font = (self.getFont(), self.getFontSize()),\
              width = self.getOptionsWidgetFrame().winfo_width())
         self.__algorithmOptions.set('Select an algorithm.')
         # Removes the blue highlighting when something is selected that annoyed me
@@ -69,7 +70,8 @@ class SharedLayout(sc.ScreenTemplate):
     def __createSpeedAdjuster(self) -> None:
         # Creates a slider that goes from the maximum delay to the minmum delay 
         # Every time the sliders value is changed the updateDelay() method is called to update the value seen on screen
-        self.__speedSlider = tk.Scale(self.getOptionsWidgetFrame(), from_ = self.__model.getMaxDelay(), to_ = self.__model.getMinDelay(), resolution=self.__model.getDefaultResolution(), 
+        self.__speedSlider = tk.Scale(self.getOptionsWidgetFrame(), from_ = self.__model.getMaxDelay(), to_ = self.__model.getMinDelay(), 
+                                      resolution=self.__model.getDefaultResolution(), 
                                       length = self.getOptionsWidgetFrame().winfo_width(), orient = "horizontal", showvalue = False, 
                                       bg =  "white", highlightbackground = "white", command = self.__updateDelay)
         self.__speedSlider.pack(pady = (10, 0))  
@@ -83,7 +85,8 @@ class SharedLayout(sc.ScreenTemplate):
     
     # Creates a slider that allows users to alter an arrays size
     def __createArrayAdjuster(self) -> None:
-        self.__arraySizeSlider = tk.Scale(self.getOptionsWidgetFrame(), from_ = 1, to_ = self.__model.getMaxBars(), length = self.getOptionsWidgetFrame().winfo_width(),\
+        self.__arraySizeSlider = tk.Scale(self.getOptionsWidgetFrame(), from_ = 1, to_ = self.__model.getMaxBars(), 
+                                          length = self.getOptionsWidgetFrame().winfo_width(),\
             orient = "horizontal", bg = "white", highlightbackground = "white", command = self.__controller.adjustArray)
         self.__arraySizeSlider.pack(pady = (10, 0))
 
@@ -92,9 +95,11 @@ class SharedLayout(sc.ScreenTemplate):
         self.__arraySortShuffleFrame = tk.Frame(self.getOptionsWidgetFrame(), bg = "white") 
         self.__arraySortShuffleFrame.pack(pady=(20, 0)) 
 
-        self.__sortButton = tk.Button(self.__arraySortShuffleFrame, text="Sort.", width = 7, relief = "solid", font = (self.getFont(), self.getFontSize()), command=self.__sortArray)
+        self.__sortButton = tk.Button(self.__arraySortShuffleFrame, text="Sort.", width = 7, relief = "solid", 
+                                      font = (self.getFont(), self.getFontSize()), command=self.__sortArray)
         self.__sortButton.grid(row = 0, column = 0, padx = (9,5)) 
-        self.__shuffleButton = tk.Button(self.__arraySortShuffleFrame, text="Shuffle.", width = 7, relief = "solid", font = (self.getFont(), self.getFontSize()), command=self.__shuffleArray)
+        self.__shuffleButton = tk.Button(self.__arraySortShuffleFrame, text="Shuffle.", width = 7, relief = "solid", 
+                                         font = (self.getFont(), self.getFontSize()), command=self.__shuffleArray)
         self.__shuffleButton.grid(row = 0, column = 1, padx = (3,8)) 
     
     # Creates buttons that lets user execute algorithms or stop them
@@ -168,7 +173,8 @@ class SharedLayout(sc.ScreenTemplate):
             # Generates the target based on the setting (Only applicable when searching)
             self.__controller.generateTarget(self.__dataModel.getTargetSetting()) 
             # Call algorithm -> so this program actually has a use
-            self.__algorithmThread = threading.Thread(target=callAlgorithm, args=(self.__dataModel, self.__getAlgorithmChoice(), self.__getAlgorithmType(), 
+            self.__algorithmThread = threading.Thread(target=callAlgorithm, 
+                                                      args=(self.__dataModel, self.__getAlgorithmChoice(), self.__getAlgorithmType(), 
                                                                                   self.__widgetsAlgorithmStops))
             # Start Thread
             self.__algorithmThread.start()

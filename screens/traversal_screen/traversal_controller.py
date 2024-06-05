@@ -293,7 +293,7 @@ class TraversalController():
                 # Resultant force as a scalar 
                 force = self.__model.getForceConstant() / max(dist, 1) 
 
-                # COnvert scalar force to vector form
+                # Convert scalar force to vector form
                 forceX = ((centreX1 - centreX0) / dist) * force
                 forceY = ((centreY1 - centreY0) / dist) * force 
 

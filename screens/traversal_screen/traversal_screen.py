@@ -30,12 +30,14 @@ class TraversalScreen(sc.Screen, sc.ScreenTemplate):
         self.__createAlgorithmOptions() 
         self.__createSpeedAdjuster()
         self.__createAddNodeButton()
+        self.__createAddEdgeOption()
         self.__createStopSolveButtons()
 
     # Create the combo box that displays the algorithms users can see visualised 
     def __createAlgorithmOptions(self) -> None:
         # combo box, allows the user to choose what algorithm they want
-        self.__algorithmOptions = ttk.Combobox(self.getOptionsWidgetFrame(), textvariable = tk.StringVar(), state = "readonly", font = (self.getFont(), self.getFontSize()),\
+        self.__algorithmOptions = ttk.Combobox(self.getOptionsWidgetFrame(), textvariable = tk.StringVar(), 
+                                               state = "readonly", font = (self.getFont(), self.getFontSize()),\
              width = self.getOptionsWidgetFrame().winfo_width())
         self.__algorithmOptions.set('Select an algorithm.')
         # Removes the blue highlighting when something is selected that annoyed me
@@ -46,7 +48,8 @@ class TraversalScreen(sc.Screen, sc.ScreenTemplate):
     def __createSpeedAdjuster(self) -> None:
         # Creates a slider that goes from the maximum delay to the minmum delay 
         # Every time the sliders value is changed the updatetDelay() method is called to update the value seen on screen
-        self.__speedSlider = tk.Scale(self.getOptionsWidgetFrame(), from_ = self.__model.getMaxDelay(), to_ = self.__model.getMinDelay(), resolution=self.__model.getResolution(), 
+        self.__speedSlider = tk.Scale(self.getOptionsWidgetFrame(), from_ = self.__model.getMaxDelay(), 
+                                      to_ = self.__model.getMinDelay(), resolution=self.__model.getResolution(), 
                                       length = self.getOptionsWidgetFrame().winfo_width(), orient = "horizontal", showvalue = False, 
                                       bg =  "white", highlightbackground = "white", command = self.__updateDelay)
         self.__speedSlider.pack(pady = (10, 0))  
@@ -65,14 +68,96 @@ class TraversalScreen(sc.Screen, sc.ScreenTemplate):
         self.__addNodeButton = tk.Button(self.getOptionsWidgetFrame(), text="Add a Node.", width=12, relief="solid", 
                   font = (self.getFont(), self.getFontSize()), command=self.__controller.spawnNode)
         self.__addNodeButton.pack(pady = (10, 0)) 
-    
+        
     # Changes the text colour of the add nodes button to the passed colour
     def changeNodeButtonColour(self, colour : str) -> None: 
         self.__addNodeButton.config(fg = colour)
 
-    def __createAddEdgeOption(self): 
-        pass 
+    # Creates options to add edges or edit existing ones
+    def __createAddEdgeOption(self) -> None: 
+        # Frame containing widgets for adding an option
+        self.__edgeNodesFrame = tk.Frame(self.getOptionsWidgetFrame()) 
+        # Display frame on screen
+        self.__edgeNodesFrame.pack(pady=(10, 0))  
 
+        # Calls functions to create add edge options 
+        self.__createNodeEdgeLabels() 
+        self.__createEdgeWeightOption() 
+        self.__createEdgeDirectionOptions() 
+        self.__createAddEdgeButton()
+
+    # Create options that display nodes an edge connects
+    def __createNodeEdgeLabels(self) -> None:
+        self.__createLabel(self.__edgeNodesFrame, text="From").grid(row=0, column=0) 
+        
+        # Label that will contain ID of node the edge starts at
+        self.__nodeFromLabel = self.__createLabel(self.__edgeNodesFrame, width=6)
+        self.__nodeFromLabel.grid(row=0, column=1)
+        # Underline underneath label
+        tk.Frame(background="black").place(in_=self.__nodeFromLabel, x=0, rely=1.0, height=2, relwidth=1.0)
+
+        self.__createLabel(self.__edgeNodesFrame, text="To").grid(row=0, column=2)
+        # Label that will contain ID of node the edge ends at
+        self.__nodeToLabel = self.__createLabel(self.__edgeNodesFrame, width=6)
+        self.__nodeToLabel.grid(row=0, column=3) 
+        # Underline underneath label
+        tk.Frame(background="black").place(in_=self.__nodeToLabel, x=0, rely=1.0, height=2, relwidth=1.0)
+
+    # Create option to let user input an edges weight/cost
+    def __createEdgeWeightOption(self) -> None:
+        # Frame to store entry widget to let users to enter an edges weight
+        self.__edgeWeightFrame = tk.Frame(self.getOptionsWidgetFrame(), background="white") 
+        self.__edgeWeightFrame.pack(pady=(7,0))
+        self.__createLabel(self.__edgeWeightFrame, text="Weight:").grid(row=0, column=0)
+
+        # Entry field user types text in to set an edges weight 
+        self.__weightInputField = tk.Entry(self.__edgeWeightFrame, width=13, relief="solid", 
+                                           font=(self.getFont(), self.getFontSize())) 
+        # Placeholder text
+        self.__weightInputField.insert(0, "Type Here...")  
+        # Binds event to clear text on mouse click
+        self.__weightInputField.bind("<Button-1>", lambda _: self.__clearEntryText())
+        self.__weightInputField.grid(row=0, column=1, padx=(5, 5))
+
+    # Create option to decide if edge is directed/undirected
+    def __createEdgeDirectionOptions(self) -> None:
+        # Add Radio buttons for directed and undirected edges 
+        self.__radioButtonFrame = tk.Frame(self.getOptionsWidgetFrame(), background="white")
+        self.__radioButtonFrame.pack(pady=(5, 0))
+        # Stores the value of the currently selected radio button
+        self.__edgeType = tk.IntVar() 
+        # Radio Button to indicate edge is undirected
+        self.__createRadioButton(self.__radioButtonFrame, "Undirected", 0).grid(row=0, column=0)
+        # Radio Button to indicate edge is directed 
+        self.__createRadioButton(self.__radioButtonFrame, "Directed", 1).grid(row=0, column=1) 
+    
+    # Create button to add edge 
+    def __createAddEdgeButton(self):
+        tk.Button(self.getOptionsWidgetFrame(), text = "Add Edge.", width = 10, relief = "solid", 
+                                           font=(self.getFont(), self.getFontSize()), command=self.__addEdge)\
+                                            .pack(pady=(5, 0))
+
+    # Wrapper function to create a Radio Button
+    def __createRadioButton(self, frame : tk.Frame, text : str, value:int) -> tk.Radiobutton: 
+        return tk.Radiobutton(frame, text=text, background="white", 
+                       variable=self.__edgeType, value=value, font=(self.getFont(), 11))
+
+    # Wrapper function for making labels 
+    def __createLabel(self, frame : tk.Frame, text : str = "", width : int = 0) -> tk.Label:  
+        label = tk.Label(frame, text=text, width=width, background="white", 
+                        font=(self.getFont(), self.getFontSize()))  
+        if(width): label.config(width=width)
+        return label
+
+    # Clears text in the edge weight entry field
+    def __clearEntryText(self): 
+        self.__weightInputField.delete(0, "end")
+    
+    # Adds edge 
+    def __addEdge(self): 
+        if(self.__nodeFromLabel.cget("text") == "" or self.__nodeToLabel.cget("text") == ""): 
+            return
+    
     # Creates buttons that lets user execute algorithms or stop them
     def __createStopSolveButtons(self) -> None:
         # Frame to store stop and solve buttons in a grid layout
@@ -87,6 +172,7 @@ class TraversalScreen(sc.Screen, sc.ScreenTemplate):
                                              font = (self.getFont(), self.getFontSize()), state = "disabled")
         self.__pauseResumeButton.grid(row = 0, column = 1)   
     
+    # Changes colour of the given circle to the colour specified
     def changeCircleColour(self, circle : int, colour : str) -> None: 
         self.getCanvas().itemconfig(circle, fill = colour)
 
