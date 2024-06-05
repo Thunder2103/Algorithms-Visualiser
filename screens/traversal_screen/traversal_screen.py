@@ -153,11 +153,22 @@ class TraversalScreen(sc.Screen, sc.ScreenTemplate):
     def __clearEntryText(self): 
         self.__weightInputField.delete(0, "end")
     
-    # Adds edge 
+    # Adds edge to relevant data structures 
     def __addEdge(self): 
         if(self.__nodeFromLabel.cget("text") == "" or self.__nodeToLabel.cget("text") == ""): 
             return
     
+    # Update text in relevant label to display the passed node ID 
+    def updateNodeLabelText(self, nodeID : str, nodeFrom : bool) -> None:  
+        if(nodeFrom):
+            self.__nodeFromLabel.config(text=nodeID)
+        else: self.__nodeToLabel.config(text=nodeID)
+    
+    # Clear text in labels that display the node IDs
+    def clearNodeLabelsText(self): 
+        self.__nodeFromLabel.config(text="")
+        self.__nodeToLabel.config(text="")
+
     # Creates buttons that lets user execute algorithms or stop them
     def __createStopSolveButtons(self) -> None:
         # Frame to store stop and solve buttons in a grid layout

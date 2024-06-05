@@ -1,19 +1,20 @@
-class CanvasNode():
+# If the file is run as is message this returned and program exits
+if(__name__ == "__main__"):
+    print("This is file shouldn't be run on it's own. \nIt should be imported only.")
+    exit()
 
+class CanvasNode():
     # Static variable share dbetween each instance 
     nodeID = 0
 
-    def __init__(self, canvasID : int, x0 : int, y0 : int, x1 : int, y1 : int) -> None: 
+    def __init__(self, canvasID : int, coords : tuple) -> None: 
         # ID of the node on the canvas
         self.__canvasID = canvasID 
         # Node ID
         self.__ID = CanvasNode.nodeID
         CanvasNode.nodeID += 1 
         # X-Y Coorindates of the node on screen
-        self.__x0 = x0
-        self.__y0 = y0  
-        self.__x1 = x1
-        self.__y1 = y1
+        self.__coords = coords
         # Edges between this and other nodes 
         # and the weight of each edge
         self.__connectedNodes = {} 
@@ -23,17 +24,14 @@ class CanvasNode():
         self.__highlightColour = "Red"
     
     # Updates the coordinates of the node to be accurate to the coordinates on screen
-    def updateCoords(self, x0 : int, y0 : int, x1 : int, y1: int) -> None: 
-        self.__x0 = x0
-        self.__y0 = y0  
-        self.__x1 = x1
-        self.__y1 = y1
+    def updateCoords(self, coords : tuple) -> None: 
+        self.__coords = coords
 
     # Getters 
     def getCanvasID(self) -> int: return self.__canvasID 
-    def getXCoord(self) -> int: return self.__x0 
-    def getYCoord(self) -> int: return self.__y0
-    def getCoords(self) -> tuple: return (self.__x0, self.__y0, self.__x1, self.__y1)
+    def getXCoord(self) -> int: return self.__coords[0]
+    def getYCoord(self) -> int: return self.__coords[1]
+    def getCoords(self) -> tuple: return self.__coords
     def getID(self) -> int: return self.__ID    
     def getMainColour(self) -> str: return self.__colour 
     def getHighlightColour(self) -> str: return self.__highlightColour 

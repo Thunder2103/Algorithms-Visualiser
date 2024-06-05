@@ -4,7 +4,7 @@ if(__name__ == "__main__"):
     print("This is file shouldn't be run on it's own. \nIt should be imported only.")
     exit()
 
-from canvas_node import CanvasNode
+from canvas_objects import CanvasNode, CanvasEdge
 
 class TraversalModel():
     def __init__(self):  
@@ -74,7 +74,7 @@ class TraversalModel():
     def getEdge(self, nodes : tuple) -> int: 
         if(nodes in self.__edges): return self.__edges[nodes] 
         else: return -1 
-    def addEdge(self, nodes : tuple, weight : int) -> None: self.__edges[nodes] = weight
+    def addEdge(self, nodes : tuple, edge : CanvasEdge) -> None: self.__edges[nodes] = edge 
 
     
  

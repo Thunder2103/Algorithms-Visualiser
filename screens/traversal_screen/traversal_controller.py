@@ -4,7 +4,7 @@ if(__name__ == "__main__"):
     print("This is file shouldn't be run on it's own. \nIt should be imported only.")
     exit()
 
-from canvas_node import CanvasNode 
+from canvas_objects import CanvasNode, CanvasEdge
 from .traversal_model import TraversalModel
 from tkinter import Event 
 import math
@@ -41,7 +41,7 @@ class TraversalController():
         # Draws the circle 
         circle = canvas.create_oval(x0, y0, x1, y1, outline = "black", fill="blue")     
         # Create corresponding object for the circle 
-        canvasNode = CanvasNode(circle, x0, y0, x1, y1)  
+        canvasNode = CanvasNode(circle, (x0, y0, x1, y1))  
         # Adds node to array containing nodes 
         self.__model.addNode(canvasNode)
         # Add event to change nodes colour when the mouse hovers over them
@@ -60,34 +60,42 @@ class TraversalController():
     def __createEdge(self, canvasNode : CanvasNode):     
         # If edge is being drawn on screen
         if(self.__isEdgeBeingDrawn): 
-            # Tuple containing canvas ID of the edge 
-            # and the two nodes the edge connectes
-            edgeTuple = (self.__currentEdge, self.__destinationNode, canvasNode)
-            revEdgeTuple = (self.__currentEdge, canvasNode, self.__destinationNode)
-            # If the edge starts and ends at the same node
-            # Or if the edge already exists between the two nodes
-            if(self.__destinationNode == canvasNode or self.__model.getEdge(edgeTuple) != -1 
-               or self.__model.getEdge(revEdgeTuple) != -1):
-                # Delete edge 
-                self.__deleteEdge()  
-            # If the node start and ends at the two different nodes
+            # Add Node ID to relevant label 
+            self.__screen.updateNodeLabelText(str(canvasNode.getID()), False)
+            # Tuple made of two CanvasNode objects (the source and destination)
+            connectedNodes = (self.__destinationNode, canvasNode)
+            edges = self.__model.getEdges() 
+
+            # If edge does not exist between the two nodes
+            if(connectedNodes not in edges and connectedNodes[::-1] not in edges):  
+                # Moves line to the centre of the destination node and return the new coords 
+                coords = self.__centreEdge(canvasNode)  
+                # Create CanvasEdge Object and add to to edges dictionary
+                edge = CanvasEdge(self.__currentEdge, coords, 1) 
+                self.__model.addEdge(connectedNodes, edge)
             else:
-                # Add edge to the dictionary, with a random weight
-                self.__model.addEdge(edgeTuple, random.randint(10, 100))
-                # Moves line to the centre of the destination node
-                self.__centreEdge(canvasNode)
-                self.__stopMovingEdge()
+                self.__deleteEdge()
+            # Set relevant variables and disable event listeners
+            self.__stopMovingEdge()
         # If an edge is not being draw on screen
         else: 
-            # Adds canvas event to draw lines
-            self.__addCanvasEvent(canvasNode)
-            # Sets variable to True
-            self.__isEdgeBeingDrawn = True   
-            # Sets desination node to current node passed to function
-            self.__destinationNode = canvasNode
+            # Add Node ID to relevant label 
+            self.__screen.updateNodeLabelText(str(canvasNode.getID()), True) 
+            # Enables canvas events and set relevant variables
+            self.__createMovingEdge(canvasNode)
         # Updates window to display changes
         self.__screen.getWindow().update() 
     
+    # Enables canvas events and set relevant variables
+    def __createMovingEdge(self, canvasNode : CanvasNode):
+        # Adds canvas event to draw lines
+        self.__addCanvasEvent(canvasNode)
+        # Sets variable to True
+        self.__isEdgeBeingDrawn = True   
+        # Sets desination node to current node passed to function
+        self.__destinationNode = canvasNode
+    
+    # Disables canvas events and set relevant variables
     def __stopMovingEdge(self):
         # Remove event that draws line
         self.__deleteCanvasEvent()
@@ -101,6 +109,7 @@ class TraversalController():
     # Deletes current edge from the screen 
     def __deleteEdge(self): 
         if(self.__currentEdge != None): 
+            self.__screen.clearNodeLabelsText()
             self.__screen.getCanvas().delete(self.__currentEdge) 
             self.__stopMovingEdge()
         
@@ -143,17 +152,20 @@ class TraversalController():
             canvas.coords(self.__currentEdge, lineCoords)
         
     # Draws an edge to the centre of the circle
-    def __centreEdge(self, canvasNode : CanvasNode) -> None: 
-        x1, y1, _, _ = canvasNode.getCoords() 
+    def __centreEdge(self, destinationNode : CanvasNode) -> tuple: 
         circleOffset = self.__model.getCircleSize() // 2 
-        canvas = self.__screen.getCanvas() 
+        canvas = self.__screen.getCanvas()  
+        # Get Coords of the destination node 
+        x1, y1, _, _ = destinationNode.getCoords() 
         # Gets current coords of the edges
         coords = canvas.coords(self.__currentEdge) 
-        # Upate coords of the edge to be in the middle of the passed node
+        # Update coords of the edge to be in the middle of the passed node
         coords[2] = x1 + circleOffset 
         coords[3] = y1 + circleOffset 
         # Send updated coords to the canvas
-        canvas.coords(self.__currentEdge, coords)
+        canvas.coords(self.__currentEdge, coords)  
+        # Return the updated coords of the edge 
+        return coords 
 
     # Checks if a new node can be added to the screen.  
     # Nodes can be added to the screen if there are no 
@@ -196,12 +208,12 @@ class TraversalController():
         xCoord, yCoord = self.__adjustCoords(event.x, event.y)
 
         # Updates coords in the CanvasNode object
-        canvasNode.updateCoords(xCoord, yCoord, xCoord + circleSize, yCoord + circleSize)
+        canvasNode.updateCoords((xCoord, yCoord, xCoord + circleSize, yCoord + circleSize))
         # Applies forces to each node 
         self.__calculateForces(canvasNode)
 
         # Updates coords in the CanvasNode object
-        canvasNode.updateCoords(xCoord, yCoord, xCoord + circleSize, yCoord + circleSize)
+        canvasNode.updateCoords((xCoord, yCoord, xCoord + circleSize, yCoord + circleSize))
         self.__redrawNodes()
         self.__redrawEdges()
         # Moves center of the circle to the coordinates specified 
@@ -235,30 +247,37 @@ class TraversalController():
         # Doing it in one line would make the calculations very hard to read  
         return(xCoord, yCoord)
 
+    # Updates position of nodes on the canvas
     def __redrawNodes(self): 
         canvas = self.__screen.getCanvas()
         for node in self.__model.getNodes():  
             x0, y0, _, _ = node.getCoords()
             canvas.moveto(node.getCanvasID(), x0, y0)
     
+    # Update positions of edges on the canvas 
     def __redrawEdges(self):
         canvas = self.__screen.getCanvas() 
         circleOffset = self.__model.getCircleSize() // 2  
         # Iterate through each edge
-        for edgeID, destNode, sourceNode in self.__model.getEdges().keys():  
-            # Get coordinates of the nodes the edges should be between
-            x0, y0, _, _ = destNode.getCoords() 
-            x1, y1, _, _ = sourceNode.getCoords()   
-            # Get current coords of edge
-            coords = canvas.coords(edgeID)
+        for connectedNodes, canvasEdge in self.__model.getEdges().items(): 
+            # Get coords of the nodes the edge connects
+            x0, y0, _, _ = connectedNodes[0].getCoords() 
+            x1, y1, _, _ = connectedNodes[1].getCoords() 
+            
+            # Get coords of the edge
+            coords = canvasEdge.getCoords()
+
             # Update coords of edge 
-            coords[0] = x0 + circleOffset
+            coords[0] = x0 + circleOffset 
             coords[1] = y0 + circleOffset 
             coords[2] = x1 + circleOffset 
-            coords[3] = y1 + circleOffset 
-            # Send updated coords to the canvas
-            canvas.coords(edgeID, coords)
+            coords[3] = y1 + circleOffset
             
+            # Update coords of edge on the canvas
+            canvas.coords(canvasEdge.getCanvasID(), coords)  
+            # Update coords in canvasEdge object 
+            canvasEdge.updateCoords(coords)
+
     # Changes the nodes colour the mouse is hovering to red
     def __changeColourOnHover(self, canvasNode : CanvasNode) -> None: 
         self.__screen.changeCircleColour(canvasNode.getCanvasID(), 
@@ -327,7 +346,7 @@ class TraversalController():
         y0 = math.ceil(y0)
 
         # Updates the coordinates of the relevant node 
-        canavsNode.updateCoords(x0, y0, x0 + circleSize, y0 + circleSize) 
+        canavsNode.updateCoords((x0, y0, x0 + circleSize, y0 + circleSize)) 
     
     # Calculates distance between two nodes using the pythagoras theorem 
     def __calculateDistance(self, x0 : int, y0 : int, x1 : int, y1 : int) -> float: 
