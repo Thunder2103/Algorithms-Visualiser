@@ -4,8 +4,8 @@ if(__name__ == "__main__"):
     exit()
 
 class CanvasNode():
-    # Static variable share dbetween each instance 
-    nodeID = 0
+    # Static variable shared between each instance 
+    nodeID = 1
 
     def __init__(self, canvasID : int, coords : tuple) -> None: 
         # ID of the node on the canvas

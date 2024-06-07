@@ -8,20 +8,21 @@ from canvas_objects import CanvasNode, CanvasEdge
 from .traversal_model import TraversalModel
 from tkinter import Event 
 import math
-import random
 
 class TraversalController():
     def __init__(self, screen, model : TraversalModel): 
         self.__screen = screen 
         self.__model = model  
         self.__isEdgeBeingDrawn = False 
+        self.__fromNode = None 
+        self.__toNode = None 
         self.__currentEdge = None 
-        self.__destinationNode = None 
+        self.__isEdgeBeingEdited = False
 
     def addCanvasEvents(self): 
         canvas = self.__screen.getCanvas() 
         # Add event to delete current edge being drawn when the canvas is clicked
-        canvas.bind("<Button-1>", lambda _: self.__deleteEdge())
+        canvas.bind("<Button-1>", lambda event: self.__deleteEdgeOnClick(event))
 
     # Draws a circle (node) on the canvas 
     def spawnNode(self):   
@@ -61,58 +62,123 @@ class TraversalController():
         # If edge is being drawn on screen
         if(self.__isEdgeBeingDrawn): 
             # Add Node ID to relevant label 
-            self.__screen.updateNodeLabelText(str(canvasNode.getID()), False)
-            # Tuple made of two CanvasNode objects (the source and destination)
-            connectedNodes = (self.__destinationNode, canvasNode)
-            edges = self.__model.getEdges() 
-
-            # If edge does not exist between the two nodes
-            if(connectedNodes not in edges and connectedNodes[::-1] not in edges):  
-                # Moves line to the centre of the destination node and return the new coords 
-                coords = self.__centreEdge(canvasNode)  
-                # Create CanvasEdge Object and add to to edges dictionary
-                edge = CanvasEdge(self.__currentEdge, coords, 1) 
-                self.__model.addEdge(connectedNodes, edge)
-            else:
-                self.__deleteEdge()
-            # Set relevant variables and disable event listeners
-            self.__stopMovingEdge()
+            self.__screen.updateToLabelText(str(canvasNode.getID()))
+            # Disable canvas event listeners and sets boolean variable 
+            self.__stopMovingEdge() 
+            # Sets node, edge ends at to CanvasNode
+            self.__toNode = canvasNode 
+            self.__handleEdge() 
+            self.__isEdgeBeingEdited = True
         # If an edge is not being draw on screen
         else: 
+            if(self.__isEdgeBeingEdited): return
             # Add Node ID to relevant label 
-            self.__screen.updateNodeLabelText(str(canvasNode.getID()), True) 
-            # Enables canvas events and set relevant variables
-            self.__createMovingEdge(canvasNode)
+            self.__screen.updateFromLabelText(str(canvasNode.getID())) 
+            # Enables canvas event listeners and sets boolean variable 
+            self.__createMovingEdge(canvasNode) 
+            # Sets node, edge starts at to CanvasNode
+            self.__fromNode = canvasNode
         # Updates window to display changes
-        self.__screen.getWindow().update() 
+        self.__screen.getWindow().update()  
     
-    # Enables canvas events and set relevant variables
+    # Handles if edges starts and end at the same node 
+    # or of an edge already exists between two nodes 
+    def __handleEdge(self):
+        # If edge starts and ends at the same node
+        if(self.__fromNode == self.__toNode):  
+            self.__handleSelfEdge()
+            return
+        
+        # Get new or existing CanvasEdge object
+        edge = self.__createCanvasEdge()
+        # Updates current edge 
+        self.__currentEdge = edge.getCanvasID()
+        # Enable options that let users edit edges
+        self.__screen.enableWeightOptions()
+        # Update weight slider to show the edges weight
+        self.__screen.updateWeightOnScreen(edge.getWeight())  
+    
+    # Creates and returns a new CanvasEdge object
+    def __createCanvasEdge(self) -> CanvasEdge: 
+        connectedNodes = (self.__fromNode, self.__toNode) 
+        # If edge exists between the two nodes, 
+        # return the already existing object 
+        if(connectedNodes in self.__model.getEdges()): 
+            self.__deleteEdge()  
+            return self.__model.getEdge(connectedNodes) 
+        elif(connectedNodes[::-1] in self.__model.getEdges()):  
+            self.__deleteEdge()
+            return self.__model.getEdge(connectedNodes[::-1]) 
+        # Creates new object of edge is new 
+        else: 
+            # Moves edge to centre of the destination node 
+            coords = self.__centreEdge(self.__toNode)
+            # Create new object, weight is initially set to the default 
+            newEdge = CanvasEdge(self.__currentEdge, coords, self.__model.getDefaultWeight()) 
+            # Add node to dictionary 
+            self.__model.addEdge(connectedNodes, newEdge)   
+            # Return new object 
+            return newEdge
+
+    # Handles when an egde starts and ends at the same node 
+    def __handleSelfEdge(self):
+        # Delete edge
+        self.__deleteEdge() 
+        # Clear text in labels
+        self.__screen.clearNodeLabelsText() 
+        # Disable buttons and resets slider 
+        self.__screen.disableWeightOptions()
+        # Clear variables used when creating edges 
+        self.__clearVariables()
+        
+    # Resets variables used when creating edges     
+    def __clearVariables(self): 
+        self.__fromNode = None 
+        self.__toNode = None 
+        self.__currentEdge = None  
+
+    # Enables canvas events and sets boolean variable to true 
     def __createMovingEdge(self, canvasNode : CanvasNode):
         # Adds canvas event to draw lines
         self.__addCanvasEvent(canvasNode)
         # Sets variable to True
         self.__isEdgeBeingDrawn = True   
-        # Sets desination node to current node passed to function
-        self.__destinationNode = canvasNode
-    
-    # Disables canvas events and set relevant variables
+            
+    # Disables canvas events and sets boolean variable to false 
     def __stopMovingEdge(self):
         # Remove event that draws line
         self.__deleteCanvasEvent()
         # Set edge being drawn to False
         self.__isEdgeBeingDrawn = False
-        # Set current edge to None
-        self.__currentEdge = None 
-        # Sets desintation node to None 
-        self.__destinationNode = None 
+        
+    # Changes weight of current edge to passed value 
+    def saveEdge(self, weight : int): 
+        # Update weight of current edge object
+        edge = self.__getCanvasEdge() 
+        edge.setWeight(weight)
+        # Clear variables used  
+        self.__clearVariables()
+        # Set flag indicating edge is being edited to false
+        self.__isEdgeBeingEdited = False 
+    
+    def __getCanvasEdge(self) -> CanvasEdge: 
+        connectedEdges = (self.__fromNode, self.__toNode)
+        if(connectedEdges in self.__model.getEdges()): 
+            return self.__model.getEdge(connectedEdges)
+        else: return self.__model.getEdge(connectedEdges[::-1])
+       
+    def __deleteEdgeOnClick(self, event : Event):
+        canvas = self.__screen.getCanvas() 
+        collisions = canvas.find_overlapping(event.x, event.y , event.x, event.y) 
+        if(len(collisions) == 1 and self.__currentEdge in collisions): 
+            self.__deleteEdge()
+            self.__stopMovingEdge() 
+            self.__clearVariables() 
 
     # Deletes current edge from the screen 
     def __deleteEdge(self): 
-        if(self.__currentEdge != None): 
-            self.__screen.clearNodeLabelsText()
-            self.__screen.getCanvas().delete(self.__currentEdge) 
-            self.__stopMovingEdge()
-        
+        self.__screen.getCanvas().delete(self.__currentEdge) 
+            
     # Add event to draw a line representing an edge
     def __addCanvasEvent(self, canvasNode : CanvasNode): 
         self.__screen.getCanvas().bind("<Motion>", lambda event: self.__drawEdge(event, canvasNode))
@@ -354,3 +420,8 @@ class TraversalController():
 
     
 # Listen to Paranoid by Black Sabbath
+
+
+
+
+

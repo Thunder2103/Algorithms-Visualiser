@@ -41,6 +41,15 @@ class TraversalModel():
         # Dictionary for edges, keys are tuples node IDs 
         self.__edges = {}
 
+        # Minimum Weight edges can be 
+        self.__minWeight = 1
+        # Maximum weight edges can be 
+        self.__maxWeight = 100 
+        # Default weight given to each edge on creation 
+        self.__defaultWeight = 20
+        # Resolution of the weight slider
+        self.__weightSliderResolution = 1
+
     # Adds controller         
     def addController(self, controller): 
         self.__controller = controller 
@@ -74,7 +83,13 @@ class TraversalModel():
     def getEdge(self, nodes : tuple) -> int: 
         if(nodes in self.__edges): return self.__edges[nodes] 
         else: return -1 
-    def addEdge(self, nodes : tuple, edge : CanvasEdge) -> None: self.__edges[nodes] = edge 
+    def addEdge(self, nodes : tuple, edge : CanvasEdge) -> None: self.__edges[nodes] = edge  
+
+    # Getters for edge weight 
+    def getMinWeight(self) -> int: return self.__minWeight
+    def getMaxWeight(self) -> int: return self.__maxWeight 
+    def getDefaultWeight(self) -> int: return self.__defaultWeight
+    def getWeightSliderResolution(self) -> int: return self.__weightSliderResolution 
 
     
  

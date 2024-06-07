@@ -15,7 +15,9 @@ class CanvasEdge():
     
     # Getter for weight/cost of edge
     def getWeight(self): 
-        return self.__weight
+        return self.__weight 
+    def setWeight(self, weight : int): 
+        self.__weight = weight
     
     # Coordinates Getter and setters
     def getCoords(self): 
